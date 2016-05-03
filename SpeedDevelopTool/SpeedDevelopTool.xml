@@ -1,0 +1,7 @@
+﻿<?xml version='1.0'?>
+<root>
+  <CategoriesNode>
+    <LanMu ChineseName="栏目" fullClassName="TestCategory.LanMu" path="\LanMu\" dllName="TestCategory.dll"/>
+    <Filter ChineseName="过滤" fullClassName="TestCategory.Filter" path="\Filter\" dllName="TestCategory.dll"/>
+  </CategoriesNode>
+</root>
