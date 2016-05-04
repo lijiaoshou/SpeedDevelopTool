@@ -342,7 +342,7 @@ namespace CommonLib
                 }
                 else
                 {
-                    fieldInfo = typeof(Control).GetField("Event" + EventCategory, BindingFlags.NonPublic | BindingFlags.Static);
+                    fieldInfo = typeof(Control).GetField("Event" + EventCategory.Name, BindingFlags.NonPublic | BindingFlags.Static);
 
                 }
             }

@@ -30,95 +30,92 @@ namespace WindowsFormsApplication1
 
         private void button1_Click(object sender, EventArgs e)
         {
-            PropertyInfo propertyInfo = webBrowser1.GetType().GetProperty("Events", BindingFlags.NonPublic
-                                                                    | BindingFlags.Static | BindingFlags.Instance);
-            EventHandlerList eventHandlerList = propertyInfo.GetValue(webBrowser1, new object[] { }) as EventHandlerList;
+            #region old
+            //PropertyInfo propertyInfo = webBrowser1.GetType().GetProperty("Events", BindingFlags.NonPublic
+            //                                                        | BindingFlags.Static | BindingFlags.Instance);
+            //EventHandlerList eventHandlerList = propertyInfo.GetValue(webBrowser1, new object[] { }) as EventHandlerList;
 
-            FieldInfo fieldInfo;
-            StringBuilder sb = new StringBuilder();
-            //CheckBox chbox = button1 as CheckBox;
-            
-            EventInfo[] events = webBrowser1.GetType().GetEvents();
-            //for (int q = 0; q < events.Length; q++)
+            //FieldInfo fieldInfo;
+            //StringBuilder sb = new StringBuilder();
+
+            //EventInfo[] events = webBrowser1.GetType().GetEvents();
+
+            //FieldInfo[] fieldInfo1 = typeof(WebBrowser).GetFields(BindingFlags.NonPublic | BindingFlags.Static);
+
+
+            //for (int p = 0; p < fieldInfo1.Length; p++)
             //{
-            //    if (events[q].Name.Contains("RightToLeft"))
+            //    if (fieldInfo1[p].Name.Contains("doc"))
             //    {
-            //        MessageBox.Show("asdf");
+            //        MessageBox.Show("asd");
             //    }
-
             //}
 
-            //fieldInfo = typeof(CheckBox).GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-            FieldInfo[] fieldInfo1 = typeof(WebBrowser).GetFields(BindingFlags.NonPublic | BindingFlags.Static);
+            //for (int i = 0; i < events.Length; i++)
+            //{
+            //    if (events[i].Name == "CheckedChanged"|| events[i].Name == "CheckStateChanged" || events[i].Name == "AppearanceChanged"
+            //        || events[i].Name == "DropDown" || events[i].Name == "DrawItem" || events[i].Name == "MeasureItem"
+            //        || events[i].Name == "SelectedIndexChanged" || events[i].Name == "SelectionChangeCommitted"|| events[i].Name.Contains("Format")
+            //        || events[i].Name == "DropDownClosed" || events[i].Name.Contains("ValueMember") || events[i].Name.Contains("DataSource")
+            //        || events[i].Name.Contains("DisplayMember") || events[i].Name.Contains("DropDownStyle") || events[i].Name == "TextUpdate"
+            //        || events[i].Name.Contains("FormatString") || events[i].Name.Contains("FormattingEnabled") || events[i].Name.Contains("SelectedIndex")
+            //        || events[i].Name.Contains("SelectedValue")|| events[i].Name.Contains("TextAlignChanged")|| events[i].Name.Contains("ReadOnlyChanged")
+            //        || events[i].Name.Contains("MultilineChanged") || events[i].Name.Contains("ModifiedChanged") || events[i].Name.Contains("HideSelectionChanged")
+            //        || events[i].Name.Contains("BorderStyleChanged") || events[i].Name.Contains("AcceptsTabChanged"))
+            //    {
+            //        //递归（拿到fieldinfo）
+            //        //ex:checkedListBox->ListBox->ListControl->Control
+            //        fieldInfo = GetFieldInfo(typeof(WebBrowser),events[i]);
+            //    }
+            //    else
+            //    {
+            //        if (events[i].Name == "BackgroundImageChanged" || events[i].Name == "BackgroundImageLayoutChanged" ||
+            //            events[i].Name.Contains("BackColor") || events[i].Name.Contains("BindingContext") || events[i].Name.Contains("CausesValidation")
+            //            || events[i].Name == "SizeChanged" || events[i].Name.Contains("ContextMenuStrip") || events[i].Name.Contains("Cursor")
+            //            || events[i].Name.Contains("Dock") || events[i].Name.Contains("Enabled") || events[i].Name.Contains("Font")
+            //            || events[i].Name.Contains("ForeColor") || events[i].Name.Contains("Location")
+            //            || events[i].Name.Contains("Parent") || events[i].Name.Contains("RightToLeft")
+            //            || events[i].Name.Contains("TabIndex") || events[i].Name.Contains("TabStop") || events[i].Name.Contains("Text")
+            //            || events[i].Name.Contains("Visible") || events[i].Name.Contains("ChangeUICues") || events[i].Name.Contains("ClientSize"))
+            //        {
+            //            fieldInfo = typeof(Control).GetField("Event" + events[i].Name.Replace("Changed", ""), BindingFlags.NonPublic | BindingFlags.Static);
+            //        }
+            //        else
+            //        {
+            //            fieldInfo = typeof(Control).GetField("Event" + events[i].Name, BindingFlags.NonPublic | BindingFlags.Static);
+
+            //        }
+            //    }
+
+            //    if (fieldInfo == null)
+            //    {
+            //        continue;
+            //    }
+            //    var eventKey = fieldInfo.GetValue(webBrowser1);
+            //    var eventHandler = eventHandlerList[eventKey] as Delegate;
+            //    if (eventHandler == null)
+            //    {
+            //        continue;
+            //    }
+            //    Delegate[] invocationList = eventHandler.GetInvocationList();
 
 
-            for (int p = 0; p < fieldInfo1.Length; p++)
+
+            //    foreach (var handler in invocationList)
+            //    {
+            //        sb.Append(handler.GetMethodInfo().Name+"_"+i + "\r\n");
+            //    }
+            //}
+
+            //textBox1.Text = sb.ToString();
+            #endregion
+
+            string[] array = {"as","asdf","asdfg","sdf" };
+            string str = "as";
+            if (Array.IndexOf<string>(array, str) != -1)
             {
-                if (fieldInfo1[p].Name.Contains("doc"))
-                {
-                    MessageBox.Show("asd");
-                }
+
             }
-            //dateTimePicker1.ValueChanged
-
-            for (int i = 0; i < events.Length; i++)
-            {
-                if (events[i].Name == "CheckedChanged"|| events[i].Name == "CheckStateChanged" || events[i].Name == "AppearanceChanged"
-                    || events[i].Name == "DropDown" || events[i].Name == "DrawItem" || events[i].Name == "MeasureItem"
-                    || events[i].Name == "SelectedIndexChanged" || events[i].Name == "SelectionChangeCommitted"|| events[i].Name.Contains("Format")
-                    || events[i].Name == "DropDownClosed" || events[i].Name.Contains("ValueMember") || events[i].Name.Contains("DataSource")
-                    || events[i].Name.Contains("DisplayMember") || events[i].Name.Contains("DropDownStyle") || events[i].Name == "TextUpdate"
-                    || events[i].Name.Contains("FormatString") || events[i].Name.Contains("FormattingEnabled") || events[i].Name.Contains("SelectedIndex")
-                    || events[i].Name.Contains("SelectedValue")|| events[i].Name.Contains("TextAlignChanged")|| events[i].Name.Contains("ReadOnlyChanged")
-                    || events[i].Name.Contains("MultilineChanged") || events[i].Name.Contains("ModifiedChanged") || events[i].Name.Contains("HideSelectionChanged")
-                    || events[i].Name.Contains("BorderStyleChanged") || events[i].Name.Contains("AcceptsTabChanged"))
-                {
-                    //递归（拿到fieldinfo）
-                    //ex:checkedListBox->ListBox->ListControl->Control
-                    fieldInfo = GetFieldInfo(typeof(WebBrowser),events[i]);
-                }
-                else
-                {
-                    if (events[i].Name == "BackgroundImageChanged" || events[i].Name == "BackgroundImageLayoutChanged" ||
-                        events[i].Name.Contains("BackColor") || events[i].Name.Contains("BindingContext") || events[i].Name.Contains("CausesValidation")
-                        || events[i].Name == "SizeChanged" || events[i].Name.Contains("ContextMenuStrip") || events[i].Name.Contains("Cursor")
-                        || events[i].Name.Contains("Dock") || events[i].Name.Contains("Enabled") || events[i].Name.Contains("Font")
-                        || events[i].Name.Contains("ForeColor") || events[i].Name.Contains("Location")
-                        || events[i].Name.Contains("Parent") || events[i].Name.Contains("RightToLeft")
-                        || events[i].Name.Contains("TabIndex") || events[i].Name.Contains("TabStop") || events[i].Name.Contains("Text")
-                        || events[i].Name.Contains("Visible") || events[i].Name.Contains("ChangeUICues") || events[i].Name.Contains("ClientSize"))
-                    {
-                        fieldInfo = typeof(Control).GetField("Event" + events[i].Name.Replace("Changed", ""), BindingFlags.NonPublic | BindingFlags.Static);
-                        //ListControl
-                    }
-                    else
-                    {
-                        fieldInfo = typeof(Control).GetField("Event" + events[i].Name, BindingFlags.NonPublic | BindingFlags.Static);
-
-                    }
-                }
-
-                if (fieldInfo == null)
-                {
-                    continue;
-                }
-                var eventKey = fieldInfo.GetValue(webBrowser1);
-                var eventHandler = eventHandlerList[eventKey] as Delegate;
-                if (eventHandler == null)
-                {
-                    continue;
-                }
-                Delegate[] invocationList = eventHandler.GetInvocationList();
-
-
-
-                foreach (var handler in invocationList)
-                {
-                    sb.Append(handler.GetMethodInfo().Name+"_"+i + "\r\n");
-                }
-            }
-
-            textBox1.Text = sb.ToString();
 
         }
 

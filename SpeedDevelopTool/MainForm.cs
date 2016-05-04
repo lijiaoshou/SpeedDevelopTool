@@ -1,52 +1,55 @@
-﻿using ICSharpCode.TextEditor.Document;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
 using System.Drawing;
-using System.IO;
+using System.Data;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using CommonLib;
+using System.Diagnostics;
 using System.Reflection;
+using ICSharpCode.TextEditor.Document;
+using System.IO;
+using UFIDA.U8.Portal.Proxy.editors;
+using UFIDA.U8.Portal.Framework.MainFrames;
+using UFIDA.U8.Portal.Proxy.Actions;
+using UFSoft.U8.Framework.Login.UI;
+using UFIDA.U8.Portal.Framework.Actions;
 
 namespace SpeedDevelopTool
 {
-    public partial class MainForm : Form
+    public partial class MainForm : UserControl, INetUserControl
     {
         ICSharpCode.TextEditor.TextEditorControl txtContent = new ICSharpCode.TextEditor.TextEditorControl();
 
-        private  string choiceOpiton;
+        public string choiceOpiton { get; set; }
+
+        public IEditorPart EditorPart { get; set; }
+
+        public IEditorInput EditorInput{ get; set; }
+
+        public string Title{ get; set; }
 
         public MainForm()
         {
             InitializeComponent();
         }
 
-        public MainForm(string option)
-        {
-            InitializeComponent();
-
-            //通过对该私有字段的初始化，决定需要展示的是哪个公共控件相关的内容
-            choiceOpiton = option;
-        }
-
-
         /// <summary>
         /// 搜索相关文档委托绑定的方法
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private  void StartProcessDoc(object sender,EventArgs e)
+        private void StartProcessDoc(object sender, EventArgs e)
         {
             //得到界面显示的名称（包括后缀名）
             Label lab = sender as Label;
 
             //是label控件则查找和label控件文字相同的文档
-            if(lab!=null)
+            if (lab != null)
             {
-                Process.Start(System.Environment.CurrentDirectory + @"\"+choiceOpiton+@"\相关文档\"+lab.Text);
+                Process.Start(System.Environment.CurrentDirectory + @"\" + choiceOpiton + @"\相关文档\" + lab.Text);
             }
         }
 
@@ -55,7 +58,7 @@ namespace SpeedDevelopTool
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private  void StartProcessPro(object sender, EventArgs e)
+        private void StartProcessPro(object sender, EventArgs e)
         {
             //得到界面现实的名称（包括后缀名）
             Label lab = sender as Label;
@@ -63,9 +66,20 @@ namespace SpeedDevelopTool
             //是label控件则查找和label控件文字相同的文档
             if (lab != null)
             {
-                Process.Start(System.Environment.CurrentDirectory + @"\"+choiceOpiton+@"\常见问题\" + lab.Text);
+                Process.Start(System.Environment.CurrentDirectory + @"\" + choiceOpiton + @"\常见问题\" + lab.Text);
             }
         }
+
+        /// <summary>
+        /// 开发模式下用.cs文件生成xml文件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button4_Click(object sender, EventArgs e)
+        {
+            Common.GenerateXmlDocument(AppDomain.CurrentDomain.BaseDirectory + @"xml\" + choiceOpiton + ".xml");
+        }
+
 
         /// <summary>
         /// 实时求助按钮
@@ -78,24 +92,6 @@ namespace SpeedDevelopTool
             mainForm.ShowDialog();
         }
 
-        //private static string DisplayCodes()
-        //{
-        //    string newline = "\r\n";
-        //    StringBuilder sb = new StringBuilder();
-        //    sb.Append(@" public Form1(){
-        //                    InitializeComponent();
-
-        //                    colSet =  new clsColSet();
-        //                    string connstr = @'Provider = SQLOLEDB.1; Password = sa123456; User ID = SA; Initial Catalog = UFDATA_999_2014;
-        //                    Data Source =.; Current Language = Simplified Chinese; Use Procedure for Prepare = 1; Auto Translate = True;
-        //                    Packet Size = 4096; Workstation ID = lichaor; Use Encryption for Data = False;
-        //                    Tag with column collation when possible = False';
-        //                    colSet.Init(connstr,'demo');
-        //                    colSet.setColMode('001', 1);}"
-        //            );
-        //    return sb.ToString();
-        //}
-
         /// <summary>
         /// 复制选中代码到黏贴板
         /// </summary>
@@ -106,6 +102,7 @@ namespace SpeedDevelopTool
             Clipboard.SetDataObject(txtContent.ActiveTextAreaControl.SelectionManager.SelectedText);
             MessageBox.Show("选中内容已经复制到黏贴板！");
         }
+
 
         /// <summary>
         /// 复制全部代码到黏贴板
@@ -123,7 +120,7 @@ namespace SpeedDevelopTool
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MainForm_Load(object sender, EventArgs e)
+        private void MainForm1_Load(object sender, EventArgs e)
         {
             #region 初始化功能演示区
 
@@ -215,13 +212,13 @@ namespace SpeedDevelopTool
             string fullName = Config.GetValueByKey(this.choiceOpiton, "fullClassName");
 
             //获取dll所在路径
-            string dllPath = Config.GetValueByKey(this.choiceOpiton, "path");
+            string dllPath = Config.GetValueByKey(this.choiceOpiton, "dllPath");
 
-            //获取dll名称
-            string dllName= Config.GetValueByKey(this.choiceOpiton, "dllName");
+            //获取dll名称/exe名称
+            string dllName = Config.GetValueByKey(this.choiceOpiton, "dllName");
 
             //加载程序集(dll文件地址)，使用Assembly类   
-            Assembly assembly = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + dllPath+dllName);
+            Assembly assembly = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + dllPath + dllName);
 
             ////获取类型，参数（名称空间+类）   
             //Type type = assembly.GetType(fullName);
@@ -229,24 +226,44 @@ namespace SpeedDevelopTool
             //创建该对象的实例，object类型，参数（名称空间+类）   
             object instance = assembly.CreateInstance(fullName);
 
-            UserControl uControl = instance as UserControl;
+            Form uForm = instance as Form;
 
-            if (uControl != null)
+            if (uForm != null)
             {
+                //去掉uForm的边框
+                uForm.FormBorderStyle = FormBorderStyle.None;
+                //设置窗体为非顶级控件
+                uForm.TopLevel = false;
+
                 //动态加载用户控件到主界面中
-                groupBox1.Controls.Add(uControl);
+                groupBox1.Controls.Add(uForm);
+                uForm.Show();
 
                 //控件用户控件在主界面中的位置
-                uControl.Top = 20;
-                uControl.Left = 10;
+                uForm.Top = 20;
+                uForm.Left = 10;
+            }
+            else //同时支持form和usercontrol
+            {
+                UserControl usercontrol = instance as UserControl;
+                if(usercontrol != null)
+                {
+                    //动态加载用户控件到主界面中
+                    groupBox1.Controls.Add(usercontrol);
+
+                    //控件用户控件在主界面中的位置
+                    usercontrol.Top = 20;
+                    usercontrol.Left = 10;
+                }
             }
             #endregion
 
             #endregion
 
             #region 初始化相关文档
+            string categoryPath = Config.GetValueByKey(this.choiceOpiton, "categoryPath");
             //得到对应公共控件类别下的相关文档文件夹下的（包括子文件夹）的文件
-            List<FileInfo> fileInfo = CommonLib.Common.GetAllFilesInDirectory(System.Environment.CurrentDirectory + @"\" + choiceOpiton + @"\相关文档");
+            List<FileInfo> fileInfo = CommonLib.Common.GetAllFilesInDirectory(System.Environment.CurrentDirectory  + categoryPath + @"相关文档");
             for (int i = 0; i < fileInfo.Count; i++)
             {
                 LinkLabel lab = new LinkLabel();
@@ -268,7 +285,7 @@ namespace SpeedDevelopTool
 
             #region 初始化常见问题
             //得到对应公共空间类别下的常见问题文件夹下的（包括子文件夹）的文件
-            List<FileInfo> fileInfoP = CommonLib.Common.GetAllFilesInDirectory(System.Environment.CurrentDirectory + @"\" + choiceOpiton + @"\常见问题");
+            List<FileInfo> fileInfoP = CommonLib.Common.GetAllFilesInDirectory(System.Environment.CurrentDirectory +categoryPath + @"常见问题");
             for (int i = 0; i < fileInfoP.Count; i++)
             {
                 LinkLabel lab = new LinkLabel();
@@ -290,8 +307,8 @@ namespace SpeedDevelopTool
 
             #region 初始化代码控件
 
-            txtContent.Width = groupBox2.Width;
-            txtContent.Height = this.Height;
+            txtContent.Width = groupBox2.Width-20;
+            txtContent.Height = groupBox2.Height-10;
             txtContent.Document.HighlightingStrategy = HighlightingStrategyFactory.CreateHighlightingStrategy("C#");
             txtContent.Encoding = Encoding.Default;
             txtContent.Location = new Point(-3, 50);
@@ -303,18 +320,6 @@ namespace SpeedDevelopTool
 
             #region 跟踪功能区代码
             TraceOperate();
-            #endregion
-
-            #region 是否展示生成xml按钮
-            //string isDevelop = Config.IsDevelopPattern;
-            //if (isDevelop == "1")
-            //{
-            //    button4.Visible = true;
-            //}
-            //else
-            //{
-            //    button4.Visible = false;
-            //}
             #endregion
         }
 
@@ -328,7 +333,7 @@ namespace SpeedDevelopTool
             foreach (Control ctrl in controls)
             {
                 //获取用户控件
-                if (ctrl is UserControl)
+                if ((ctrl is UserControl)||(ctrl is Form))
                 {
                     LoopCtrl(ctrl);
                 }
@@ -353,9 +358,8 @@ namespace SpeedDevelopTool
                 EventInfo[] events = contorlType.GetEvents();
                 for (int i = 0; i < events.Length; i++)
                 {
-
                     #region 对于控件上没有绑定操作方法的事件直接返回
-                    string funcNames = Common.GetFunctionNames(ctrl1, events[i].Name);
+                    string funcNames = Common.GetFunctionNames(ctrl1, events[i]);
                     if (string.IsNullOrEmpty(funcNames))
                     {
                         continue;
@@ -365,7 +369,7 @@ namespace SpeedDevelopTool
                     #region 给已经绑定操作方法的控件添加监视功能
 
                     //自定义事件参数类，传递事件名称
-                    MyEventArgs args = new MyEventArgs(events[i].Name);
+                    MyEventArgs args = new MyEventArgs(events[i]);
 
                     //获取事件处理类型，事件处理类型有很多种，EventHandler,MouseEventHandler.....
                     string handleType = events[i].EventHandlerType.Name;
@@ -413,22 +417,22 @@ namespace SpeedDevelopTool
                 //从xml文件中读取对应control的实时代码
                 //string code = CommonLib.Common.ReadValueByXml(AppDomain.CurrentDomain.BaseDirectory + @"xml\" + choiceOpiton + ".xml", btn.Name);
                 #endregion
-              
+
                 #region 直接分析源文件办法
 
                 StringBuilder sbCodes = new StringBuilder();
 
                 //获取绑定到该控件指定事件上的所有方法名
-                string functionNames = Common.GetFunctionNames(control,mye.EventName );
-                functionNames = functionNames.Replace(";TraceMethod","").Replace(";<TraceOperate>b__0", "").Replace(";<LoopCtrl>b__0", "");
+                string functionNames = Common.GetFunctionNames(control, mye.EventName);
+                functionNames = functionNames.Replace(";TraceMethod", "").Replace(";<TraceOperate>b__0", "").Replace(";<LoopCtrl>b__0", "");
                 //查出所有方法名的方法体
-                sbCodes.Append(mye.EventName + "事件代码：" + "\r\n" + Common.GetFunctionBodys(functionNames, choiceOpiton));
+                sbCodes.Append(mye.EventName.Name + "事件代码：" + "\r\n" + Common.GetFunctionBodys(functionNames, choiceOpiton));
 
                 #endregion
 
 
                 //加载查询到的源码到源码展示控件上
-                txtContent.Text = sbCodes.ToString().Replace("{", "{"+"\r\n").Replace("}","}"+"\r\n").Replace(";",";"+"\r\n");
+                txtContent.Text = sbCodes.ToString().Replace("{", "{" + "\r\n").Replace("}", "}" + "\r\n").Replace(";", ";" + "\r\n");
             }
             else
             {
@@ -444,18 +448,36 @@ namespace SpeedDevelopTool
                 #region 直接分析源文件办法
                 txtContent.Text = "";
                 #endregion
-  
+
             }
         }
 
-        /// <summary>
-        /// 开发模式下用.cs文件生成xml文件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button4_Click(object sender, EventArgs e)
+        public bool CloseEvent()
         {
-            Common.GenerateXmlDocument(AppDomain.CurrentDomain.BaseDirectory + @"xml\" + choiceOpiton + ".xml");
+            return true;
         }
+
+        public NetAction[] CreateToolbar(clsLogin login)
+        {
+            //IActionDelegate nsd = new NetSampleDelegate();
+
+            /////给按钮绑定相关操作
+            //NetAction ac = new NetAction("sss", nsd);
+            //NetAction[] aclist;
+            //aclist = new NetAction[1];
+
+            ////按钮显示文字
+            //ac.Text = "Button";
+            //ac.Tag = this;
+            //aclist[0] = ac;
+            //return aclist;
+            return null;
+        }
+
+        public Control CreateControl(clsLogin login, string MenuID, string Paramters)
+        {
+            return this;
+        }
+
     }
 }

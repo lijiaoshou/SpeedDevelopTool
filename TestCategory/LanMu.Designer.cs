@@ -135,7 +135,7 @@
             this.tabControl1.Location = new System.Drawing.Point(5, 94);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(651, 331);
+            this.tabControl1.Size = new System.Drawing.Size(629, 331);
             this.tabControl1.TabIndex = 25;
             // 
             // tabPage1
@@ -145,7 +145,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(643, 305);
+            this.tabPage1.Size = new System.Drawing.Size(621, 305);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -311,7 +311,7 @@
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.btnLanMu);
             this.Name = "LanMu";
-            this.Size = new System.Drawing.Size(660, 473);
+            this.Size = new System.Drawing.Size(643, 473);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
