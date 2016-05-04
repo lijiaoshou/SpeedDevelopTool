@@ -7,6 +7,6 @@
     <!--dllName:dll或者exe名称-->
     <!--categoryPath:类别文件夹所在位置（其中包含了源码，常见问题，相关文档等文件夹）-->
     <LanMu ChineseName="栏目" fullClassName="TestCategory.LanMu" dllPath="\LanMu\" dllName="TestCategory.dll" categoryPath="\LanMu\"/>
-    <Filter ChineseName="过滤" fullClassName="TestCategory.Filter" dllPath="\Filter\" dllName="TestCategory.dll" categoryPath=""/>
+    <Filter ChineseName="过滤" fullClassName="Filter.Form1" dllPath="\Filter\" dllName="Filter.dll" categoryPath="\Filter\"/>
   </CategoriesNode>
 </root>

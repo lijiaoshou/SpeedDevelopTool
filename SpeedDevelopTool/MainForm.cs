@@ -479,5 +479,31 @@ namespace SpeedDevelopTool
             return this;
         }
 
+        /// <summary>
+        /// 打开解决方案
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button5_Click(object sender, EventArgs e)
+        {
+            //获取类别的路径
+            string categroyPath = Config.GetValueByKey(choiceOpiton, "categoryPath");
+
+            //获取解决方案路径
+            string filePath = AppDomain.CurrentDomain.BaseDirectory + categroyPath + @"源码\";
+
+            //获取解决方案路径下后缀名为.sln的文件
+            List<FileInfo> listFileInfo = Common.GetAllFilesInDirectory(filePath);
+            for (int i = 0; i < listFileInfo.Count; i++)
+            {
+                //只针对.sln文件
+                if (listFileInfo[i].Extension == ".sln")
+                {
+                    //打开该文件
+                    Process.Start(listFileInfo[i].FullName);
+                }
+            }
+        }
+
     }
 }

@@ -36,6 +36,7 @@
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button5 = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -80,6 +81,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.button5);
             this.groupBox2.Controls.Add(this.button3);
             this.groupBox2.Controls.Add(this.button2);
             this.groupBox2.Location = new System.Drawing.Point(20, 510);
@@ -118,6 +120,16 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "功能演示区";
             // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(223, 19);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(102, 23);
+            this.button5.TabIndex = 2;
+            this.button5.Text = "打开解决方案";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -146,5 +158,6 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button button5;
     }
 }
