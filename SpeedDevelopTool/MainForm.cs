@@ -311,7 +311,7 @@ namespace SpeedDevelopTool
             txtContent.Height = groupBox2.Height-10;
             txtContent.Document.HighlightingStrategy = HighlightingStrategyFactory.CreateHighlightingStrategy("C#");
             txtContent.Encoding = Encoding.Default;
-            txtContent.Location = new Point(-3, 50);
+            txtContent.Location = new Point(5, 50);
             txtContent.AutoScroll = false;
             //txtContent.AutoScrollMargin = new Size(1, 1);
             txtContent.Text = "";
@@ -505,5 +505,14 @@ namespace SpeedDevelopTool
             }
         }
 
+        private void button4_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("我是原有事件");
+        }
     }
 }
