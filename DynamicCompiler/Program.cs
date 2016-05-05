@@ -9,6 +9,7 @@ namespace DynamicCompiler
 {
     class Program
     {
+
         static void Main(string[] args)
         {
             //1.CSharpCodePrivoder

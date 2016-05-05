@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Mail;
@@ -15,6 +17,9 @@ namespace CommonLib
 {
     public class Common
     {
+        //读取注册表中的键值来确定编译工具的位置，因为每个人安装vs目录可能不同，导致devenv.exe的路径可能不同
+        private const string REGISTKEY = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\devenv.exe";
+
         private static string[] UpperAndUnderLinePatternArray = {   "CheckedChanged",
                                                                     "CheckStateChanged",
                                                                     "AppearanceChanged",
@@ -507,5 +512,60 @@ namespace CommonLib
         }
 
         #endregion
+
+        /// <summary>
+        ///  使用代码编译解决方案
+        /// </summary>
+        /// <param name="solutionPath">解决方案路径</param>
+        /// <returns></returns>
+        public static bool CompileSolution(string solutionPath)
+        {
+            try
+            {
+                //在HKEY_LOCAL_MACHINE路径下找
+                RegistryKey rkey = Registry.LocalMachine;
+
+                //找到devenv.exe路径
+                RegistryKey rkey1 = rkey.OpenSubKey(REGISTKEY, false);
+                string devenvPath = rkey1.GetValue("").ToString();
+
+                ProcessStartInfo startInfo = new ProcessStartInfo(devenvPath);
+                startInfo.Arguments = "/rebuild debug " + solutionPath;
+
+                //执行编译过程
+                Process process = new Process();
+                process.StartInfo = startInfo;
+
+                process.Start();
+                process.WaitForExit();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            
+        }
+
+        /// <summary>
+        /// 拷贝文件（如果已有同名文件，替换旧的文件）
+        /// </summary>
+        /// <param name="sourceFullNamePath">源文件路径</param>
+        /// <param name="targetFullNamePath">目标文件路径</param>
+        /// <returns></returns>
+        public static bool CopyFile(string sourceFullNamePath, string targetFullNamePath)
+        {
+            try
+            {
+                File.Copy(sourceFullNamePath, targetFullNamePath, true);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
     }
 }

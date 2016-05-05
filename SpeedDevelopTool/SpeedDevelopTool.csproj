@@ -111,6 +111,7 @@
     <Compile Include="MyEventArgs.cs" />
     <Compile Include="NetSampleDelegate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProxyObject.cs" />
     <EmbeddedResource Include="MailInfo.resx">
       <DependentUpon>MailInfo.cs</DependentUpon>
     </EmbeddedResource>

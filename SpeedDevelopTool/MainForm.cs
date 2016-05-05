@@ -23,6 +23,8 @@ namespace SpeedDevelopTool
     {
         ICSharpCode.TextEditor.TextEditorControl txtContent = new ICSharpCode.TextEditor.TextEditorControl();
 
+        AppDomain ad;
+
         public string choiceOpiton { get; set; }
 
         public IEditorPart EditorPart { get; set; }
@@ -34,6 +36,21 @@ namespace SpeedDevelopTool
         public MainForm()
         {
             InitializeComponent();
+        }
+
+        class ProxyObject : MarshalByRefObject
+        {
+            Assembly assembly = null;
+            public void LoadAssembly(string choice)
+            {
+                //获取dll所在路径
+                string dllPath = Config.GetValueByKey(choice, "dllPath");
+
+                //获取dll名称/exe名称
+                string dllName = Config.GetValueByKey(choice, "dllName");
+
+                assembly = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + dllPath + dllName);
+            }
         }
 
         /// <summary>
@@ -208,54 +225,7 @@ namespace SpeedDevelopTool
 
             #region new
 
-            //获取按钮控件类的全名称
-            string fullName = Config.GetValueByKey(this.choiceOpiton, "fullClassName");
-
-            //获取dll所在路径
-            string dllPath = Config.GetValueByKey(this.choiceOpiton, "dllPath");
-
-            //获取dll名称/exe名称
-            string dllName = Config.GetValueByKey(this.choiceOpiton, "dllName");
-
-            //加载程序集(dll文件地址)，使用Assembly类   
-            Assembly assembly = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + dllPath + dllName);
-
-            ////获取类型，参数（名称空间+类）   
-            //Type type = assembly.GetType(fullName);
-
-            //创建该对象的实例，object类型，参数（名称空间+类）   
-            object instance = assembly.CreateInstance(fullName);
-
-            Form uForm = instance as Form;
-
-            if (uForm != null)
-            {
-                //去掉uForm的边框
-                uForm.FormBorderStyle = FormBorderStyle.None;
-                //设置窗体为非顶级控件
-                uForm.TopLevel = false;
-
-                //动态加载用户控件到主界面中
-                groupBox1.Controls.Add(uForm);
-                uForm.Show();
-
-                //控件用户控件在主界面中的位置
-                uForm.Top = 20;
-                uForm.Left = 10;
-            }
-            else //同时支持form和usercontrol
-            {
-                UserControl usercontrol = instance as UserControl;
-                if(usercontrol != null)
-                {
-                    //动态加载用户控件到主界面中
-                    groupBox1.Controls.Add(usercontrol);
-
-                    //控件用户控件在主界面中的位置
-                    usercontrol.Top = 20;
-                    usercontrol.Left = 10;
-                }
-            }
+            InitFunctionalDemonstrationRegion();
             #endregion
 
             #endregion
@@ -505,14 +475,97 @@ namespace SpeedDevelopTool
             }
         }
 
+        /// <summary>
+        /// 保存用户自定义代码的功能
+        /// 目前考虑采用（动态编译(改变控件handler绑定的方法)/全体编译 两种办法）
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button4_Click_1(object sender, EventArgs e)
         {
 
         }
 
+        /// <summary>
+        /// 恢复默认DEMO默认代码（取消用户更改生效的代码）
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button6_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("我是原有事件");
+            //卸载对控件dll或者exe的占用
+            AppDomain.Unload(ad);
+
+            //重新加载填充代码演示区域
+            InitFunctionalDemonstrationRegion();
+
+            //弹窗提示恢复成功
+            MessageBox.Show("恢复默认成功");
         }
+
+        private void InitFunctionalDemonstrationRegion()
+        {
+            //获取按钮控件类的全名称
+            string fullName = Config.GetValueByKey(this.choiceOpiton, "fullClassName");
+
+            //获取dll所在路径
+            string dllPath = Config.GetValueByKey(this.choiceOpiton, "dllPath");
+
+            //获取dll名称/exe名称
+            string dllName = Config.GetValueByKey(this.choiceOpiton, "dllName");
+
+            //默认应用程序域的名称
+            //string callingDomainName = AppDomain.CurrentDomain.FriendlyName;
+
+            //创建新的应用程序域
+            ad = AppDomain.CreateDomain("DLL Unload  " + choiceOpiton);
+            //ProxyObject obj = (ProxyObject)ad.CreateInstanceFromAndUnwrap(dllName, fullName);
+            object instance = ad.CreateInstanceFromAndUnwrap(dllName, fullName);
+
+            ProxyObject obj = instance as ProxyObject;
+            obj.LoadAssembly(this.choiceOpiton);
+
+            //加载程序集(dll文件地址)，使用Assembly类   
+            //Assembly assembly = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + dllPath + dllName);
+
+            ////获取类型，参数（名称空间+类）   
+            //Type type = assembly.GetType(fullName);
+
+            //创建该对象的实例，object类型，参数（名称空间+类）   
+            //object instance = assembly.CreateInstance(fullName);
+
+            Form uForm = instance as Form;
+
+            if (uForm != null)
+            {
+                //去掉uForm的边框
+                uForm.FormBorderStyle = FormBorderStyle.None;
+                //设置窗体为非顶级控件
+                uForm.TopLevel = false;
+
+                //动态加载用户控件到主界面中
+                groupBox1.Controls.Add(uForm);
+                uForm.Show();
+
+                //控件用户控件在主界面中的位置
+                uForm.Top = 20;
+                uForm.Left = 10;
+            }
+            else //同时支持form和usercontrol
+            {
+                UserControl usercontrol = instance as UserControl;
+                if (usercontrol != null)
+                {
+                    //动态加载用户控件到主界面中
+                    groupBox1.Controls.Add(usercontrol);
+
+                    //控件用户控件在主界面中的位置
+                    usercontrol.Top = 20;
+                    usercontrol.Left = 10;
+                }
+            }
+
+        }
+
     }
 }
