@@ -38,20 +38,6 @@ namespace SpeedDevelopTool
             InitializeComponent();
         }
 
-        class ProxyObject : MarshalByRefObject
-        {
-            Assembly assembly = null;
-            public void LoadAssembly(string choice)
-            {
-                //获取dll所在路径
-                string dllPath = Config.GetValueByKey(choice, "dllPath");
-
-                //获取dll名称/exe名称
-                string dllName = Config.GetValueByKey(choice, "dllName");
-
-                assembly = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + dllPath + dllName);
-            }
-        }
 
         /// <summary>
         /// 搜索相关文档委托绑定的方法
@@ -494,7 +480,7 @@ namespace SpeedDevelopTool
         private void button6_Click(object sender, EventArgs e)
         {
             //卸载对控件dll或者exe的占用
-            AppDomain.Unload(ad);
+            //AppDomain.Unload(ad);
 
             //重新加载填充代码演示区域
             InitFunctionalDemonstrationRegion();
@@ -514,25 +500,35 @@ namespace SpeedDevelopTool
             //获取dll名称/exe名称
             string dllName = Config.GetValueByKey(this.choiceOpiton, "dllName");
 
+            #region old wait delete
+
             //默认应用程序域的名称
             //string callingDomainName = AppDomain.CurrentDomain.FriendlyName;
 
             //创建新的应用程序域
-            ad = AppDomain.CreateDomain("DLL Unload  " + choiceOpiton);
+            //ad = AppDomain.CreateDomain("DLL Unload  " + choiceOpiton);
             //ProxyObject obj = (ProxyObject)ad.CreateInstanceFromAndUnwrap(dllName, fullName);
-            object instance = ad.CreateInstanceFromAndUnwrap(dllName, fullName);
+            //object instance = ad.CreateInstanceFromAndUnwrap(AppDomain.CurrentDomain.BaseDirectory+dllPath + dllName, fullName);
+            //ProxyObject instance = (ProxyObject)ad.CreateInstanceFromAndUnwrap(AppDomain.CurrentDomain.BaseDirectory + @"portal\SpeedDevelopTool.dll", "SpeedDevelopTool.ProxyObject");
 
-            ProxyObject obj = instance as ProxyObject;
-            obj.LoadAssembly(this.choiceOpiton);
+
+            //ProxyObject obj = new ProxyObject();
+            //obj=instance as ProxyObject;
+            //obj.LoadAssembly(this.choiceOpiton);
 
             //加载程序集(dll文件地址)，使用Assembly类   
             //Assembly assembly = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + dllPath + dllName);
 
             ////获取类型，参数（名称空间+类）   
             //Type type = assembly.GetType(fullName);
+            #endregion
+
+            CVST.AppFramework.AssemblyLoader.Loader loader = new CVST.AppFramework.AssemblyLoader.Loader();
+            Assembly assembly = loader.LoadAssembly(AppDomain.CurrentDomain.BaseDirectory + dllPath+dllName);
+
 
             //创建该对象的实例，object类型，参数（名称空间+类）   
-            //object instance = assembly.CreateInstance(fullName);
+            object instance = assembly.CreateInstance(fullName);
 
             Form uForm = instance as Form;
 
@@ -567,5 +563,20 @@ namespace SpeedDevelopTool
 
         }
 
+    }
+
+    class ProxyObject : MarshalByRefObject
+    {
+        Assembly assembly = null;
+        public void LoadAssembly(string choice)
+        {
+            //获取dll所在路径
+            string dllPath = Config.GetValueByKey(choice, "dllPath");
+
+            //获取dll名称/exe名称
+            string dllName = Config.GetValueByKey(choice, "dllName");
+
+            assembly = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + dllPath + dllName);
+        }
     }
 }

@@ -95,6 +95,8 @@
     <Compile Include="Common.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="EventHandlerType.cs" />
+    <Compile Include="Loader.cs" />
+    <Compile Include="LoadException.cs" />
     <Compile Include="MailInfo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -111,7 +113,7 @@
     <Compile Include="MyEventArgs.cs" />
     <Compile Include="NetSampleDelegate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProxyObject.cs" />
+    <Compile Include="RemoteLoader.cs" />
     <EmbeddedResource Include="MailInfo.resx">
       <DependentUpon>MailInfo.cs</DependentUpon>
     </EmbeddedResource>

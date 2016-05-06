@@ -10,14 +10,24 @@ namespace LoadAndUnloadDll
     {
         static void Main(string[] args)
         {
+            //Assembly assembly = Assembly.LoadFrom(AppDomain.CurrentDomain.BaseDirectory + "SpeedDevelopTool.dll");
+
             string callingDomainName = AppDomain.CurrentDomain.FriendlyName;//Thread.GetDomain().FriendlyName;
             Console.WriteLine(callingDomainName);
             AppDomain ad = AppDomain.CreateDomain("DLL Unload test");
-            ProxyObject obj = (ProxyObject)ad.CreateInstanceFromAndUnwrap(@"UnloadDll.exe", "UnloadDll.ProxyObject");
-            obj.LoadAssembly();
-            obj.Invoke("TestDll.Class1", "Test", "It's a test");
-            AppDomain.Unload(ad);
-            obj = null;
+            //ProxyObject obj = (ProxyObject)ad.CreateInstanceFromAndUnwrap(@"LoadAndUnloadDll.exe", "LoadAndUnloadDll.ProxyObject");
+            //obj.LoadAssembly();
+            //obj.Invoke("TestDll.Class1", "Test", "It's a test");
+            //AppDomain.Unload(ad);
+            //obj = null;
+
+            CVST.AppFramework.AssemblyLoader.Loader loader = new CVST.AppFramework.AssemblyLoader.Loader();
+            Assembly asb = loader.LoadAssembly(AppDomain.CurrentDomain.BaseDirectory + "CommonLib.dll");
+
+
+            //无需卸载，使用的就不是这个dll，是拷贝后的镜像
+            // loader.Unload();
+
             Console.ReadLine();
         }
     }

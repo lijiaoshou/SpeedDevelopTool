@@ -23,21 +23,28 @@ namespace WindowsFormsApplication1
 
         private void button1_Click(object sender, EventArgs e)
         {
-            RegistryKey rkey = Registry.LocalMachine;
+            //RegistryKey rkey = Registry.LocalMachine;
          
-            RegistryKey rkey1 = rkey.OpenSubKey(REGISTKEY, false);
-            string visualStudioPath = rkey1.GetValue("").ToString();
+            //RegistryKey rkey1 = rkey.OpenSubKey(REGISTKEY, false);
+            //string visualStudioPath = rkey1.GetValue("").ToString();
 
-            ProcessStartInfo startInfo =new ProcessStartInfo(visualStudioPath);
-            startInfo.Arguments = "/rebuild debug "+ @"G:\C#Program\U8Code\栏目\LanMu\LanMu.sln";
+            //ProcessStartInfo startInfo =new ProcessStartInfo(visualStudioPath);
+            //startInfo.Arguments = "/rebuild debug "+ @"G:\C#Program\U8Code\栏目\LanMu\LanMu.sln";
 
-            Process process = new Process();
-            process.StartInfo = startInfo;
+            //Process process = new Process();
+            //process.StartInfo = startInfo;
 
-            process.Start();
-            process.WaitForExit();
+            //process.Start();
+            //process.WaitForExit();
 
-            MessageBox.Show("编译完成");
+            //MessageBox.Show("编译完成");
+
+            button1.Click += new EventHandler(test);
+        }
+
+        protected static void test(object sender, EventArgs e)
+        {
+            MessageBox.Show("adf");
         }
     }
 }

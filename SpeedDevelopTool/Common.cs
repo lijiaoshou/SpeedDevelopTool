@@ -364,7 +364,23 @@ namespace CommonLib
 
                 foreach (var handler in invocationList)
                 {
-                    sb.Append(handler.Method.Name + ";");
+
+                    #region 加入对访问修饰符和返回类型的考虑
+
+                    //访问修饰符
+                    string accessModifier = GetAccessModifierByMethodinfo(handler.Method);
+
+                    //返回类型
+                    string returnType = handler.Method.ReturnType.Name;
+
+                    //方法名称
+                    string methodName = handler.Method.Name;
+
+                    sb.Append(accessModifier+"."+returnType+"."+methodName + ";");
+
+                    #endregion
+                    //handler.Method.ReflectedType.Name;
+                    //handler.Method.ReturnType.Name;
                     //sb.Append(handler.GetMethodInfo().Name + ";");
                 }
                 return sb.ToString().TrimEnd(';');
@@ -564,6 +580,27 @@ namespace CommonLib
             catch (Exception ex)
             {
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// 根据给定的MethodInfo信息获取方法的访问修饰符
+        /// </summary>
+        /// <param name="methodinfo">MethodInfo信息</param>
+        /// <returns>访问修饰符（string类型）</returns>
+        public static string GetAccessModifierByMethodinfo(MethodInfo methodinfo)
+        {
+            if (methodinfo.IsPrivate)
+            {
+                return "private";
+            }
+            else if (methodinfo.IsPublic)
+            {
+                return "public";
+            }
+            else
+            {
+                return "";
             }
         }
 
