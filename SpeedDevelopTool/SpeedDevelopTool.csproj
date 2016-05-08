@@ -71,6 +71,9 @@
       <HintPath>F:\U8SOFT\Interop\Interop.UFPortalProxyInterface.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="SkinSE_CS">
+      <HintPath>F:\U8SOFT\Framework\SkinSE_CS.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />

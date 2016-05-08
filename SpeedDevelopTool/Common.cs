@@ -150,18 +150,29 @@ namespace CommonLib
         public static List<FileInfo> GetAllFilesInDirectory(string strDirectory)
         {
             List<FileInfo> listFiles = new List<FileInfo>(); //保存所有的文件信息  
+            listFiles = GetAllFilesInDirectoryPlugin(strDirectory,listFiles);
+
+            return listFiles;
+        }
+
+        private static List<FileInfo> GetAllFilesInDirectoryPlugin(string strDirectory,List<FileInfo> listFiles)
+        {
             DirectoryInfo directory = new DirectoryInfo(strDirectory);
             DirectoryInfo[] directoryArray = directory.GetDirectories();
             FileInfo[] fileInfoArray = directory.GetFiles();
             if (fileInfoArray.Length > 0) listFiles.AddRange(fileInfoArray);
             foreach (DirectoryInfo _directoryInfo in directoryArray)
             {
-                DirectoryInfo directoryA = new DirectoryInfo(_directoryInfo.FullName);
-                DirectoryInfo[] directoryArrayA = directoryA.GetDirectories();
-                FileInfo[] fileInfoArrayA = directoryA.GetFiles();
-                if (fileInfoArrayA.Length > 0) listFiles.AddRange(fileInfoArrayA);
-                GetAllFilesInDirectory(_directoryInfo.FullName);//递归遍历  
+                #region old wait to delete
+                //DirectoryInfo directoryA = new DirectoryInfo(_directoryInfo.FullName);
+                //DirectoryInfo[] directoryArrayA = directoryA.GetDirectories();
+                //FileInfo[] fileInfoArrayA = directoryA.GetFiles();
+                //if (fileInfoArrayA.Length > 0) listFiles.AddRange(fileInfoArrayA);
+                #endregion
+
+                GetAllFilesInDirectoryPlugin(_directoryInfo.FullName,listFiles);//递归遍历  
             }
+
             return listFiles;
         }
 
@@ -367,20 +378,25 @@ namespace CommonLib
 
                     #region 加入对访问修饰符和返回类型的考虑
 
+                    //命名空间
+                    string methodNameSpace = handler.Method.ReflectedType.Namespace.ToString();
+
+                    //类名
+                    string methodClassName = handler.Method.ReflectedType.Name;
+
                     //访问修饰符
                     string accessModifier = GetAccessModifierByMethodinfo(handler.Method);
 
                     //返回类型
-                    string returnType = handler.Method.ReturnType.Name;
+                    string returnType = handler.Method.ReturnType.Name.ToLower();
 
                     //方法名称
                     string methodName = handler.Method.Name;
 
-                    sb.Append(accessModifier+"."+returnType+"."+methodName + ";");
+                    sb.Append(methodNameSpace+"."+methodClassName+"."+ accessModifier+"."+returnType+"."+methodName + ";");
 
                     #endregion
-                    //handler.Method.ReflectedType.Name;
-                    //handler.Method.ReturnType.Name;
+
                     //sb.Append(handler.GetMethodInfo().Name + ";");
                 }
                 return sb.ToString().TrimEnd(';');
@@ -447,29 +463,50 @@ namespace CommonLib
                     {
                         string[] functionArray = functionNames.Split(';');
 
+
                         //循环查出每一个绑定方法的方法体，并控制输出格式
                         for (int j = 0; j < functionArray.Length; j++)
                         {
-                            sbCodes.Append("第" + (j + 1).ToString() + "个绑定的方法：" + "\r\n"
-                                            + GetCodesByFunctionName(contents, functionArray[j]) + "\r\n" + "\r\n");
+                            string[] tempArray = functionArray[j].Split('.');
+
+                            string methodNameSpace = tempArray[0];
+                            string methodClassName = tempArray[1];
+                            string accessModifiler = tempArray[2];
+                            string returnType = tempArray[3];
+
+                            sbCodes.Append("//" + "第" + (j + 1).ToString() + "个绑定的方法：" + "\r\n"+
+                                           "//" + "命名空间:" + methodNameSpace + "\r\n" +
+                                           "//" + "所在类类名:" + methodClassName + "\r\n" +
+                                           "//--------------------" +"\r\n"+
+                                            accessModifiler +" "+returnType+" "+ GetCodesByFunctionName(contents, tempArray[4])+
+                                           "//--------------------" +
+                                           "\r\n" + "\r\n");
 
                         }
                     }
                     else
                     {
                         string[] functionArray = new string[1];
-                        functionArray[0] = functionNames;
+                        string[] tempArray = functionNames.Split('.');
+                        functionArray[0] = tempArray[4];
 
-                        //循环查出每一个绑定方法的方法体，并控制输出格式
-                        for (int j = 0; j < functionArray.Length; j++)
+                        string methodNameSpace = tempArray[0];
+                        string methodClassName = tempArray[1];
+                        string accessModifiler = tempArray[2];
+                        string returnType = tempArray[3];
+
+                        string codes = GetCodesByFunctionName(contents, functionArray[0]);
+                        if (!string.IsNullOrEmpty(codes))
                         {
-                            string codes = GetCodesByFunctionName(contents, functionArray[j]);
-                            if (!string.IsNullOrEmpty(codes))
-                            {
-                                sbCodes.Append("绑定的方法：" + "\r\n"
-                                            + codes + "\r\n" + "\r\n");//第" + (j + 1).ToString() + "个
-                            }
+                            sbCodes.Append("//" + "绑定的方法：" + "\r\n"+
+                                            "//" + "命名空间:" +methodNameSpace+"\r\n"+
+                                            "//" + "所在类类名:"+methodClassName+"\r\n"+
+                                            "//--------------------" + "\r\n" +
+                                            accessModifiler +" "+returnType+" "+ codes +
+                                            "//--------------------" +
+                                            "\r\n" + "\r\n");
                         }
+
                     }
                 }
             }
@@ -604,5 +641,134 @@ namespace CommonLib
             }
         }
 
+        /// <summary>
+        /// 读取文件到byte数组中
+        /// </summary>
+        /// <param name="filePath">文件路径</param>
+        /// <returns></returns>
+        public static byte[] GetByteArrayFromFile(string filePath)
+        {
+            FileInfo fi = new FileInfo(filePath);
+            long len = fi.Length;
+            FileStream fs = new FileStream(filePath, FileMode.Open);
+            byte[] buffer = new byte[len];
+            fs.Read(buffer, 0, (int)len);
+            fs.Close();
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// 根据给定的FileInfo获取文件组中最新的文件
+        /// </summary>
+        /// <param name="listFile"></param>
+        /// <returns></returns>
+        public static FileInfo GetLatelyFile(List<FileInfo> listFile)
+        {
+            FileInfo temp=listFile[0];
+            for (int i = 0; i < listFile.Count-1; i++)
+            {
+                if (File.GetCreationTime(temp.FullName) < File.GetCreationTime(listFile[i + 1].FullName))
+                {
+                    temp = listFile[i+1];
+                }
+            }
+
+            return temp;
+        }
+
+
+        /// <summary>
+        /// 获取文件内部被替换后的文本内容
+        /// </summary>
+        /// <param name="contents">原始文本内容</param>
+        /// <param name="functionName">要操作的函数名</param>
+        /// <param name="sourceCodes">替换后的函数体代码</param>
+        /// <returns></returns>
+        private static string GetReplaceCodesByFunctionName(string contents, string functionName,string sourceCodes,string accessModifiler,string returnType)
+        {
+            //通过正则表达式匹配出“函数名(obejct sender,EventArgs e)”
+            //找出函数名开始到给定文字结尾的代码。
+            //可以有任意多个空格
+            string pattern = accessModifiler+ @"\s*"+returnType+ @"\s*"+ functionName + @"\s*\(\s*object\s*sender\s*,\s*EventArgs\s*e\s*\)";
+            Regex regex = new Regex(pattern);
+            string[] contensArray = regex.Split(contents);
+            //没有找到对应的方法，直接返回空
+            if (contensArray.Length < 2)
+            {
+                return "";
+            }
+            string contentsResult = regex.Split(contents)[1];
+
+            StringBuilder sb = new StringBuilder();
+
+            Stack stack = new Stack();
+
+            //循环操作每一个字符
+            foreach (char cPut in contentsResult)
+            {
+                sb.Append(cPut.ToString());
+                switch (cPut)
+                {
+                    //左大括号就压栈
+                    case '{':
+                        stack.Push(cPut);
+                        break;
+                    //右大括号就出栈
+                    case '}':
+                        stack.Pop();
+                        //栈中没有东西的时候说明函数体已经找完全，返回找到的函数体
+                        if (stack.Count == 0)
+                        {
+                            //return functionName + "(object sender,EventArgs e)" + "\r\n" + sb.ToString();
+                           return Regex.Replace(contents, pattern+sb.ToString(), sourceCodes);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return "";
+        }
+
+        public static bool ReplaceSourceDoucmentCodes(string functionName, string CotrolCategory,string sourceCodes,string accessModifiler, string returnType)
+        {
+            if (string.IsNullOrEmpty(functionName))
+            {
+                return true;
+            }
+
+            try
+            {
+                string categroyPath = Config.GetValueByKey(CotrolCategory, "categoryPath");
+
+                //获取源码_修改路径
+                string filePath = AppDomain.CurrentDomain.BaseDirectory + categroyPath + @"源码_修改\";
+
+                //获取指定目录下的所有文件
+                List<FileInfo> listFileInfo = GetAllFilesInDirectory(filePath);
+                for (int i = 0; i < listFileInfo.Count; i++)
+                {
+                    //只针对.cs文件
+                    if (listFileInfo[i].Extension == ".cs")
+                    {
+                        //将一个文件的内容读取到str中
+                        string contents = File.ReadAllText(listFileInfo[i].DirectoryName + @"\" + listFileInfo[i].Name);
+
+                        //返回替换后的contents
+                        contents = Common.GetReplaceCodesByFunctionName(contents, functionName, sourceCodes, accessModifiler, returnType);
+
+                        File.WriteAllText(listFileInfo[i].FullName, contents);
+
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
     }
 }

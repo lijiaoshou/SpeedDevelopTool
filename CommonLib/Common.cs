@@ -507,5 +507,18 @@ namespace CommonLib
         }
 
         #endregion
+
+
+        public static byte[] GetByteArrayFromFile(string filePath)
+        {
+            FileInfo fi = new FileInfo(filePath);
+            long len = fi.Length;
+            FileStream fs = new FileStream(filePath, FileMode.Open);
+            byte[] buffer = new byte[len];
+            fs.Read(buffer, 0, (int)len);
+            fs.Close();
+
+            return buffer;
+        }
     }
 }
