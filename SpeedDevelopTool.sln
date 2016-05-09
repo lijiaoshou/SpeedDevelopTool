@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{F57C4994-3E30-4D84-BFC8-7C5A96182ADF}"
 	ProjectSection(SolutionItems) = preProject
 		快速开发工具.txt = 快速开发工具.txt
+		C:\Users\lichaor\Desktop\测试通用性笔记.txt = C:\Users\lichaor\Desktop\测试通用性笔记.txt
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCategory", "TestCategory\TestCategory.csproj", "{D5DA189F-CEFC-4468-AC0D-0789EE36C773}"
