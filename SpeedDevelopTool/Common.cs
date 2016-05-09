@@ -583,7 +583,7 @@ namespace CommonLib
                 string devenvPath = rkey1.GetValue("").ToString();
 
                 ProcessStartInfo startInfo = new ProcessStartInfo(devenvPath);
-                startInfo.Arguments = "/rebuild debug " + solutionPath;
+                startInfo.Arguments = "/rebuild \"Degbu|x86\" " + solutionPath;
 
                 //执行编译过程
                 Process process = new Process();
@@ -668,7 +668,7 @@ namespace CommonLib
             FileInfo temp=listFile[0];
             for (int i = 0; i < listFile.Count-1; i++)
             {
-                if (File.GetCreationTime(temp.FullName) < File.GetCreationTime(listFile[i + 1].FullName))
+                if (temp.LastWriteTime< listFile[i + 1].LastWriteTime)
                 {
                     temp = listFile[i+1];
                 }
@@ -696,7 +696,7 @@ namespace CommonLib
             //没有找到对应的方法，直接返回空
             if (contensArray.Length < 2)
             {
-                return "";
+                return contents;
             }
             string contentsResult = regex.Split(contents)[1];
 
@@ -720,8 +720,13 @@ namespace CommonLib
                         //栈中没有东西的时候说明函数体已经找完全，返回找到的函数体
                         if (stack.Count == 0)
                         {
-                            //return functionName + "(object sender,EventArgs e)" + "\r\n" + sb.ToString();
-                           return Regex.Replace(contents, pattern+sb.ToString(), sourceCodes);
+                            string findCodes = Regex.Replace(sb.ToString(), @"\s+", " ").Replace("\r\n", "");//.Replace(" ","\\s*")
+                            string myPattern = accessModifiler + " " + returnType + " " + functionName + "(object sender, EventArgs e)";
+                            sourceCodes = Regex.Replace(sourceCodes.Replace("\r\n", ""), @"\s+", " ");
+                            //return Regex.Replace(Regex.Replace(contents.Replace("\r\n", ""), @"\s+", " "), pattern+ findCodes, sourceCodes); 
+                            //Regex myRegex = new Regex(pattern+findCodes);
+                            //return myRegex.Replace(Regex.Replace(contents.Replace("\r\n", ""), @"\s+", " "), sourceCodes);
+                            return Regex.Replace(contents.Replace("\r\n", ""), @"\s+", " ").Replace(myPattern + findCodes, sourceCodes);
                         }
                         break;
                     default:
@@ -770,5 +775,57 @@ namespace CommonLib
                 return false;
             }
         }
+
+
+        #region 文件夹拷贝（包括文件夹下的子文件夹和文件）
+        public static void copyDirectory(string sourceDirectory, string destDirectory)
+        {
+            //判断源目录和目标目录是否存在，如果不存在，则创建一个目录
+            if (!Directory.Exists(sourceDirectory))
+            {
+                Directory.CreateDirectory(sourceDirectory);
+            }
+            if (!Directory.Exists(destDirectory))
+            {
+                Directory.CreateDirectory(destDirectory);
+            }
+            //拷贝文件
+            copyFile(sourceDirectory, destDirectory);
+
+            //拷贝子目录       
+            //获取所有子目录名称
+            string[] directionName = Directory.GetDirectories(sourceDirectory);
+
+            foreach (string directionPath in directionName)
+            {
+                //根据每个子目录名称生成对应的目标子目录名称
+                string directionPathTemp = destDirectory + "\\" + directionPath.Substring(sourceDirectory.Length + 1);
+
+                //递归下去
+                copyDirectory(directionPath, directionPathTemp);
+            }
+        }
+        public static void copyFile(string sourceDirectory, string destDirectory)
+        {
+            //获取所有文件名称
+            string[] fileName = Directory.GetFiles(sourceDirectory);
+
+            foreach (string filePath in fileName)
+            {
+                //根据每个文件名称生成对应的目标文件名称
+                string filePathTemp = destDirectory + "\\" + filePath.Substring(sourceDirectory.Length + 1);
+
+                //若不存在，直接复制文件；若存在，覆盖复制
+                if (File.Exists(filePathTemp))
+                {
+                    File.Copy(filePath, filePathTemp, true);
+                }
+                else
+                {
+                    File.Copy(filePath, filePathTemp);
+                }
+            }
+        }
+        #endregion
     }
 }

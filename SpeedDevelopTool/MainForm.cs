@@ -28,6 +28,8 @@ namespace SpeedDevelopTool
 
         public string choiceOpiton { get; set; }
 
+        private bool codeIsModified = false;
+
         public IEditorPart EditorPart { get; set; }
 
         public IEditorInput EditorInput{ get; set; }
@@ -289,6 +291,16 @@ namespace SpeedDevelopTool
             #region 跟踪功能区代码
             TraceOperate();
             #endregion
+
+            #region 初始化“源码_修改”文件夹
+            Common.copyDirectory(AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码", AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码_修改");
+            #endregion
+
+            #region 初始化DEMO的dll或者exe
+            string dllName = Config.GetValueByKey(this.choiceOpiton, "dllName");
+            string basePath = AppDomain.CurrentDomain.BaseDirectory + categoryPath;
+            File.Copy(basePath + @"\backup\" + dllName, basePath + dllName, true);
+            #endregion
         }
 
         /// <summary>
@@ -393,7 +405,7 @@ namespace SpeedDevelopTool
                 //获取绑定到该控件指定事件上的所有方法名
                 string functionNames = Common.GetFunctionNames(control, mye.EventName);
                 //functionNames = functionNames.Replace(";TraceMethod", "").Replace(";<TraceOperate>b__0", "").Replace(";<LoopCtrl>b__0", "");
-                functionNames = functionNames.Replace(";SpeedDevelopTool.<>c__DisplayClass27_0..void.<LoopCtrl>b__0", "");
+                functionNames = GetFunctionNamesReplaceLoop(functionNames);
                 
                 //查出所有方法名的方法体
                 sbCodes.Append("//"+mye.EventName.Name + "事件代码：" + "\r\n" + Common.GetFunctionBodys(functionNames, choiceOpiton));
@@ -543,6 +555,13 @@ namespace SpeedDevelopTool
         /// <param name="e"></param>
         private void button6_Click(object sender, EventArgs e)
         {
+            //恢复默认，代码变为未修改
+            this.codeIsModified = false;
+
+            //初始化“源码_修改”文件夹
+            string categoryPath = Config.GetValueByKey(this.choiceOpiton, "categoryPath");
+            Common.copyDirectory(AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码", AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码_修改");
+
             //找到源码文件夹，重新编译，拷贝替换，重新加载
             bool compileResult= CompileReplaceAndInit("源码");
 
@@ -623,6 +642,15 @@ namespace SpeedDevelopTool
                 uForm.TopLevel = false;
 
                 //动态加载用户控件到主界面中
+                while (groupBox1.Controls.Count > 0)
+                {
+                    foreach (Control crl in groupBox1.Controls)
+                    {
+                        groupBox1.Controls.Remove(crl);
+                        crl.Dispose();
+                    }
+                }
+
                 groupBox1.Controls.Add(uForm);
                 uForm.Show();
 
@@ -641,6 +669,15 @@ namespace SpeedDevelopTool
                     #endregion
 
                     //动态加载用户控件到主界面中
+                    while (groupBox1.Controls.Count > 0)
+                    {
+                        foreach (Control crl in groupBox1.Controls)
+                        {
+                            groupBox1.Controls.Remove(crl);
+                            crl.Dispose();
+                        }
+                    }
+
                     groupBox1.Controls.Add(usercontrol);
 
                     //控件用户控件在主界面中的位置
@@ -668,7 +705,13 @@ namespace SpeedDevelopTool
                     //找到第一个.sln文件(解决方案文件)
                     if (fileInfo[i].Extension == ".sln")
                     {
-                        Common.CompileSolution(fileInfo[i].FullName);
+                       bool compileresult = Common.CompileSolution(fileInfo[i].FullName);
+
+                        if (!compileresult)
+                        {
+                            MessageBox.Show("编译失败，请检查是否有语法错误");
+                            return false;
+                        }
                     }
                 }
 
@@ -705,6 +748,37 @@ namespace SpeedDevelopTool
             catch (Exception ex)
             {
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// 根据给定的方法名去掉快速开发工具给控件绑定的方法名
+        /// </summary>
+        /// <param name="functionNames"></param>
+        /// <returns></returns>
+        private static string GetFunctionNamesReplaceLoop(string functionNames)
+        {
+            if (!functionNames.Contains(";"))
+            {
+                return functionNames;
+            }
+            else
+            {
+                StringBuilder sb = new StringBuilder();
+                string[] functionArray = functionNames.Split(';');
+                for (int i = 0; i < functionArray.Length; i++)
+                {
+                    if (functionArray[i].Contains("SpeedDevelopTool.<>c__DisplayClass"))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        sb.Append(functionArray[i] + ";");
+                    }
+                }
+
+                return sb.ToString().TrimEnd(';');
             }
         }
 
