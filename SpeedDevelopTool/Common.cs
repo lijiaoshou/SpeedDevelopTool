@@ -433,7 +433,7 @@ namespace CommonLib
         /// <param name="functionNames">绑定的所有函数名，函数名以";"分隔</param>
         /// <param name="CotrolCategory">分类名称</param>
         /// <returns></returns>
-        public static string GetFunctionBodys(string functionNames, string CotrolCategory)
+        public static string GetFunctionBodys(string functionNames, string CotrolCategory,bool codeIsModified)
         {
             if (string.IsNullOrEmpty(functionNames))
             {
@@ -445,7 +445,15 @@ namespace CommonLib
             string categroyPath= Config.GetValueByKey(CotrolCategory, "categoryPath");
 
             //获取源码路径
-            string filePath = AppDomain.CurrentDomain.BaseDirectory + categroyPath + @"源码\";
+            string filePath = "";
+            if (!codeIsModified)
+            {
+                filePath = AppDomain.CurrentDomain.BaseDirectory + categroyPath + @"源码\";
+            }
+            else
+            {
+                filePath = AppDomain.CurrentDomain.BaseDirectory + categroyPath + @"源码_修改\";
+            }
 
             //获取指定目录下的所有文件
             List<FileInfo> listFileInfo = GetAllFilesInDirectory(filePath);
@@ -455,7 +463,7 @@ namespace CommonLib
                 if (listFileInfo[i].Extension == ".cs")
                 {
                     //将一个文件的内容读取到str中
-                    string contents = File.ReadAllText(listFileInfo[i].DirectoryName + @"\" + listFileInfo[i].Name).Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "");
+                    string contents = File.ReadAllText(listFileInfo[i].DirectoryName + @"\" + listFileInfo[i].Name).Replace(" ", "").Replace("\t", "");//.Replace("\n", "").Replace("\r", "")
 
 
                     //分隔一个控件上指定事件绑定的所有方法名，得到方法名数组
@@ -478,7 +486,7 @@ namespace CommonLib
                                            "//" + "命名空间:" + methodNameSpace + "\r\n" +
                                            "//" + "所在类类名:" + methodClassName + "\r\n" +
                                            "//--------------------" +"\r\n"+
-                                            accessModifiler +" "+returnType+" "+ GetCodesByFunctionName(contents, tempArray[4])+
+                                            accessModifiler +" "+returnType+" "+ GetCodesByFunctionName(contents, tempArray[4]) + "\r\n" +
                                            "//--------------------" +
                                            "\r\n" + "\r\n");
 
@@ -502,7 +510,7 @@ namespace CommonLib
                                             "//" + "命名空间:" +methodNameSpace+"\r\n"+
                                             "//" + "所在类类名:"+methodClassName+"\r\n"+
                                             "//--------------------" + "\r\n" +
-                                            accessModifiler +" "+returnType+" "+ codes +
+                                            accessModifiler +" "+returnType+" "+ codes + "\r\n" +
                                             "//--------------------" +
                                             "\r\n" + "\r\n");
                         }
@@ -554,7 +562,7 @@ namespace CommonLib
                         //栈中没有东西的时候说明函数体已经找完全，返回找到的函数体
                         if (stack.Count == 0)
                         {
-                            return functionName + "(object sender,EventArgs e)" +"\r\n" + sb.ToString();
+                            return functionName + "(object sender, EventArgs e)"  + sb.ToString();//+"\r\n"
                         }
                         break;
                     default:
@@ -583,7 +591,7 @@ namespace CommonLib
                 string devenvPath = rkey1.GetValue("").ToString();
 
                 ProcessStartInfo startInfo = new ProcessStartInfo(devenvPath);
-                startInfo.Arguments = "/rebuild \"Degbu|x86\" " + solutionPath;
+                startInfo.Arguments = "/rebuild \"debug|x86\" " + solutionPath;
 
                 //执行编译过程
                 Process process = new Process();
@@ -720,13 +728,14 @@ namespace CommonLib
                         //栈中没有东西的时候说明函数体已经找完全，返回找到的函数体
                         if (stack.Count == 0)
                         {
-                            string findCodes = Regex.Replace(sb.ToString(), @"\s+", " ").Replace("\r\n", "");//.Replace(" ","\\s*")
+                            string findCodes = sb.ToString();//Regex.Replace(sb.ToString(), @"\s+", " ");//.Replace("\r\n", "");//.Replace(" ","\\s*")
                             string myPattern = accessModifiler + " " + returnType + " " + functionName + "(object sender, EventArgs e)";
-                            sourceCodes = Regex.Replace(sourceCodes.Replace("\r\n", ""), @"\s+", " ");
+                            //sourceCodes = Regex.Replace(sourceCodes, @"\s+", " ");//.Replace("\r\n", "")
                             //return Regex.Replace(Regex.Replace(contents.Replace("\r\n", ""), @"\s+", " "), pattern+ findCodes, sourceCodes); 
                             //Regex myRegex = new Regex(pattern+findCodes);
                             //return myRegex.Replace(Regex.Replace(contents.Replace("\r\n", ""), @"\s+", " "), sourceCodes);
-                            return Regex.Replace(contents.Replace("\r\n", ""), @"\s+", " ").Replace(myPattern + findCodes, sourceCodes);
+                            //return Regex.Replace(contents, @"\s+", " ").Replace(myPattern + findCodes, sourceCodes);//.Replace("\r\n", "")
+                            return contents.Replace(myPattern + findCodes, sourceCodes);//.Replace("\r\n", "")
                         }
                         break;
                     default:

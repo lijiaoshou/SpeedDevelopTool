@@ -17,6 +17,8 @@ using UFIDA.U8.Portal.Proxy.Actions;
 using UFSoft.U8.Framework.Login.UI;
 using UFIDA.U8.Portal.Framework.Actions;
 using System.Text.RegularExpressions;
+using WinForm_Test;
+using System.Threading;
 
 namespace SpeedDevelopTool
 {
@@ -39,6 +41,8 @@ namespace SpeedDevelopTool
         public MainForm()
         {
             InitializeComponent();
+
+            Control.CheckForIllegalCrossThreadCalls = false;
         }
 
 
@@ -128,9 +132,16 @@ namespace SpeedDevelopTool
         /// <param name="e"></param>
         private void MainForm1_Load(object sender, EventArgs e)
         {
+            #region 初始化DEMO的dll或者exe
+            string categoryPath = Config.GetValueByKey(this.choiceOpiton, "categoryPath");
+            string dllName = Config.GetValueByKey(this.choiceOpiton, "dllName");
+            string basePath = AppDomain.CurrentDomain.BaseDirectory + categoryPath;
+            File.Copy(basePath + @"\backup\" + dllName, basePath + dllName, true);
+            #endregion
+
             #region 框架换肤
             SkinSE.SkinSE_Net skinStructure = new SkinSE.SkinSE_Net();
-            skinStructure.Init_NET(this,1);
+            skinStructure.Init_NET(this, 1);
             #endregion
 
             #region 初始化功能演示区
@@ -225,7 +236,7 @@ namespace SpeedDevelopTool
             #endregion
 
             #region 初始化相关文档
-            string categoryPath = Config.GetValueByKey(this.choiceOpiton, "categoryPath");
+
             //得到对应公共控件类别下的相关文档文件夹下的（包括子文件夹）的文件
             List<FileInfo> fileInfo = CommonLib.Common.GetAllFilesInDirectory(AppDomain.CurrentDomain.BaseDirectory + categoryPath + @"相关文档");
             for (int i = 0; i < fileInfo.Count; i++)
@@ -271,8 +282,8 @@ namespace SpeedDevelopTool
 
             #region 初始化代码控件
 
-            txtContent.Width = groupBox2.Width-20;
-            txtContent.Height = groupBox2.Height-10;
+            txtContent.Width = groupBox2.Width - 20;
+            txtContent.Height = groupBox2.Height - 10;
             txtContent.Document.HighlightingStrategy = HighlightingStrategyFactory.CreateHighlightingStrategy("C#");
             txtContent.Encoding = Encoding.Default;
             txtContent.Location = new Point(5, 50);
@@ -296,11 +307,6 @@ namespace SpeedDevelopTool
             Common.copyDirectory(AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码", AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码_修改");
             #endregion
 
-            #region 初始化DEMO的dll或者exe
-            string dllName = Config.GetValueByKey(this.choiceOpiton, "dllName");
-            string basePath = AppDomain.CurrentDomain.BaseDirectory + categoryPath;
-            File.Copy(basePath + @"\backup\" + dllName, basePath + dllName, true);
-            #endregion
         }
 
         /// <summary>
@@ -340,6 +346,7 @@ namespace SpeedDevelopTool
                 {
                     #region 对于控件上没有绑定操作方法的事件直接返回
                     string funcNames = Common.GetFunctionNames(ctrl1, events[i]);
+                    funcNames = GetFunctionNamesReplaceLoop(funcNames);
                     if (string.IsNullOrEmpty(funcNames))
                     {
                         continue;
@@ -406,15 +413,22 @@ namespace SpeedDevelopTool
                 string functionNames = Common.GetFunctionNames(control, mye.EventName);
                 //functionNames = functionNames.Replace(";TraceMethod", "").Replace(";<TraceOperate>b__0", "").Replace(";<LoopCtrl>b__0", "");
                 functionNames = GetFunctionNamesReplaceLoop(functionNames);
+                if (string.IsNullOrEmpty(functionNames))
+                {
+                    return;
+                }
                 
                 //查出所有方法名的方法体
-                sbCodes.Append("//"+mye.EventName.Name + "事件代码：" + "\r\n" + Common.GetFunctionBodys(functionNames, choiceOpiton));
+                sbCodes.Append("//"+mye.EventName.Name + "事件代码：" + "\r\n" + Common.GetFunctionBodys(functionNames, choiceOpiton,codeIsModified));
 
                 #endregion
 
 
                 //加载查询到的源码到源码展示控件上
-                txtContent.Text = sbCodes.ToString().Replace("{", "{" + "\r\n").Replace("}", "}" + "\r\n").Replace(";", ";" + "\r\n");
+                txtContent.Text = sbCodes.ToString();//.Replace("{", "{" + "\r\n").Replace("}", "}" + "\r\n").Replace(";", ";" + "\r\n")
+
+                //给代码控件赋值后需要刷新下，否则如果后赋值的代码行数小于前边已有代码行数，会出现代码错误。
+                txtContent.Refresh();
             }
             else
             {
@@ -495,54 +509,67 @@ namespace SpeedDevelopTool
         /// <param name="e"></param>
         private void button4_Click_1(object sender, EventArgs e)
         {
+            this.codeIsModified = true;
 
             //获取用户修改后的代码
             string codesText = txtContent.Text;
 
-            //替换“源码_修改”中的代码
-            string pattern = @"//--------------------";
-            Regex regex = new Regex(pattern);
-            string[] contensArray = regex.Split(codesText.Remove(codesText.LastIndexOf(pattern)));
-            //没有找到对应的方法，直接返回空
-            if (contensArray.Length < 2)
+            frmWaitingBox f = new frmWaitingBox((obj, args) =>
             {
-                MessageBox.Show("请输入正确代码格式，并且不要去掉原有注释符号");
-            }
-
-            //获取分隔后的数组（分隔的数组中既有代码，偶数索引项为注释，奇数索引项为代码）
-            string[] codes = contensArray;
-
-            for (int i = 1; i < codes.Length;i++)
-            {
-                #region 分隔出“访问修饰符+返回类型+函数名”
-
-                string pattern1 = @"\s*\(\s*object\s*sender\s*,\s*EventArgs\s*e\s*\)";
-                Regex regex1 = new Regex(pattern1);
-                string functionsInfo = regex1.Split(codes[i])[0].Replace("\r\n", "").Replace("\r", "").Replace("\n", "").Replace("\t", "");
-
-                //空格分隔出 访问修饰符[0] 返回类型[1] 函数名[2]
-                string[] resultInfo = functionsInfo.Split(' ');
-
-                #endregion
-
-                bool result= Common.ReplaceSourceDoucmentCodes(resultInfo[2], choiceOpiton, codes[i], resultInfo[0], resultInfo[1]);
-                if (!result)
+                //替换“源码_修改”中的代码
+                string pattern = @"//--------------------";
+                Regex regex = new Regex(pattern);
+                string[] contensArray = regex.Split(codesText.Remove(codesText.LastIndexOf(pattern)));
+                //没有找到对应的方法，直接返回空
+                if (contensArray.Length < 2)
                 {
-                    MessageBox.Show("替换代码失败！");
+                    MessageBox.Show("请输入正确代码格式，并且不要去掉原有注释符号");
+                }
+
+                //获取分隔后的数组（分隔的数组中既有代码，偶数索引项为注释，奇数索引项为代码）
+                string[] codes = contensArray;
+
+                for (int i = 1; i < codes.Length; i++)
+                {
+                    #region 分隔出“访问修饰符+返回类型+函数名”
+
+                    string pattern1 = @"\s*\(\s*object\s*sender\s*,\s*EventArgs\s*e\s*\)";
+                    Regex regex1 = new Regex(pattern1);
+                    string functionsInfo = regex1.Split(codes[i])[0].Replace("\r\n", "").Replace("\r", "").Replace("\n", "").Replace("\t", "");
+
+                    //空格分隔出 访问修饰符[0] 返回类型[1] 函数名[2]
+                    string[] resultInfo = functionsInfo.Split(' ');
+
+                    #endregion
+
+                    bool result = Common.ReplaceSourceDoucmentCodes(resultInfo[2], choiceOpiton, codes[i], resultInfo[0], resultInfo[1]);
+                    if (!result)
+                    {
+                        MessageBox.Show("替换代码失败！");
+                        return;
+                    }
+
+                    //只有奇数为索引代码，所以再次++
+                    i++;
+                }
+
+                //编译用户修改后的解决方案，复制并替换默认dll或者exe,并重新加载功能演示区
+                bool compileResult = CompileReplaceAndInit("源码_修改");
+                if (!compileResult)
+                {
+                    MessageBox.Show("编译失败，请检查是否有语法错误");
                     return;
                 }
 
-                //只有奇数为索引代码，所以再次++
-                i++;
-            }
+            }, 20, "处理中，请稍后...", false, true);
+            f.ShowDialog(this);
 
-            //编译用户修改后的解决方案，复制并替换默认dll或者exe,并重新加载功能演示区
-            bool compileResult=CompileReplaceAndInit("源码_修改");
-            if (!compileResult)
-            {
-                MessageBox.Show("编译失败，请检查是否有语法错误");
-                return;
-            }
+            //重新加载填充代码演示区域
+            InitFunctionalDemonstrationRegion();
+
+            #region 跟踪功能区代码
+            TraceOperate();
+            #endregion
 
             //弹窗提示用户
             MessageBox.Show("用户修改已保存且编译完毕");
@@ -555,21 +582,32 @@ namespace SpeedDevelopTool
         /// <param name="e"></param>
         private void button6_Click(object sender, EventArgs e)
         {
-            //恢复默认，代码变为未修改
-            this.codeIsModified = false;
-
-            //初始化“源码_修改”文件夹
-            string categoryPath = Config.GetValueByKey(this.choiceOpiton, "categoryPath");
-            Common.copyDirectory(AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码", AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码_修改");
-
-            //找到源码文件夹，重新编译，拷贝替换，重新加载
-            bool compileResult= CompileReplaceAndInit("源码");
-
-            if (!compileResult)
+            frmWaitingBox f = new frmWaitingBox((obj, args) =>
             {
-                MessageBox.Show("编译失败,请检查是否改动过源码文件");
-                return;
-            }
+                //恢复默认，代码变为未修改
+                this.codeIsModified = false;
+
+                //初始化“源码_修改”文件夹
+                string categoryPath = Config.GetValueByKey(this.choiceOpiton, "categoryPath");
+                Common.copyDirectory(AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码", AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码_修改");
+
+                //找到源码文件夹，重新编译，拷贝替换，重新加载
+                bool compileResult = CompileReplaceAndInit("源码");
+
+                if (!compileResult)
+                {
+                    MessageBox.Show("编译失败,请检查是否改动过源码文件");
+                    return;
+                }
+            }, 20, "处理中，请稍后...", false, true);
+            f.ShowDialog(this);
+
+            //重新加载填充代码演示区域
+            InitFunctionalDemonstrationRegion();
+
+            #region 跟踪功能区代码
+            TraceOperate();
+            #endregion
 
             //弹窗提示恢复成功
             MessageBox.Show("恢复默认成功");
@@ -581,7 +619,15 @@ namespace SpeedDevelopTool
         /// </summary>
         private void InitFunctionalDemonstrationRegion()
         {
-            //获取按钮控件类的全名称
+            #region backgroundWorker方法（线程间访问控件）
+            //using (BackgroundWorker bw = new BackgroundWorker())
+            //{
+            //    bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
+            //    bw.DoWork += new DoWorkEventHandler(bw_DoWork);
+            //    bw.RunWorkerAsync("Tank");
+            //}
+            #endregion
+
             string fullName = Config.GetValueByKey(this.choiceOpiton, "fullClassName");
 
             //获取dll所在路径
@@ -589,29 +635,6 @@ namespace SpeedDevelopTool
 
             //获取dll名称/exe名称
             string dllName = Config.GetValueByKey(this.choiceOpiton, "dllName");
-
-            #region old wait delete
-
-            //默认应用程序域的名称
-            //string callingDomainName = AppDomain.CurrentDomain.FriendlyName;
-
-            //创建新的应用程序域
-            //ad = AppDomain.CreateDomain("DLL Unload  " + choiceOpiton);
-            //ProxyObject obj = (ProxyObject)ad.CreateInstanceFromAndUnwrap(dllName, fullName);
-            //object instance = ad.CreateInstanceFromAndUnwrap(AppDomain.CurrentDomain.BaseDirectory+dllPath + dllName, fullName);
-            //ProxyObject instance = (ProxyObject)ad.CreateInstanceFromAndUnwrap(AppDomain.CurrentDomain.BaseDirectory + @"portal\SpeedDevelopTool.dll", "SpeedDevelopTool.ProxyObject");
-
-
-            //ProxyObject obj = new ProxyObject();
-            //obj=instance as ProxyObject;
-            //obj.LoadAssembly(this.choiceOpiton);
-
-            //加载程序集(dll文件地址)，使用Assembly类   
-            //Assembly assembly = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + dllPath + dllName);
-
-            ////获取类型，参数（名称空间+类）   
-            //Type type = assembly.GetType(fullName);
-            #endregion
 
             #region 不占用dll解决方法（子应用程序域方法）
             //CVST.AppFramework.AssemblyLoader.Loader loader = new CVST.AppFramework.AssemblyLoader.Loader();
@@ -621,12 +644,22 @@ namespace SpeedDevelopTool
             #region 不占用dll解决方案（Load(byte[] buffer)方法）
             byte[] buffer = Common.GetByteArrayFromFile(AppDomain.CurrentDomain.BaseDirectory + dllPath + dllName);
             Assembly assembly = Assembly.Load(buffer);
+            //Assembly assembly = Assembly.ReflectionOnlyLoad(buffer);
             #endregion
-
 
             //创建该对象的实例，object类型，参数（名称空间+类）   
             object instance = assembly.CreateInstance(fullName);
 
+            ControlWaitToAdd(instance);
+
+            #region 委托方法（线程间访问控件）
+            //Thread groupbox1Thread = new Thread(new ParameterizedThreadStart(UpdateGroupBox1));
+            //groupbox1Thread.Start(instance);
+            #endregion
+        }
+
+        private void ControlWaitToAdd(object instance)
+        {
             Form uForm = instance as Form;
 
             if (uForm != null)
@@ -685,8 +718,124 @@ namespace SpeedDevelopTool
                     usercontrol.Left = 10;
                 }
             }
-
         }
+
+        #region 委托方法（线程间访问控件）
+        //private void UpdateGroupBox1(object instance)
+        //{
+        //    if (groupBox1.InvokeRequired)
+        //    {
+        //        // 当一个控件的InvokeRequired属性值为真时，说明有一个创建它以外的线程想访问它
+        //        Action<string> actionDelegate = (x) => { ControlWaitToAdd(instance); };
+
+        //        //this.label2.Invoke(actionDelegate, str);
+        //    }
+        //    else
+        //    {
+        //        //this.label2.Text = str.ToString();
+        //        ControlWaitToAdd(instance);
+        //    }
+        //}
+        #endregion
+
+        #region backgroundWorker方法（线程间访问控件）
+        //void bw_DoWork(object sender, DoWorkEventArgs e)
+        //{
+        //    // 这里是后台线程， 是在另一个线程上完成的
+        //    // 这里是真正做事的工作线程
+        //    // 可以在这里做一些费时的，复杂的操作
+        //    //e.Result = e.Argument + "工作线程完成";
+        //    //获取按钮控件类的全名称
+        //    string fullName = Config.GetValueByKey(this.choiceOpiton, "fullClassName");
+
+        //    //获取dll所在路径
+        //    string dllPath = Config.GetValueByKey(this.choiceOpiton, "dllPath");
+
+        //    //获取dll名称/exe名称
+        //    string dllName = Config.GetValueByKey(this.choiceOpiton, "dllName");
+
+        //    #region 不占用dll解决方法（子应用程序域方法）
+        //    //CVST.AppFramework.AssemblyLoader.Loader loader = new CVST.AppFramework.AssemblyLoader.Loader();
+        //    //Assembly assembly = loader.LoadAssembly(AppDomain.CurrentDomain.BaseDirectory + dllPath+dllName);
+        //    #endregion
+
+        //    #region 不占用dll解决方案（Load(byte[] buffer)方法）
+        //    byte[] buffer = Common.GetByteArrayFromFile(AppDomain.CurrentDomain.BaseDirectory + dllPath + dllName);
+        //    Assembly assembly = Assembly.Load(buffer);
+        //    #endregion
+
+
+        //    //创建该对象的实例，object类型，参数（名称空间+类）   
+        //    object instance = assembly.CreateInstance(fullName);
+
+        //    e.Result = instance;
+        //}
+
+        //void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        //{
+        //    //这时后台线程已经完成，并返回了主线程，所以可以直接使用UI控件了 
+        //    //this.label4.Text = e.Result.ToString();
+
+        //    Form uForm = e.Result as Form;
+
+        //    if (uForm != null)
+        //    {
+        //        #region Form换肤
+        //        SkinSE.SkinSE_Net skinForm = new SkinSE.SkinSE_Net();
+        //        skinForm.Init_NET(uForm, 1);
+        //        #endregion
+
+        //        //去掉uForm的边框
+        //        uForm.FormBorderStyle = FormBorderStyle.None;
+        //        //设置窗体为非顶级控件
+        //        uForm.TopLevel = false;
+
+        //        //动态加载用户控件到主界面中
+        //        while (groupBox1.Controls.Count > 0)
+        //        {
+        //            foreach (Control crl in groupBox1.Controls)
+        //            {
+        //                groupBox1.Controls.Remove(crl);
+        //                crl.Dispose();
+        //            }
+        //        }
+
+        //        groupBox1.Controls.Add(uForm);
+        //        uForm.Show();
+
+        //        //控件用户控件在主界面中的位置
+        //        uForm.Top = 20;
+        //        uForm.Left = 10;
+        //    }
+        //    else //同时支持form和usercontrol
+        //    {
+        //        UserControl usercontrol = e.Result as UserControl;
+        //        if (usercontrol != null)
+        //        {
+        //            #region UserControl换肤
+        //            SkinSE.SkinSE_Net skinUserConrol = new SkinSE.SkinSE_Net();
+        //            skinUserConrol.Init_NET(usercontrol, 1);
+        //            #endregion
+
+        //            //动态加载用户控件到主界面中
+        //            while (groupBox1.Controls.Count > 0)
+        //            {
+        //                foreach (Control crl in groupBox1.Controls)
+        //                {
+        //                    groupBox1.Controls.Remove(crl);
+        //                    crl.Dispose();
+        //                }
+        //            }
+
+        //            groupBox1.Controls.Add(usercontrol);
+
+        //            //控件用户控件在主界面中的位置
+        //            usercontrol.Top = 20;
+        //            usercontrol.Left = 10;
+        //        }
+        //    }
+        //}
+        #endregion
 
         /// <summary>
         /// 编译，拷贝替换二开的dll或者exe,并且初始化功能演示区
@@ -740,9 +889,6 @@ namespace SpeedDevelopTool
                 //将编译生成的dll或者exe拷贝到对应位置
                 bool copyResult=Common.CopyFile(latelyFile.FullName, AppDomain.CurrentDomain.BaseDirectory + dllPath + dllName);
 
-                //重新加载填充代码演示区域
-                InitFunctionalDemonstrationRegion();
-
                 return true;
             }
             catch (Exception ex)
@@ -769,6 +915,10 @@ namespace SpeedDevelopTool
                 for (int i = 0; i < functionArray.Length; i++)
                 {
                     if (functionArray[i].Contains("SpeedDevelopTool.<>c__DisplayClass"))
+                    {
+                        continue;
+                    }
+                    else if (functionArray[i].Contains("Crownwood.DotNetMagic.Controls"))
                     {
                         continue;
                     }

@@ -59,5 +59,15 @@ namespace SpeedDevelopTool.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap _001mWx81gy6GMvUj8EAfc_690 {
+            get {
+                object obj = ResourceManager.GetObject("001mWx81gy6GMvUj8EAfc&690", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }
