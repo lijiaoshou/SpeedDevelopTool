@@ -1,0 +1,12 @@
+﻿<?xml version='1.0'?>
+<root>
+  <CategoriesNode>
+    <!--ChineseName:分类的中文名称-->
+    <!--fullClassName:UserControl或者Form所在类的全名（包括命名空间）-->
+    <!--dllPath:dll或者exe所在路径-->
+    <!--dllName:dll或者exe名称-->
+    <!--categoryPath:类别文件夹所在位置（其中包含了源码，常见问题，相关文档等文件夹）-->
+    <LanMu ChineseName="栏目" fullClassName="TestCategory.LanMu" dllPath="\LanMu\" dllName="TestCategory.dll" categoryPath="\LanMu\"/>
+    <Filter ChineseName="过滤" fullClassName="TestCategory.Filter" dllPath="\Filter\" dllName="TestCategory.dll" categoryPath=""/>
+  </CategoriesNode>
+</root>

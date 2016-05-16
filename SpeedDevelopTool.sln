@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedDevelopTool", "SpeedDevelopTool\SpeedDevelopTool.csproj", "{7AB6EBE3-3529-495E-9E4E-8F57FAA33C96}"
 EndProject
@@ -22,6 +22,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicCompiler", "DynamicCompiler\DynamicCompiler.csproj", "{79ED50AB-8EF3-4F82-B451-78EFC3C2F933}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadAndUnloadDll", "LoadAndUnloadDll\LoadAndUnloadDll.csproj", "{160B950F-D295-4194-BB94-2EB536EE582C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeRegion", "CodeRegion\CodeRegion.csproj", "{6478BFCE-F2A7-446B-A2E4-3DFF11C2BAD7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,6 +89,14 @@ Global
 		{160B950F-D295-4194-BB94-2EB536EE582C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{160B950F-D295-4194-BB94-2EB536EE582C}.Release|x86.ActiveCfg = Release|Any CPU
 		{160B950F-D295-4194-BB94-2EB536EE582C}.Release|x86.Build.0 = Release|Any CPU
+		{6478BFCE-F2A7-446B-A2E4-3DFF11C2BAD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6478BFCE-F2A7-446B-A2E4-3DFF11C2BAD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6478BFCE-F2A7-446B-A2E4-3DFF11C2BAD7}.Debug|x86.ActiveCfg = Debug|x86
+		{6478BFCE-F2A7-446B-A2E4-3DFF11C2BAD7}.Debug|x86.Build.0 = Debug|x86
+		{6478BFCE-F2A7-446B-A2E4-3DFF11C2BAD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6478BFCE-F2A7-446B-A2E4-3DFF11C2BAD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6478BFCE-F2A7-446B-A2E4-3DFF11C2BAD7}.Release|x86.ActiveCfg = Release|Any CPU
+		{6478BFCE-F2A7-446B-A2E4-3DFF11C2BAD7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

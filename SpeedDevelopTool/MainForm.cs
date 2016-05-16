@@ -24,7 +24,20 @@ namespace SpeedDevelopTool
 {
     public partial class MainForm : UserControl, INetUserControl
     {
-        ICSharpCode.TextEditor.TextEditorControl txtContent = new ICSharpCode.TextEditor.TextEditorControl();
+        //ICSharpCode.TextEditor.TextEditorControl txtContent = new ICSharpCode.TextEditor.TextEditorControl();
+        CodeRegion.MainForm txtContentForm = new CodeRegion.MainForm();
+
+        //internal ICSharpCode.SharpDevelop.Dom.ProjectContentRegistry pcRegistry;
+        internal ICSharpCode.SharpDevelop.Dom.DefaultProjectContent myProjectContent;
+        internal ICSharpCode.SharpDevelop.Dom.ParseInformation parseInformation = new ICSharpCode.SharpDevelop.Dom.ParseInformation();
+        //ICSharpCode.SharpDevelop.Dom.ICompilationUnit lastCompilationUnit;
+        //Thread parserThread;
+
+        //public static bool IsVisualBasic = false;
+
+        //public const string DummyFileName = "edited.cs";
+
+        //static readonly ICSharpCode.SharpDevelop.Dom.LanguageProperties CurrentLanguageProperties = IsVisualBasic ? ICSharpCode.SharpDevelop.Dom.LanguageProperties.VBNet : ICSharpCode.SharpDevelop.Dom.LanguageProperties.CSharp;
 
         AppDomain ad;
 
@@ -41,8 +54,6 @@ namespace SpeedDevelopTool
         public MainForm()
         {
             InitializeComponent();
-
-            Control.CheckForIllegalCrossThreadCalls = false;
         }
 
 
@@ -53,14 +64,7 @@ namespace SpeedDevelopTool
         /// <param name="e"></param>
         private void StartProcessDoc(object sender, EventArgs e)
         {
-            //得到界面显示的名称（包括后缀名）
-            Label lab = sender as Label;
-
-            //是label控件则查找和label控件文字相同的文档
-            if (lab != null)
-            {
-                Process.Start(System.Environment.CurrentDirectory + @"\" + choiceOpiton + @"\相关文档\" + lab.Text);
-            }
+            ProcessStart(sender);
         }
 
         /// <summary>
@@ -70,13 +74,29 @@ namespace SpeedDevelopTool
         /// <param name="e"></param>
         private void StartProcessPro(object sender, EventArgs e)
         {
-            //得到界面现实的名称（包括后缀名）
-            Label lab = sender as Label;
+            ProcessStart(sender);
+        }
 
-            //是label控件则查找和label控件文字相同的文档
-            if (lab != null)
+        /// <summary>
+        /// 处理用户查看文档的事件
+        /// </summary>
+        /// <param name="sender">点击控件</param>
+        private void ProcessStart(object sender)
+        {
+            try
             {
-                Process.Start(System.Environment.CurrentDirectory + @"\" + choiceOpiton + @"\常见问题\" + lab.Text);
+                //得到界面显示的名称（包括后缀名）
+                Label lab = sender as Label;
+
+                //是label控件则查找和label控件文字相同的文档
+                if (lab != null)
+                {
+                    Process.Start(System.Environment.CurrentDirectory + @"\" + choiceOpiton + @"\相关文档\" + lab.Text);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 
@@ -109,7 +129,7 @@ namespace SpeedDevelopTool
         /// <param name="e"></param>
         private void button2_Click(object sender, EventArgs e)
         {
-            Clipboard.SetDataObject(txtContent.ActiveTextAreaControl.SelectionManager.SelectedText);
+            Clipboard.SetDataObject(txtContentForm.textEditorControl1.ActiveTextAreaControl.SelectionManager.SelectedText);
             MessageBox.Show("选中内容已经复制到黏贴板！");
         }
 
@@ -121,7 +141,7 @@ namespace SpeedDevelopTool
         /// <param name="e"></param>
         private void button3_Click(object sender, EventArgs e)
         {
-            Clipboard.SetDataObject(txtContent.Text);
+            Clipboard.SetDataObject(txtContentForm.textEditorControl1.Text);
             MessageBox.Show("全部内容已经复制到黏贴板！");
         }
 
@@ -132,181 +152,116 @@ namespace SpeedDevelopTool
         /// <param name="e"></param>
         private void MainForm1_Load(object sender, EventArgs e)
         {
-            #region 初始化DEMO的dll或者exe
+            //获取相关配置信息
             string categoryPath = Config.GetValueByKey(this.choiceOpiton, "categoryPath");
             string dllName = Config.GetValueByKey(this.choiceOpiton, "dllName");
             string basePath = AppDomain.CurrentDomain.BaseDirectory + categoryPath;
-            File.Copy(basePath + @"\backup\" + dllName, basePath + dllName, true);
-            #endregion
-
-            #region 框架换肤
-            SkinSE.SkinSE_Net skinStructure = new SkinSE.SkinSE_Net();
-            skinStructure.Init_NET(this, 1);
-            #endregion
-
-            #region 初始化功能演示区
-
-            #region old
-            ////根据初始化的choiceOption参数决定动态加载哪个用户控件
-            //switch (choiceOpiton)
-            //{
-            //    case "LanMu":
-            //        LanMu lanmuForm = new LanMu();
-            //        //动态加载用户控件到主界面中
-            //        groupBox1.Controls.Add(lanmuForm);
-
-            //        //控件用户控件在主界面中的位置
-            //        lanmuForm.Top = 20;
-            //        lanmuForm.Left = 10;
-            //        break;
-            //    case "Filter":
-            //        Filter filterForm = new Filter();
-            //        groupBox1.Controls.Add(filterForm);
-            //        filterForm.Top = 20;
-            //        filterForm.Left = 10;
-            //        break;
-            //    case "Ref":
-            //        Ref refForm = new Ref();
-            //        groupBox1.Controls.Add(refForm);
-            //        refForm.Top = 20;
-            //        refForm.Left = 10;
-            //        break;
-            //    case "ToolControl":
-            //        ToolControl toolForm = new ToolControl();
-            //        groupBox1.Controls.Add(toolForm);
-            //        toolForm.Top = 20;
-            //        toolForm.Left = 10;
-            //        break;
-            //    case "PortalMenu":
-            //        PortalMenu portalForm = new PortalMenu();
-            //        groupBox1.Controls.Add(portalForm);
-            //        portalForm.Top = 20;
-            //        portalForm.Left = 10;
-            //        break;
-            //    case "Login":
-            //        Login loginForm = new Login();
-            //        groupBox1.Controls.Add(loginForm);
-            //        loginForm.Top = 20;
-            //        loginForm.Left = 10;
-            //        break;
-            //    case "Permission":
-            //        Permission permissionForm = new Permission();
-            //        groupBox1.Controls.Add(permissionForm);
-            //        permissionForm.Top = 20;
-            //        permissionForm.Left = 10;
-            //        break;
-            //    case "Voucher":
-            //        Voucher voucherForm = new Voucher();
-            //        groupBox1.Controls.Add(voucherForm);
-            //        voucherForm.Top = 20;
-            //        voucherForm.Left = 10;
-            //        break;
-            //    case "Receipt":
-            //        Reciept recieptForm = new Reciept();
-            //        groupBox1.Controls.Add(recieptForm);
-            //        recieptForm.Top = 20;
-            //        recieptForm.Left = 10;
-            //        break;
-            //    case "Report":
-            //        Report reportForm = new Report();
-            //        groupBox1.Controls.Add(reportForm);
-            //        reportForm.Top = 20;
-            //        reportForm.Left = 10;
-            //        break;
-            //    case "EAI":
-            //        EAI eaiForm = new EAI();
-            //        groupBox1.Controls.Add(eaiForm);
-            //        eaiForm.Top = 20;
-            //        eaiForm.Left = 10;
-            //        break;
-            //    case "WorkFlow":
-            //        WorkFlow workflowForm = new WorkFlow();
-            //        groupBox1.Controls.Add(workflowForm);
-            //        workflowForm.Top = 20;
-            //        workflowForm.Left = 10;
-            //        break;
-            //}
-            #endregion
-
-            #region new
-
-            InitFunctionalDemonstrationRegion();
-            #endregion
-
-            #endregion
-
-            #region 初始化相关文档
-
-            //得到对应公共控件类别下的相关文档文件夹下的（包括子文件夹）的文件
-            List<FileInfo> fileInfo = CommonLib.Common.GetAllFilesInDirectory(AppDomain.CurrentDomain.BaseDirectory + categoryPath + @"相关文档");
-            for (int i = 0; i < fileInfo.Count; i++)
+           
+            try
             {
-                LinkLabel lab = new LinkLabel();
+                // 初始化DEMO的dll或者exe
+                File.Copy(basePath + @"\backup\" + dllName, basePath + dllName, true);
 
-                //展示样式设置
-                lab.Width = groupBox3.Width;
-                lab.Text = fileInfo[i].Name;
-                lab.ForeColor = Color.Blue;
-                lab.Left = 15;
-                lab.Top = lab.Height * i + 40;
+                //框架换肤
+                SkinSE.SkinSE_Net skinStructure = new SkinSE.SkinSE_Net();
+                skinStructure.Init_NET(this, 1);
 
-                //给文字绑定点击时触发的委托方法
-                lab.Click += new EventHandler(StartProcessDoc);
+                //初始化功能演示区
+                InitFunctionalDemonstrationRegion();
 
-                //将文档生成的可操作内容加载到父控件中
-                groupBox3.Controls.Add(lab);
+                #region old wait to delete
+                //初始化相关文档
+                //IniDocAndQuestionRegion(basePath, "相关文档", groupBox3);
+
+                //初始化常见问题
+                //IniDocAndQuestionRegion(basePath, "常见问题", groupBox4);
+                #endregion
+
+                //初始化代码控件
+                IniCodeRegion();
+
+                //跟踪功能区代码
+                TraceOperate();
+
+                //初始化“源码_修改”文件夹
+                Common.copyDirectory(basePath + "源码", basePath + "源码_修改");
             }
-            #endregion
-
-            #region 初始化常见问题
-            //得到对应公共空间类别下的常见问题文件夹下的（包括子文件夹）的文件
-            List<FileInfo> fileInfoP = CommonLib.Common.GetAllFilesInDirectory(System.Environment.CurrentDirectory + "\\" + categoryPath + @"常见问题");
-            for (int i = 0; i < fileInfoP.Count; i++)
+            catch (Exception ex)
             {
-                LinkLabel lab = new LinkLabel();
-
-                //展示样式设置
-                lab.Width = groupBox4.Width;
-                lab.Text = fileInfoP[i].Name;
-                lab.ForeColor = Color.Blue;
-                lab.Left = 15;
-                lab.Top = lab.Height * i + 40;
-
-                //给文字绑定点击时触发的委托方法
-                lab.Click += new EventHandler(StartProcessPro);
-
-                //将文档生成的可操作内容加载到父控件中
-                groupBox4.Controls.Add(lab);
+                throw ex;
             }
-            #endregion
+        }
 
-            #region 初始化代码控件
+        /// <summary>
+        /// 初始化相关文档和常见问题区域
+        /// </summary>
+        /// <param name="basePath">类别路径</param>
+        /// <param name="DirectoryName">文件夹名称</param>
+        /// <param name="groupBox">目标groupBox</param>
+        private void IniDocAndQuestionRegion(string basePath,string DirectoryName, GroupBox groupBox)
+        {
+            try
+            {
+                //得到对应公共空间类别下的常见问题文件夹下的（包括子文件夹）的文件
+                List<FileInfo> fileInfoP = Common.GetAllFilesInDirectory(basePath + DirectoryName);
+                for (int i = 0; i < fileInfoP.Count; i++)
+                {
+                    LinkLabel lab = new LinkLabel();
 
-            txtContent.Width = groupBox2.Width - 20;
-            txtContent.Height = groupBox2.Height - 10;
-            txtContent.Document.HighlightingStrategy = HighlightingStrategyFactory.CreateHighlightingStrategy("C#");
-            txtContent.Encoding = Encoding.Default;
-            txtContent.Location = new Point(5, 50);
-            txtContent.AutoScroll = false;
-            //txtContent.AutoScrollMargin = new Size(1, 1);
-            txtContent.Text = "";
-            groupBox2.Controls.Add(txtContent);
+                    //展示样式设置
+                    lab.Width = groupBox.Width;
+                    lab.Text = fileInfoP[i].Name;
+                    lab.ForeColor = Color.Blue;
+                    lab.Left = 15;
+                    lab.Top = lab.Height * i + 40;
 
-            #region 代码区控件换肤
-            SkinSE.SkinSE_Net skinCode = new SkinSE.SkinSE_Net();
-            skinCode.Init_NET(txtContent, 1);
-            #endregion
+                    //给文字绑定点击时触发的委托方法
+                    lab.Click += new EventHandler(StartProcessPro);
 
-            #endregion
+                    //将文档生成的可操作内容加载到父控件中
+                    groupBox.Controls.Add(lab);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
-            #region 跟踪功能区代码
-            TraceOperate();
-            #endregion
+        /// <summary>
+        /// 初始化代码区
+        /// </summary>
+        private void IniCodeRegion()
+        {
+            try
+            {
+                txtContentForm.Width = groupBox2.Width;
+                txtContentForm.Height = groupBox2.Height;
+                txtContentForm.textEditorControl1.Text = "";
+                txtContentForm.textEditorControl1.Document.HighlightingStrategy = HighlightingStrategyFactory.CreateHighlightingStrategy("C#");
+                txtContentForm.textEditorControl1.Encoding = Encoding.Default;
+                txtContentForm.Location = new Point(5, 45);
+                //txtContent.AutoScroll = false;
+                txtContentForm.FormBorderStyle = FormBorderStyle.None;
+                txtContentForm.textEditorControl1.Dock = DockStyle.Fill;
+                //txtContent.AutoScrollMargin = new Size(1, 1);
+                //txtContent.Text = "";
+                //txtContentForm.statusStrip1.Width = txtContentForm.Width - 2;
+                txtContentForm.statusStrip1.Visible = false;
+                txtContentForm.parserThreadLabel.Visible = false;
+                txtContentForm.TopLevel = false;
+                txtContentForm.Show();
+                groupBox2.Controls.Add(txtContentForm);
 
-            #region 初始化“源码_修改”文件夹
-            Common.copyDirectory(AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码", AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码_修改");
-            #endregion
-
+                #region 代码区控件换肤
+                SkinSE.SkinSE_Net skinCode = new SkinSE.SkinSE_Net();
+                skinCode.Init_NET(txtContentForm.textEditorControl1, 1);
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -314,16 +269,24 @@ namespace SpeedDevelopTool
         /// </summary>
         private void TraceOperate()
         {
-            //获取groupBox1下的所有控件
-            Control.ControlCollection controls = groupBox1.Controls;
-            foreach (Control ctrl in controls)
+            try
             {
-                //获取用户控件
-                if ((ctrl is UserControl)||(ctrl is Form))
+                //获取groupBox1下的所有控件
+                Control.ControlCollection controls = groupBox1.Controls;
+                foreach (Control ctrl in controls)
                 {
-                    LoopCtrl(ctrl);
+                    //获取用户控件
+                    if ((ctrl is UserControl) || (ctrl is Form))
+                    {
+                        LoopCtrl(ctrl);
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+           
         }
 
         /// <summary>
@@ -332,55 +295,159 @@ namespace SpeedDevelopTool
         /// <param name="ctrl">控件</param>
         private void LoopCtrl(Control ctrl)
         {
-            //循环对用户控件上的每一个控件进行操作
-            foreach (Control ctrl1 in ctrl.Controls)
+            try
             {
-                PropertyInfo propertyInfo = ctrl1.GetType().GetProperty("Events", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
-                EventHandlerList eventHandlerList = propertyInfo.GetValue(ctrl1, new object[] { }) as EventHandlerList;
+                //循环对用户控件上的每一个控件进行操作
+                foreach (Control ctrl1 in ctrl.Controls)
+                {
+                    OperateForEachControl(ctrl1);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+           
+        }
 
-                Type contorlType = ctrl1.GetType();
-
+        /// <summary>
+        /// 对每一个控件进行处理
+        /// </summary>
+        /// <param name="ctrl">控件</param>
+        private void OperateForEachControl(Control ctrl)
+        {
+            try
+            {
+               
                 //获得控件上的所有事件
-                EventInfo[] events = contorlType.GetEvents();
+                EventInfo[] events = GetAllEventsOnControl(ctrl);
+
+                ProcessEachEvent(ctrl, events);
+
+                //如果用户控件上的控件仍然是容器控件，递归遍历容器中的控件
+                if (ctrl.Controls != null)
+                {
+                    foreach (Control ctrl2 in ctrl.Controls)
+                    {
+                        ProcessChildControl(ctrl2);
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 处理指定控件的所有事件
+        /// </summary>
+        /// <param name="ctrl">控件</param>
+        /// <param name="events">事件集合</param>
+        private void ProcessEachEvent(Control ctrl,EventInfo[] events)
+        {
+            try
+            {
                 for (int i = 0; i < events.Length; i++)
                 {
-                    #region 对于控件上没有绑定操作方法的事件直接返回
-                    string funcNames = Common.GetFunctionNames(ctrl1, events[i]);
-                    funcNames = GetFunctionNamesReplaceLoop(funcNames);
+                    string funcNames = GetBindFuncNamesOnControl(ctrl, events[i]);
+
                     if (string.IsNullOrEmpty(funcNames))
                     {
                         continue;
                     }
-                    #endregion
 
-                    #region 给已经绑定操作方法的控件添加监视功能
-
-                    //自定义事件参数类，传递事件名称
-                    MyEventArgs args = new MyEventArgs(events[i]);
-
-                    //获取事件处理类型，事件处理类型有很多种，EventHandler,MouseEventHandler.....
-                    string handleType = events[i].EventHandlerType.Name;
-
-                    //暂时只考虑处理句柄为EventHandler的
-                    if (handleType == "EventHandler")
-                    {
-                        //针对控件的每一个事件进行绑定
-                        events[i].AddEventHandler(ctrl1, new EventHandler((object sender, EventArgs e) => { TraceMethod(sender, args); }));
-                    }
-                    #endregion
+                    AddMonitorForControl(ctrl, events[i]);
                 }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            
+        }
 
-                //如果用户控件上的控件仍然是容器控件，递归遍历容器中的控件
-                if (ctrl1.Controls != null)
+        /// <summary>
+        /// 获取控件上指定事件的绑定函数名
+        /// </summary>
+        /// <param name="ctrl">控件</param>
+        /// <param name="eventInfo">事件信息</param>
+        private string GetBindFuncNamesOnControl(Control ctrl, EventInfo eventInfo)
+        {
+            string funcNames = "";
+            try
+            {
+                funcNames = Common.GetFunctionNames(ctrl, eventInfo);
+                funcNames = GetFunctionNamesReplaceLoop(funcNames);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return funcNames;
+        }
+
+        /// <summary>
+        /// 给已经绑定操作方法的控件添加监视功能
+        /// </summary>
+        /// <param name="ctrl">控件</param>
+        /// <param name="eventInfo">事件信息</param>
+        private void AddMonitorForControl(Control ctrl, EventInfo eventInfo)
+        {
+            try
+            {
+                //自定义事件参数类，传递事件名称
+                MyEventArgs args = new MyEventArgs(eventInfo);
+
+                //获取事件处理类型，事件处理类型有很多种，EventHandler,MouseEventHandler.....
+                string handleType = eventInfo.EventHandlerType.Name;
+
+                //暂时只考虑处理句柄为EventHandler的
+                if (handleType == "EventHandler")
                 {
-                    foreach (Control ctrl2 in ctrl1.Controls)
-                    {
-                        if (ctrl2 != null)
-                        {
-                            LoopCtrl(ctrl2);
-                        }
-                    }
+                    //针对控件的每一个事件进行绑定
+                    eventInfo.AddEventHandler(ctrl, new EventHandler((object sender, EventArgs e) => { TraceMethod(sender, args); }));
                 }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 处理子控件
+        /// </summary>
+        /// <param name="ctrl">子控件</param>
+        private void ProcessChildControl(Control ctrl)
+        {
+            if (ctrl != null)
+            {
+                LoopCtrl(ctrl);
+            }
+        }
+
+        /// <summary>
+        /// 获取指定控件上的所有事件
+        /// </summary>
+        /// <param name="ctrl">控件</param>
+        /// <returns></returns>
+        private EventInfo[] GetAllEventsOnControl(Control ctrl)
+        {
+            try
+            {
+                PropertyInfo propertyInfo = ctrl.GetType().GetProperty("Events", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
+                EventHandlerList eventHandlerList = propertyInfo.GetValue(ctrl, new object[] { }) as EventHandlerList;
+
+                Type contorlType = ctrl.GetType();
+
+                //获得控件上的所有事件
+                return contorlType.GetEvents();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 
@@ -392,59 +459,61 @@ namespace SpeedDevelopTool
         /// <param name="e"></param>
         private void TraceMethod(object sender, EventArgs e)
         {
-            MyEventArgs mye = e as MyEventArgs;
-            if (mye == null)
+            try
             {
-                return;
-            }
-            Control control = sender as Control;
-            if (control != null)
-            {
-                #region old xml文件办法
-                //从xml文件中读取对应control的实时代码
-                //string code = CommonLib.Common.ReadValueByXml(AppDomain.CurrentDomain.BaseDirectory + @"xml\" + choiceOpiton + ".xml", btn.Name);
-                #endregion
-
-                #region 直接分析源文件办法
-
-                StringBuilder sbCodes = new StringBuilder();
-
-                //获取绑定到该控件指定事件上的所有方法名
-                string functionNames = Common.GetFunctionNames(control, mye.EventName);
-                //functionNames = functionNames.Replace(";TraceMethod", "").Replace(";<TraceOperate>b__0", "").Replace(";<LoopCtrl>b__0", "");
-                functionNames = GetFunctionNamesReplaceLoop(functionNames);
-                if (string.IsNullOrEmpty(functionNames))
+                MyEventArgs mye = e as MyEventArgs;
+                if (mye == null)
                 {
                     return;
                 }
-                
-                //查出所有方法名的方法体
-                sbCodes.Append("//"+mye.EventName.Name + "事件代码：" + "\r\n" + Common.GetFunctionBodys(functionNames, choiceOpiton,codeIsModified));
+                Control control = sender as Control;
 
-                #endregion
-
-
-                //加载查询到的源码到源码展示控件上
-                txtContent.Text = sbCodes.ToString();//.Replace("{", "{" + "\r\n").Replace("}", "}" + "\r\n").Replace(";", ";" + "\r\n")
-
-                //给代码控件赋值后需要刷新下，否则如果后赋值的代码行数小于前边已有代码行数，会出现代码错误。
-                txtContent.Refresh();
+                ShowCodesIntoCodeRegion(control, mye);
             }
-            else
+            catch (Exception ex)
             {
-                #region old xml文件办法
-                //CheckBox cbx = sender as CheckBox;
-                //if (cbx != null)
-                //{
-                //    string code = CommonLib.Common.ReadValueByXml(AppDomain.CurrentDomain.BaseDirectory + @"xml\" + choiceOpiton + ".xml", cbx.Name);
-                //    txtContent.Text = code.Replace("{", "{" + "\r\n").Replace("}", "}" + "\r\n").Replace(";", ";" + "\r\n");
-                //}
-                #endregion
+                throw ex;
+            } 
 
-                #region 直接分析源文件办法
-                txtContent.Text = "";
-                #endregion
+        }
 
+        /// <summary>
+        /// 获取源代码并展示到代码区域
+        /// </summary>
+        /// <param name="control">控件</param>
+        /// <param name="mye">自定义参数</param>
+        private void ShowCodesIntoCodeRegion(Control control,MyEventArgs mye)
+        {
+            try
+            {
+                if (control != null)
+                {
+                    StringBuilder sbCodes = new StringBuilder();
+
+                    string functionNames = GetBindFuncNamesOnControl(control, mye.EventName);
+
+                    if (string.IsNullOrEmpty(functionNames))
+                    {
+                        return;
+                    }
+
+                    //查出所有方法名的方法体（源代码）
+                    sbCodes.Append("//" + mye.EventName.Name + "事件代码：" + "\r\n" + Common.GetFunctionBodys(functionNames, choiceOpiton, codeIsModified));
+
+                    //加载查询到的源码到源码展示控件上
+                    txtContentForm.textEditorControl1.Text = sbCodes.ToString();//.Replace("{", "{" + "\r\n").Replace("}", "}" + "\r\n").Replace(";", ";" + "\r\n")
+
+                    //给代码控件赋值后需要刷新下，否则如果后赋值的代码行数小于前边已有代码行数，会出现代码错误。
+                    txtContentForm.textEditorControl1.Refresh();
+                }
+                else
+                {
+                    txtContentForm.textEditorControl1.Text = "";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 
@@ -482,23 +551,50 @@ namespace SpeedDevelopTool
         /// <param name="e"></param>
         private void button5_Click(object sender, EventArgs e)
         {
-            //获取类别的路径
-            string categroyPath = Config.GetValueByKey(choiceOpiton, "categoryPath");
-
-            //获取解决方案路径
-            string filePath = AppDomain.CurrentDomain.BaseDirectory + categroyPath + @"源码\";
-
-            //获取解决方案路径下后缀名为.sln的文件
-            List<FileInfo> listFileInfo = Common.GetAllFilesInDirectory(filePath);
-            for (int i = 0; i < listFileInfo.Count; i++)
+            try
             {
-                //只针对.sln文件
-                if (listFileInfo[i].Extension == ".sln")
+                //获取类别的路径
+                string categroyPath = Config.GetValueByKey(choiceOpiton, "categoryPath");
+
+                //获取解决方案路径
+                string filePath = AppDomain.CurrentDomain.BaseDirectory + categroyPath + @"源码\";
+
+                OpenSolution(filePath);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 打开指定路径下的解决方案
+        /// </summary>
+        /// <param name="filePath">路径</param>
+        private void OpenSolution(string filePath)
+        {
+            try
+            {
+                //获取解决方案路径下后缀名为.sln的文件
+                List<FileInfo> listFileInfo = Common.GetAllFilesInDirectory(filePath);
+                for (int i = 0; i < listFileInfo.Count; i++)
                 {
-                    //打开该文件
-                    Process.Start(listFileInfo[i].FullName);
+                    //只针对.sln文件
+                    if (listFileInfo[i].Extension == ".sln")
+                    {
+                        //打开该文件
+                        Process.Start(listFileInfo[i].FullName);
+
+                        //找到一个.sln就返回
+                        return;
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            
         }
 
         /// <summary>
@@ -509,57 +605,22 @@ namespace SpeedDevelopTool
         /// <param name="e"></param>
         private void button4_Click_1(object sender, EventArgs e)
         {
+            //代码已修改
             this.codeIsModified = true;
 
             //获取用户修改后的代码
-            string codesText = txtContent.Text;
+            string codesText = txtContentForm.textEditorControl1.Text;
 
+            ChargeAlteredCodes(codesText);
+
+            //弹出等待框，进行修改->编译->替换过程
             frmWaitingBox f = new frmWaitingBox((obj, args) =>
             {
-                //替换“源码_修改”中的代码
-                string pattern = @"//--------------------";
-                Regex regex = new Regex(pattern);
-                string[] contensArray = regex.Split(codesText.Remove(codesText.LastIndexOf(pattern)));
-                //没有找到对应的方法，直接返回空
-                if (contensArray.Length < 2)
-                {
-                    MessageBox.Show("请输入正确代码格式，并且不要去掉原有注释符号");
-                }
-
-                //获取分隔后的数组（分隔的数组中既有代码，偶数索引项为注释，奇数索引项为代码）
-                string[] codes = contensArray;
-
-                for (int i = 1; i < codes.Length; i++)
-                {
-                    #region 分隔出“访问修饰符+返回类型+函数名”
-
-                    string pattern1 = @"\s*\(\s*object\s*sender\s*,\s*EventArgs\s*e\s*\)";
-                    Regex regex1 = new Regex(pattern1);
-                    string functionsInfo = regex1.Split(codes[i])[0].Replace("\r\n", "").Replace("\r", "").Replace("\n", "").Replace("\t", "");
-
-                    //空格分隔出 访问修饰符[0] 返回类型[1] 函数名[2]
-                    string[] resultInfo = functionsInfo.Split(' ');
-
-                    #endregion
-
-                    bool result = Common.ReplaceSourceDoucmentCodes(resultInfo[2], choiceOpiton, codes[i], resultInfo[0], resultInfo[1]);
-                    if (!result)
-                    {
-                        MessageBox.Show("替换代码失败！");
-                        return;
-                    }
-
-                    //只有奇数为索引代码，所以再次++
-                    i++;
-                }
+                //替换原始代码
+                ReplaceCodes(codesText);
 
                 //编译用户修改后的解决方案，复制并替换默认dll或者exe,并重新加载功能演示区
-                bool compileResult = CompileReplaceAndInit("源码_修改");
-                if (!compileResult)
-                {
-                    MessageBox.Show("编译失败，请检查是否有语法错误");
-                    return;
-                }
+                CompileAfterReplaceCodes();
 
             }, 20, "处理中，请稍后...", false, true);
             f.ShowDialog(this);
@@ -567,12 +628,90 @@ namespace SpeedDevelopTool
             //重新加载填充代码演示区域
             InitFunctionalDemonstrationRegion();
 
-            #region 跟踪功能区代码
+            //跟踪功能区代码
             TraceOperate();
-            #endregion
 
             //弹窗提示用户
             MessageBox.Show("用户修改已保存且编译完毕");
+        }
+
+        /// <summary>
+        /// 判断用户修改后的代码
+        /// </summary>
+        /// <param name="codesText">用户修改后的代码</param>
+        private void ChargeAlteredCodes(string codesText)
+        {
+            if (string.IsNullOrEmpty(codesText))
+            {
+                MessageBox.Show("代码不可为空，请输入正确代码");
+                return;
+            }
+        }
+
+        /// <summary>
+        /// 使用用户修改的代码替换源码文件中的代码
+        /// </summary>
+        /// <param name="codesText">用户修改后的代码</param>
+        private void ReplaceCodes(string codesText)
+        {
+            //替换“源码_修改”中的代码
+            string pattern = @"//--------------------";
+            Regex regex = new Regex(pattern);
+            string[] contensArray = regex.Split(codesText.Remove(codesText.LastIndexOf(pattern)));
+            //没有找到对应的方法，直接返回空
+            if (contensArray.Length < 2)
+            {
+                MessageBox.Show("请输入正确代码格式，并且不要去掉原有注释符号");
+            }
+
+            //获取分隔后的数组（分隔的数组中既有代码，偶数索引项为注释，奇数索引项为代码）
+            string[] codes = contensArray;
+
+            for (int i = 1; i < codes.Length; i++)
+            {
+                string[] resultInfo=SplitContentArray(codes[i]);
+
+                bool result = Common.ReplaceSourceDoucmentCodes(resultInfo[2], choiceOpiton, codes[i], resultInfo[0], resultInfo[1]);
+                if (!result)
+                {
+                    MessageBox.Show("替换代码失败！");
+                    return;
+                }
+
+                //只有奇数为索引代码，所以再次++
+                i++;
+            }
+        }
+
+        /// <summary>
+        /// 获取分隔“访问修饰符”+“返回类型”+“代码”的数组
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        private string[] SplitContentArray(string code)
+        {
+            //分隔出“访问修饰符+返回类型+函数名”
+            string pattern1 = @"\s*\(\s*object\s*sender\s*,\s*EventArgs\s*e\s*\)";
+            Regex regex1 = new Regex(pattern1);
+            string functionsInfo = regex1.Split(code)[0].Replace("\r\n", "").Replace("\r", "").Replace("\n", "").Replace("\t", "");
+
+            //空格分隔出 访问修饰符[0] 返回类型[1] 函数名[2]
+            string[] resultInfo = functionsInfo.Split(' ');
+
+            return resultInfo;
+        }
+
+        /// <summary>
+        /// 编译修改后的解决方案
+        /// </summary>
+        private void CompileAfterReplaceCodes()
+        {
+            bool compileResult = CompileAndReplace("源码_修改");
+            if (!compileResult)
+            {
+                MessageBox.Show("编译失败，请检查是否有语法错误");
+                return;
+            }
         }
 
         /// <summary>
@@ -582,6 +721,7 @@ namespace SpeedDevelopTool
         /// <param name="e"></param>
         private void button6_Click(object sender, EventArgs e)
         {
+            //打开处理中窗口，友好等待界面
             frmWaitingBox f = new frmWaitingBox((obj, args) =>
             {
                 //恢复默认，代码变为未修改
@@ -589,10 +729,11 @@ namespace SpeedDevelopTool
 
                 //初始化“源码_修改”文件夹
                 string categoryPath = Config.GetValueByKey(this.choiceOpiton, "categoryPath");
+
                 Common.copyDirectory(AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码", AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码_修改");
 
                 //找到源码文件夹，重新编译，拷贝替换，重新加载
-                bool compileResult = CompileReplaceAndInit("源码");
+                bool compileResult = CompileAndReplace("源码");
 
                 if (!compileResult)
                 {
@@ -605,119 +746,129 @@ namespace SpeedDevelopTool
             //重新加载填充代码演示区域
             InitFunctionalDemonstrationRegion();
 
-            #region 跟踪功能区代码
+            //跟踪功能区代码
             TraceOperate();
-            #endregion
 
             //弹窗提示恢复成功
             MessageBox.Show("恢复默认成功");
         }
-
 
         /// <summary>
         /// 加载功能演示区
         /// </summary>
         private void InitFunctionalDemonstrationRegion()
         {
-            #region backgroundWorker方法（线程间访问控件）
-            //using (BackgroundWorker bw = new BackgroundWorker())
-            //{
-            //    bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
-            //    bw.DoWork += new DoWorkEventHandler(bw_DoWork);
-            //    bw.RunWorkerAsync("Tank");
-            //}
-            #endregion
+            try
+            {
+                #region backgroundWorker方法（线程间访问控件）
+                //using (BackgroundWorker bw = new BackgroundWorker())
+                //{
+                //    bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
+                //    bw.DoWork += new DoWorkEventHandler(bw_DoWork);
+                //    bw.RunWorkerAsync("Tank");
+                //}
+                #endregion
 
-            string fullName = Config.GetValueByKey(this.choiceOpiton, "fullClassName");
+                string fullName = Config.GetValueByKey(this.choiceOpiton, "fullClassName");
 
-            //获取dll所在路径
-            string dllPath = Config.GetValueByKey(this.choiceOpiton, "dllPath");
+                //获取dll所在路径
+                string dllPath = Config.GetValueByKey(this.choiceOpiton, "dllPath");
 
-            //获取dll名称/exe名称
-            string dllName = Config.GetValueByKey(this.choiceOpiton, "dllName");
+                //获取dll名称/exe名称
+                string dllName = Config.GetValueByKey(this.choiceOpiton, "dllName");
 
-            #region 不占用dll解决方法（子应用程序域方法）
-            //CVST.AppFramework.AssemblyLoader.Loader loader = new CVST.AppFramework.AssemblyLoader.Loader();
-            //Assembly assembly = loader.LoadAssembly(AppDomain.CurrentDomain.BaseDirectory + dllPath+dllName);
-            #endregion
+                #region 不占用dll解决方法（子应用程序域方法）
+                //CVST.AppFramework.AssemblyLoader.Loader loader = new CVST.AppFramework.AssemblyLoader.Loader();
+                //Assembly assembly = loader.LoadAssembly(AppDomain.CurrentDomain.BaseDirectory + dllPath+dllName);
+                #endregion
 
-            #region 不占用dll解决方案（Load(byte[] buffer)方法）
-            byte[] buffer = Common.GetByteArrayFromFile(AppDomain.CurrentDomain.BaseDirectory + dllPath + dllName);
-            Assembly assembly = Assembly.Load(buffer);
-            //Assembly assembly = Assembly.ReflectionOnlyLoad(buffer);
-            #endregion
+                #region 不占用dll解决方案（Load(byte[] buffer)方法）
+                byte[] buffer = Common.GetByteArrayFromFile(AppDomain.CurrentDomain.BaseDirectory + dllPath + dllName);
+                Assembly assembly = Assembly.Load(buffer);
+                //Assembly assembly = Assembly.ReflectionOnlyLoad(buffer);
+                #endregion
 
-            //创建该对象的实例，object类型，参数（名称空间+类）   
-            object instance = assembly.CreateInstance(fullName);
+                //创建该对象的实例，object类型，参数（名称空间+类）   
+                object instance = assembly.CreateInstance(fullName);
 
-            ControlWaitToAdd(instance);
+                //将反射出的对象实例添加到groupBox1中（Form/userControl）
+                ControlWaitToAdd(instance);
 
-            #region 委托方法（线程间访问控件）
-            //Thread groupbox1Thread = new Thread(new ParameterizedThreadStart(UpdateGroupBox1));
-            //groupbox1Thread.Start(instance);
-            #endregion
+                #region 委托方法（线程间访问控件）
+                //Thread groupbox1Thread = new Thread(new ParameterizedThreadStart(UpdateGroupBox1));
+                //groupbox1Thread.Start(instance);
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
         }
 
+        /// <summary>
+        /// 添加控件到groupBox1中
+        /// </summary>
+        /// <param name="instance">反射出来的实例</param>
         private void ControlWaitToAdd(object instance)
         {
             Form uForm = instance as Form;
 
             if (uForm != null)
             {
-                #region Form换肤
-                SkinSE.SkinSE_Net skinForm = new SkinSE.SkinSE_Net();
-                skinForm.Init_NET(uForm, 1);
-                #endregion
-
                 //去掉uForm的边框
                 uForm.FormBorderStyle = FormBorderStyle.None;
                 //设置窗体为非顶级控件
                 uForm.TopLevel = false;
 
-                //动态加载用户控件到主界面中
-                while (groupBox1.Controls.Count > 0)
-                {
-                    foreach (Control crl in groupBox1.Controls)
-                    {
-                        groupBox1.Controls.Remove(crl);
-                        crl.Dispose();
-                    }
-                }
+                AddControlAndChangeSkin(uForm);
+                uForm.Width = groupBox1.Width;
+                uForm.Height = groupBox1.Height;
 
-                groupBox1.Controls.Add(uForm);
                 uForm.Show();
-
-                //控件用户控件在主界面中的位置
-                uForm.Top = 20;
-                uForm.Left = 10;
             }
             else //同时支持form和usercontrol
             {
                 UserControl usercontrol = instance as UserControl;
                 if (usercontrol != null)
                 {
-                    #region UserControl换肤
-                    SkinSE.SkinSE_Net skinUserConrol = new SkinSE.SkinSE_Net();
-                    skinUserConrol.Init_NET(usercontrol, 1);
-                    #endregion
+                    AddControlAndChangeSkin(usercontrol);
 
-                    //动态加载用户控件到主界面中
-                    while (groupBox1.Controls.Count > 0)
-                    {
-                        foreach (Control crl in groupBox1.Controls)
-                        {
-                            groupBox1.Controls.Remove(crl);
-                            crl.Dispose();
-                        }
-                    }
-
-                    groupBox1.Controls.Add(usercontrol);
-
+                    usercontrol.Width = groupBox1.Width;
+                    usercontrol.Height = groupBox1.Height;
                     //控件用户控件在主界面中的位置
                     usercontrol.Top = 20;
                     usercontrol.Left = 10;
                 }
             }
+        }
+
+        /// <summary>
+        /// 加载控件并换肤
+        /// </summary>
+        /// <param name="control"></param>
+        private void AddControlAndChangeSkin(Control control)
+        {
+            #region 换肤
+            SkinSE.SkinSE_Net skinForm = new SkinSE.SkinSE_Net();
+            skinForm.Init_NET(control, 1);
+            #endregion
+
+            //动态加载用户控件到主界面中
+            while (groupBox1.Controls.Count > 0)
+            {
+                foreach (Control crl in groupBox1.Controls)
+                {
+                    groupBox1.Controls.Remove(crl);
+                    crl.Dispose();
+                }
+            }
+
+            groupBox1.Controls.Add(control);
+
+            //控件用户控件在主界面中的位置
+            control.Top = 20;
+            control.Left = 10;
         }
 
         #region 委托方法（线程间访问控件）
@@ -841,19 +992,20 @@ namespace SpeedDevelopTool
         /// 编译，拷贝替换二开的dll或者exe,并且初始化功能演示区
         /// </summary>
         /// <param name="sourceName">查找文件夹名称（源码/源码_修改）</param>
-        private bool CompileReplaceAndInit(string sourceName)
+        private bool CompileAndReplace(string sourceName)
         {
             try
             {
                 //重新编译sourceName文件夹下的解决方案
                 string categoryPath = Config.GetValueByKey(this.choiceOpiton, "categoryPath");
 
-                List<FileInfo> fileInfo = CommonLib.Common.GetAllFilesInDirectory(AppDomain.CurrentDomain.BaseDirectory + categoryPath + sourceName);
+                List<FileInfo> fileInfo = Common.GetAllFilesInDirectory(AppDomain.CurrentDomain.BaseDirectory + categoryPath + sourceName);
                 for (int i = 0; i < fileInfo.Count; i++)
                 {
                     //找到第一个.sln文件(解决方案文件)
                     if (fileInfo[i].Extension == ".sln")
                     {
+                       //编译解决方案
                        bool compileresult = Common.CompileSolution(fileInfo[i].FullName);
 
                         if (!compileresult)
@@ -865,7 +1017,7 @@ namespace SpeedDevelopTool
                 }
 
                 //遍历编译后的sourceName文件夹
-                List<FileInfo> fileInfoAfter = CommonLib.Common.GetAllFilesInDirectory(AppDomain.CurrentDomain.BaseDirectory + categoryPath + sourceName);
+                List<FileInfo> fileInfoAfter = Common.GetAllFilesInDirectory(AppDomain.CurrentDomain.BaseDirectory + categoryPath + sourceName);
                 List<FileInfo> fileInfoDllOrExe = new List<FileInfo>();
 
                 //获取dll所在路径
@@ -932,5 +1084,36 @@ namespace SpeedDevelopTool
             }
         }
 
+        /// <summary>
+        /// 相关文档链接
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            CategoryDocs docs = new CategoryDocs(this.choiceOpiton);
+            docs.ShowDialog();
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            //获取分类
+            string category = Config.GetValueByKey(this.choiceOpiton, "ChineseName");
+
+            CommonAnswer answer = new CommonAnswer(category);
+            
+
+            answer.ShowDialog();
+        }
+
+        private void groupBox1_Paint(object sender, PaintEventArgs e)
+        {
+            e.Graphics.Clear(this.BackColor);
+        }
+
+        private void groupBox2_Paint(object sender, PaintEventArgs e)
+        {
+            e.Graphics.Clear(this.BackColor);
+        }
     }
 }

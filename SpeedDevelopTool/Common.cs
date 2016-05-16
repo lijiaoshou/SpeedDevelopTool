@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using CommonLib;
+using Microsoft.Win32;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace CommonLib
+namespace SpeedDevelopTool
 {
     public class Common
     {
@@ -745,6 +746,15 @@ namespace CommonLib
             return "";
         }
 
+        /// <summary>
+        /// 获取修改后的代码，并用修改后的代码替换原有代码
+        /// </summary>
+        /// <param name="functionName">函数名</param>
+        /// <param name="CotrolCategory">空间类别</param>
+        /// <param name="sourceCodes">新的代码</param>
+        /// <param name="accessModifiler">访问修饰符</param>
+        /// <param name="returnType">返回类型</param>
+        /// <returns></returns>
         public static bool ReplaceSourceDoucmentCodes(string functionName, string CotrolCategory,string sourceCodes,string accessModifiler, string returnType)
         {
             if (string.IsNullOrEmpty(functionName))
@@ -754,6 +764,7 @@ namespace CommonLib
 
             try
             {
+                //获取控件类别路径
                 string categroyPath = Config.GetValueByKey(CotrolCategory, "categoryPath");
 
                 //获取源码_修改路径
@@ -787,33 +798,53 @@ namespace CommonLib
 
 
         #region 文件夹拷贝（包括文件夹下的子文件夹和文件）
+
+        /// <summary>
+        /// 拷贝文件夹（包括子文件和文件夹）
+        /// </summary>
+        /// <param name="sourceDirectory">源文件夹</param>
+        /// <param name="destDirectory">目标文件夹</param>
         public static void copyDirectory(string sourceDirectory, string destDirectory)
         {
-            //判断源目录和目标目录是否存在，如果不存在，则创建一个目录
-            if (!Directory.Exists(sourceDirectory))
+            try
             {
-                Directory.CreateDirectory(sourceDirectory);
+                //判断源目录和目标目录是否存在，如果不存在，则创建一个目录
+                if (!Directory.Exists(sourceDirectory))
+                {
+                    Directory.CreateDirectory(sourceDirectory);
+                }
+                if (!Directory.Exists(destDirectory))
+                {
+                    Directory.CreateDirectory(destDirectory);
+                }
+                //拷贝文件
+                copyFile(sourceDirectory, destDirectory);
+
+                //拷贝子目录       
+                //获取所有子目录名称
+                string[] directionName = Directory.GetDirectories(sourceDirectory);
+
+                foreach (string directionPath in directionName)
+                {
+                    //根据每个子目录名称生成对应的目标子目录名称
+                    string directionPathTemp = destDirectory + "\\" + directionPath.Substring(sourceDirectory.Length + 1);
+
+                    //递归下去
+                    copyDirectory(directionPath, directionPathTemp);
+                }
             }
-            if (!Directory.Exists(destDirectory))
+            catch (Exception ex)
             {
-                Directory.CreateDirectory(destDirectory);
+                throw ex;
             }
-            //拷贝文件
-            copyFile(sourceDirectory, destDirectory);
-
-            //拷贝子目录       
-            //获取所有子目录名称
-            string[] directionName = Directory.GetDirectories(sourceDirectory);
-
-            foreach (string directionPath in directionName)
-            {
-                //根据每个子目录名称生成对应的目标子目录名称
-                string directionPathTemp = destDirectory + "\\" + directionPath.Substring(sourceDirectory.Length + 1);
-
-                //递归下去
-                copyDirectory(directionPath, directionPathTemp);
-            }
+            
         }
+
+        /// <summary>
+        /// 复制源文件夹下的所有文件到目标文件夹下
+        /// </summary>
+        /// <param name="sourceDirectory">源文件夹</param>
+        /// <param name="destDirectory">目标文件夹</param>
         public static void copyFile(string sourceDirectory, string destDirectory)
         {
             //获取所有文件名称

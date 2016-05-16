@@ -4,13 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7AB6EBE3-3529-495E-9E4E-8F57FAA33C96}</ProjectGuid>
+    <ProjectGuid>{6478BFCE-F2A7-446B-A2E4-3DFF11C2BAD7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SpeedDevelopTool</RootNamespace>
-    <AssemblyName>SpeedDevelopTool</AssemblyName>
+    <RootNamespace>CodeRegion</RootNamespace>
+    <AssemblyName>CodeRegion</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -22,7 +23,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,7 +32,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -42,7 +41,6 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -52,33 +50,19 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CodeRegion">
-      <HintPath>F:\U8SOFT\Framework\CodeRegion.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.NRefactory">
       <HintPath>F:\U8SOFT\Framework\ICSharpCode.NRefactory.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpDevelop.Dom">
       <HintPath>F:\U8SOFT\Framework\ICSharpCode.SharpDevelop.Dom.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.TextEditor, Version=3.2.1.6466, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="ICSharpCode.TextEditor">
       <HintPath>F:\U8SOFT\Framework\ICSharpCode.TextEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="Interop.U8Login, Version=1.14.0.0, Culture=neutral, PublicKeyToken=79a4e7ad54eeabca, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>F:\U8SOFT\Interop\Interop.U8Login.dll</HintPath>
-    </Reference>
-    <Reference Include="Interop.UFPortalProxyInterface">
-      <HintPath>F:\U8SOFT\Interop\Interop.UFPortalProxyInterface.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -87,83 +71,31 @@
     <Reference Include="Mono.Cecil">
       <HintPath>F:\U8SOFT\Framework\Mono.Cecil.dll</HintPath>
     </Reference>
-    <Reference Include="SkinSE_CS">
-      <HintPath>F:\U8SOFT\Framework\SkinSE_CS.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="UFIDA.U8.Portal.Common">
-      <HintPath>F:\U8SOFT\Portal\UFIDA.U8.Portal.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="UFIDA.U8.Portal.Framework">
-      <HintPath>F:\U8SOFT\Portal\UFIDA.U8.Portal.Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="UFIDA.U8.Portal.Proxy">
-      <HintPath>F:\U8SOFT\Portal\UFIDA.U8.Portal.Proxy.dll</HintPath>
-    </Reference>
-    <Reference Include="UFSoft.U8.Framework.Login.UI">
-      <HintPath>F:\U8SOFT\Framework\UFSoft.U8.Framework.Login.UI.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CategoryDocs.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CategoryDocs.designer.cs">
-      <DependentUpon>CategoryDocs.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Common.cs" />
-    <Compile Include="CommonAnswer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CommonAnswer.designer.cs">
-      <DependentUpon>CommonAnswer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Config.cs" />
-    <Compile Include="EventHandlerType.cs" />
-    <Compile Include="frmWaitingBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmWaitingBox.designer.cs">
-      <DependentUpon>frmWaitingBox.cs</DependentUpon>
-    </Compile>
+    <Compile Include="CodeCompletionData.cs" />
+    <Compile Include="CodeCompletionKeyHandler.cs" />
+    <Compile Include="CodeCompletionProvider.cs" />
     <Compile Include="HostCallbackImplementation.cs" />
-    <Compile Include="Loader.cs" />
-    <Compile Include="LoadException.cs" />
-    <Compile Include="MailInfo.cs">
+    <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MailInfo.Designer.cs">
-      <DependentUpon>MailInfo.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MainForm.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Include="MainForm.designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MenuClass.cs" />
-    <Compile Include="MyEventArgs.cs" />
-    <Compile Include="NetSampleDelegate.cs" />
+    <Compile Include="MethodInsightDataProvider.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RemoteLoader.cs" />
-    <EmbeddedResource Include="CategoryDocs.resx">
-      <DependentUpon>CategoryDocs.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CommonAnswer.resx">
-      <DependentUpon>CommonAnswer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmWaitingBox.resx">
-      <DependentUpon>frmWaitingBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MailInfo.resx">
-      <DependentUpon>MailInfo.cs</DependentUpon>
-    </EmbeddedResource>
+    <Compile Include="ToolTipProvider.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -178,7 +110,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="App.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -190,11 +121,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="dll\ICSharpCode.TextEditor.dll" />
-    <None Include="Resources\001mWx81gy6GMvUj8EAfc&amp;690.gif" />
-    <Content Include="SpeedDevelopTool.xml" />
+    <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
