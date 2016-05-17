@@ -1,6 +1,6 @@
 ﻿namespace SpeedDevelopTool
 {
-    partial class CommonAnswer
+    partial class MyQuestion
     {
         /// <summary>
         /// Required designer variable.
@@ -41,17 +41,17 @@
             this.webBrowser1.TabIndex = 0;
             this.webBrowser1.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser1_DocumentCompleted);
             // 
-            // CommonAnswer
+            // AskQuestion
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(921, 855);
             this.Controls.Add(this.webBrowser1);
             this.Location = new System.Drawing.Point(308, 60);
-            this.Name = "CommonAnswer";
+            this.Name = "AskQuestion";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "常见问题";
-            this.Load += new System.EventHandler(this.CommonAnswer_Load);
+            this.Text = "我要提问";
+            this.Load += new System.EventHandler(this.AskQuestion_Load);
             this.ResumeLayout(false);
 
         }

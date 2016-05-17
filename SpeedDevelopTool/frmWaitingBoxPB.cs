@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace WinForm_Test
 {
-    public partial class frmWaitingBox : Form
+    public partial class frmWaitingBoxPB : Form
     {
         #region Properties
         private int _MaxWaitTime;
@@ -32,12 +32,12 @@ namespace WinForm_Test
         #endregion
 
         #region frmWaitingBox
-        public frmWaitingBox(EventHandler<EventArgs> method,int maxWaitTime,string waitMessage,bool cancelEnable,bool timerVisable)
+        public frmWaitingBoxPB(EventHandler<EventArgs> method,int maxWaitTime,string waitMessage,bool cancelEnable,bool timerVisable)
         {
             maxWaitTime *= 1000;
             Initialize(method, maxWaitTime,waitMessage, cancelEnable, timerVisable);
         }
-        public frmWaitingBox(EventHandler<EventArgs> method)
+        public frmWaitingBoxPB(EventHandler<EventArgs> method)
         {
             int maxWaitTime=60*1000;
             string waitMessage = "正在处理数据，请稍后...";
@@ -45,14 +45,14 @@ namespace WinForm_Test
             bool timerVisable=true;
             Initialize(method, maxWaitTime,waitMessage, cancelEnable, timerVisable);
         }
-        public frmWaitingBox(EventHandler<EventArgs> method, string waitMessage)
+        public frmWaitingBoxPB(EventHandler<EventArgs> method, string waitMessage)
         {
             int maxWaitTime = 60 * 1000;
             bool cancelEnable = true;
             bool timerVisable = true;
             Initialize(method, maxWaitTime, waitMessage, cancelEnable, timerVisable);
         }
-        public frmWaitingBox(EventHandler<EventArgs> method, bool cancelEnable, bool timerVisable)
+        public frmWaitingBoxPB(EventHandler<EventArgs> method, bool cancelEnable, bool timerVisable)
         {
             int maxWaitTime = 60*1000;
             string waitMessage = "正在处理数据，请稍后...";
@@ -85,7 +85,7 @@ namespace WinForm_Test
             _WaitTime = 0;
             _Method = method;
             //this.pictureBoxCancel.Visible = _CancelEnable;
-            this.labTimer.Visible = timerVisable;
+            //this.labTimer.Visible = timerVisable;
             this.timer1.Interval = TimeSpan;
             this.timer1.Start();
         }
@@ -124,7 +124,7 @@ namespace WinForm_Test
         private void timer1_Tick(object sender, EventArgs e)
         {
             _WaitTime += TimeSpan;
-            this.labTimer.Text = string.Format("{0}秒", _WaitTime / 1000);
+            //this.labTimer.Text = string.Format("{0}秒", _WaitTime / 1000);
             if (!this._AsyncResult.IsCompleted)
             {
                 if (_WaitTime > _MaxWaitTime)
@@ -183,8 +183,8 @@ namespace WinForm_Test
                 this.Opacity -= 1.00 / _EffectCount;
             }
         }
+
         #endregion
 
-        
     }
 }

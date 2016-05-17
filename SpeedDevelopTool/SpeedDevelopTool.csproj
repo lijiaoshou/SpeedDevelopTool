@@ -94,6 +94,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -111,6 +113,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MyQuestion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MyQuestion.designer.cs">
+      <DependentUpon>MyQuestion.cs</DependentUpon>
+    </Compile>
     <Compile Include="CategoryDocs.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -118,6 +126,12 @@
       <DependentUpon>CategoryDocs.cs</DependentUpon>
     </Compile>
     <Compile Include="Common.cs" />
+    <Compile Include="AskQuestion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AskQuestion.designer.cs">
+      <DependentUpon>AskQuestion.cs</DependentUpon>
+    </Compile>
     <Compile Include="CommonAnswer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -126,6 +140,12 @@
     </Compile>
     <Compile Include="Config.cs" />
     <Compile Include="EventHandlerType.cs" />
+    <Compile Include="frmWaitingBoxPB.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmWaitingBoxPB.designer.cs">
+      <DependentUpon>frmWaitingBoxPB.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmWaitingBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -148,15 +168,36 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MenuClass.cs" />
+    <Compile Include="Middle.cs" />
     <Compile Include="MyEventArgs.cs" />
     <Compile Include="NetSampleDelegate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteLoader.cs" />
+    <Compile Include="Service References\U8DevDocs\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="WebLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WebLogin.designer.cs">
+      <DependentUpon>WebLogin.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="MyQuestion.resx">
+      <DependentUpon>MyQuestion.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CategoryDocs.resx">
       <DependentUpon>CategoryDocs.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="AskQuestion.resx">
+      <DependentUpon>AskQuestion.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CommonAnswer.resx">
       <DependentUpon>CommonAnswer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmWaitingBoxPB.resx">
+      <DependentUpon>frmWaitingBoxPB.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmWaitingBox.resx">
       <DependentUpon>frmWaitingBox.cs</DependentUpon>
@@ -178,7 +219,11 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="WebLogin.resx">
+      <DependentUpon>WebLogin.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="App.config" />
+    <None Include="Properties\DataSources\System.Data.DataSet.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -188,13 +233,30 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Service References\U8DevDocs\u8devservice.wsdl" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="dll\ICSharpCode.TextEditor.dll" />
     <None Include="Resources\001mWx81gy6GMvUj8EAfc&amp;690.gif" />
+    <None Include="Resources\加载2.gif" />
+    <None Include="Resources\提问图标.png" />
+    <None Include="Resources\信息.png" />
+    <None Include="Resources\侧面按钮.png" />
+    <None Include="Service References\U8DevDocs\u8devservice.disco" />
+    <None Include="Service References\U8DevDocs\configuration91.svcinfo" />
+    <None Include="Service References\U8DevDocs\configuration.svcinfo" />
+    <None Include="Service References\U8DevDocs\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
     <Content Include="SpeedDevelopTool.xml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\U8DevDocs\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

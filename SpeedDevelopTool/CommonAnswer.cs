@@ -12,6 +12,7 @@ namespace SpeedDevelopTool
     public partial class CommonAnswer : Form
     {
         private string category;
+        private Point point;
 
         public CommonAnswer()
         {
@@ -26,39 +27,46 @@ namespace SpeedDevelopTool
 
         private void CommonAnswer_Load(object sender, EventArgs e)
         {
+            point = this.Location;
+            this.Move += new EventHandler(CommonAnswer_Move);
             webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=iszhishi&v=0&key="+this.category);
+        }
+
+        public void CommonAnswer_Move(object sender, EventArgs e)
+        {
+            this.Location = point;
         }
 
         private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            if (webBrowser1.Url.ToString() != "http://u8dev.yonyou.com/" && webBrowser1.Url.ToString() != "http://u8dev.yonyou.com/register.aspx"
-                && webBrowser1.Url.ToString() != "http://u8dev.yonyou.com/GetPassword.aspx")
-            {
-                //隐藏搜索框
-                webBrowser1.Document.GetElementById("filterIpt").SetAttribute("style", "display:none;");
+            //if (webBrowser1.Url.ToString() != "http://u8dev.yonyou.com/" && webBrowser1.Url.ToString() != "http://u8dev.yonyou.com/register.aspx"
+            //    && webBrowser1.Url.ToString() != "http://u8dev.yonyou.com/GetPassword.aspx")
+            //{
+            //    //隐藏搜索框
+            //    webBrowser1.Document.GetElementById("filterIpt").SetAttribute("style", "display:none;");
 
-                //隐藏搜索按钮
-                HtmlElementCollection collection = webBrowser1.Document.GetElementsByTagName("img");
-                foreach (HtmlElement element in collection)
-                {
-                    if (element.GetAttribute("title") == "查询")
-                    {
-                        element.SetAttribute("style", "display:none;");
-                    }
-                }
+            //    //隐藏搜索按钮
+            //    HtmlElementCollection collection = webBrowser1.Document.GetElementsByTagName("img");
+            //    foreach (HtmlElement element in collection)
+            //    {
+            //        if (element.GetAttribute("title") == "查询")
+            //        {
+            //            element.SetAttribute("style", "display:none;");
+            //        }
+            //    }
 
-                //隐藏返回上一页
-                HtmlElementCollection collection1 = webBrowser1.Document.GetElementsByTagName("a");
-                foreach (HtmlElement element in collection1)
-                {
-                    if (element.GetAttribute("title") == "返回上一页")
-                    {
-                        element.SetAttribute("style", "display:none;");
-                    }
-                }
+            //    //隐藏返回上一页
+            //    HtmlElementCollection collection1 = webBrowser1.Document.GetElementsByTagName("a");
+            //    foreach (HtmlElement element in collection1)
+            //    {
+            //        if (element.GetAttribute("title") == "返回上一页")
+            //        {
+            //            element.SetAttribute("style", "display:none;");
+            //        }
+            //    }
 
 
-            }
+            //}
         }
     }
 }

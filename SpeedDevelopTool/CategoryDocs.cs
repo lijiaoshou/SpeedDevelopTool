@@ -16,6 +16,8 @@ namespace SpeedDevelopTool
     {
         private string choiceOpiton;
 
+        private Point point;
+
         public CategoryDocs()
         {
             InitializeComponent();
@@ -29,26 +31,71 @@ namespace SpeedDevelopTool
 
         private void CategoryDocs_Load(object sender, EventArgs e)
         {
-            string categoryPath = Config.GetValueByKey(this.choiceOpiton, "categoryPath");
-            //得到对应公共控件类别下的相关文档文件夹下的（包括子文件夹）的文件
-            List<FileInfo> fileInfo = Common.GetAllFilesInDirectory(AppDomain.CurrentDomain.BaseDirectory + categoryPath + @"相关文档");
-            for (int i = 0; i < fileInfo.Count; i++)
+            point = this.Location;
+            this.Move += new EventHandler(CategoryDocs_Move);
+            dataGridView1.CellClick += new DataGridViewCellEventHandler(DataGridView1_CellClick);
+
+            string category = Config.GetValueByKey(this.choiceOpiton, "ChineseName");
+            string FilePath = "";
+            int FileSize = 0;
+            string FileSizeStr = "";
+            string PostTime = "";
+            string ExName = "";//后缀名
+            string DocumentName = "";//不带后缀名
+            string OldName = "";//带后缀名
+ 
+            U8DevDocs.u8DevServiceSoapClient u8devClient = new U8DevDocs.u8DevServiceSoapClient();
+            DataSet dsDocs = new DataSet();
+            DataTable dtDocs = new DataTable();
+
+            dsDocs = u8devClient.getDocument(category);
+            if (dsDocs != null && dsDocs.Tables.Count > 0)
             {
-                LinkLabel lab = new LinkLabel();
+                dtDocs = dsDocs.Tables[0];
+                dataGridView1.Rows.Add(dtDocs.Rows.Count);
+                if (dtDocs != null && dtDocs.Rows.Count>0)
+                {
+                    for (int i = 0; i < dtDocs.Rows.Count; i++)
+                    {
+                        FilePath= dtDocs.Rows[i]["FilePath"].ToString();
 
-                //展示样式设置
-                lab.Width = this.Width;
-                lab.Text = fileInfo[i].Name;
-                lab.ForeColor = Color.Blue;
-                lab.Left = 15;
-                lab.Top = lab.Height * i + 40;
+                        FileSize= Convert.ToInt32(dtDocs.Rows[i]["FileSize"])/1000;
+                        if (FileSize == 0)
+                        {
+                            FileSizeStr = dtDocs.Rows[i]["FileSize"].ToString() + "KB";
+                        }
+                        else
+                        {
+                            FileSizeStr = FileSize.ToString() + "MB";
+                        }
 
-                //给文字绑定点击时触发的委托方法
-                lab.Click += new EventHandler(StartProcessDoc);
+                        PostTime= dtDocs.Rows[i]["PostTime"].ToString();
+                        ExName= dtDocs.Rows[i]["ExName"].ToString();
+                        DocumentName= dtDocs.Rows[i]["DocumentName"].ToString();
+                        OldName= dtDocs.Rows[i]["OldName"].ToString();
 
-                //将文档生成的可操作内容加载到父控件中
-                this.Controls.Add(lab);
+                        dataGridView1.Rows[i].Cells[0].Value = DocumentName;
+                        dataGridView1.Rows[i].Cells[1].Value = FileSizeStr;
+                        dataGridView1.Rows[i].Cells[2].Value = PostTime;
+                        dataGridView1.Rows[i].Cells[3].Value = FilePath;
+
+                    }
+                }
             }
+        }
+
+        public void DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (dataGridView1.Columns[e.ColumnIndex].Name == "DocumentName")
+            {
+                string target = dataGridView1.Rows[e.RowIndex].Cells[3].Value.ToString();
+                Process.Start("IEXPLORE.EXE", "http://" + target);
+            }
+        }
+
+        public void CategoryDocs_Move(object sender, EventArgs e)
+        {
+            this.Location = point;
         }
 
         private void StartProcessDoc(object sender, EventArgs e)

@@ -1,6 +1,6 @@
 ﻿namespace SpeedDevelopTool
 {
-    partial class CommonAnswer
+    partial class WebLogin
     {
         /// <summary>
         /// Required designer variable.
@@ -37,27 +37,25 @@
             this.webBrowser1.Location = new System.Drawing.Point(0, 0);
             this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.Size = new System.Drawing.Size(921, 855);
+            this.webBrowser1.Size = new System.Drawing.Size(572, 394);
             this.webBrowser1.TabIndex = 0;
             this.webBrowser1.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser1_DocumentCompleted);
             // 
-            // CommonAnswer
+            // WebLogin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(921, 855);
+            this.ClientSize = new System.Drawing.Size(572, 394);
             this.Controls.Add(this.webBrowser1);
-            this.Location = new System.Drawing.Point(308, 60);
-            this.Name = "CommonAnswer";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "常见问题";
-            this.Load += new System.EventHandler(this.CommonAnswer_Load);
+            this.Name = "WebLogin";
+            this.Text = "WebLogin";
+            this.Load += new System.EventHandler(this.WebLogin_Load);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        internal System.Windows.Forms.WebBrowser webBrowser1;
+        private System.Windows.Forms.WebBrowser webBrowser1;
     }
 }

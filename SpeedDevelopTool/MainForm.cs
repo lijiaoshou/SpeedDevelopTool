@@ -26,6 +26,9 @@ namespace SpeedDevelopTool
     {
         //ICSharpCode.TextEditor.TextEditorControl txtContent = new ICSharpCode.TextEditor.TextEditorControl();
         CodeRegion.MainForm txtContentForm = new CodeRegion.MainForm();
+        CommonAnswer cmomonAnswer;
+        AskQuestion askQuestion;
+        MyQuestion myQuestion;
 
         //internal ICSharpCode.SharpDevelop.Dom.ProjectContentRegistry pcRegistry;
         internal ICSharpCode.SharpDevelop.Dom.DefaultProjectContent myProjectContent;
@@ -152,6 +155,14 @@ namespace SpeedDevelopTool
         /// <param name="e"></param>
         private void MainForm1_Load(object sender, EventArgs e)
         {
+            timer1.Enabled = true;
+
+            Middle.sendEvent += new Middle.SendMessage(this.DoMethod);
+
+            string category = Config.GetValueByKey(this.choiceOpiton, "ChineseName");
+
+            cmomonAnswer = new CommonAnswer(category);
+
             //获取相关配置信息
             string categoryPath = Config.GetValueByKey(this.choiceOpiton, "categoryPath");
             string dllName = Config.GetValueByKey(this.choiceOpiton, "dllName");
@@ -190,6 +201,13 @@ namespace SpeedDevelopTool
             {
                 throw ex;
             }
+        }
+
+        public void DoMethod(string getstr)
+        {
+            this.cmomonAnswer.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=iszhishi&v=0");
+            this.askQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/add.aspx?v=");
+            this.myQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=my&v=");
         }
 
         /// <summary>
@@ -247,8 +265,6 @@ namespace SpeedDevelopTool
                 //txtContent.AutoScrollMargin = new Size(1, 1);
                 //txtContent.Text = "";
                 //txtContentForm.statusStrip1.Width = txtContentForm.Width - 2;
-                txtContentForm.statusStrip1.Visible = false;
-                txtContentForm.parserThreadLabel.Visible = false;
                 txtContentForm.TopLevel = false;
                 txtContentForm.Show();
                 groupBox2.Controls.Add(txtContentForm);
@@ -613,26 +629,54 @@ namespace SpeedDevelopTool
 
             ChargeAlteredCodes(codesText);
 
-            //弹出等待框，进行修改->编译->替换过程
-            frmWaitingBox f = new frmWaitingBox((obj, args) =>
-            {
-                //替换原始代码
-                ReplaceCodes(codesText);
+            #region old wait to delete
+            ////弹出等待框，进行修改->编译->替换过程
+            //frmWaitingBox f = new frmWaitingBox((obj, args) =>
+            //{
+            //    //替换原始代码
+            //    ReplaceCodes(codesText);
 
-                //编译用户修改后的解决方案，复制并替换默认dll或者exe,并重新加载功能演示区
-                CompileAfterReplaceCodes();
+            //    //编译用户修改后的解决方案，复制并替换默认dll或者exe,并重新加载功能演示区
+            //    CompileAfterReplaceCodes();
 
-            }, 20, "处理中，请稍后...", false, true);
-            f.ShowDialog(this);
+            //}, 20, "处理中，请稍后...", false, true);
+            //f.ShowDialog(this);
+
+            ////重新加载填充代码演示区域
+            //InitFunctionalDemonstrationRegion();
+
+            ////跟踪功能区代码
+            //TraceOperate();
+
+            ////弹窗提示用户
+            //MessageBox.Show("用户修改已保存且编译完毕");
+            #endregion
+
+            #region ProgressBar
+            this.progressBar1.Value = 0;
+            this.progressBar1.Maximum = 4;
+
+            //替换原始代码
+            ReplaceCodes(codesText);
+            this.progressBar1.Value++;
+
+            //编译用户修改后的解决方案，复制并替换默认dll或者exe,并重新加载功能演示区
+            CompileAfterReplaceCodes();
+            this.progressBar1.Value++;
 
             //重新加载填充代码演示区域
             InitFunctionalDemonstrationRegion();
+            this.progressBar1.Value++;
 
             //跟踪功能区代码
             TraceOperate();
+            this.progressBar1.Value++;
 
             //弹窗提示用户
             MessageBox.Show("用户修改已保存且编译完毕");
+            this.progressBar1.Value = 0;
+
+            #endregion
         }
 
         /// <summary>
@@ -721,36 +765,79 @@ namespace SpeedDevelopTool
         /// <param name="e"></param>
         private void button6_Click(object sender, EventArgs e)
         {
-            //打开处理中窗口，友好等待界面
-            frmWaitingBox f = new frmWaitingBox((obj, args) =>
+            #region old wait to delete
+            ////打开处理中窗口，友好等待界面
+            //frmWaitingBox f = new frmWaitingBox((obj, args) =>
+            //{
+            //    //恢复默认，代码变为未修改
+            //    this.codeIsModified = false;
+
+            //    //初始化“源码_修改”文件夹
+            //    string categoryPath = Config.GetValueByKey(this.choiceOpiton, "categoryPath");
+
+            //    Common.copyDirectory(AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码", AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码_修改");
+
+            //    //找到源码文件夹，重新编译，拷贝替换，重新加载
+            //    bool compileResult = CompileAndReplace("源码");
+
+            //    if (!compileResult)
+            //    {
+            //        MessageBox.Show("编译失败,请检查是否改动过源码文件");
+            //        return;
+            //    }
+            //}, 20, "处理中，请稍后...", false, true);
+            //f.ShowDialog(this);
+
+
+            ////重新加载填充代码演示区域
+            //InitFunctionalDemonstrationRegion();
+
+            ////跟踪功能区代码
+            //TraceOperate();
+
+
+            ////弹窗提示恢复成功
+            //MessageBox.Show("恢复默认成功");
+            #endregion
+
+            #region ProgressBar
+
+            this.progressBar1.Value = 0;
+            this.progressBar1.Maximum = 4;
+
+            //恢复默认，代码变为未修改
+            this.codeIsModified = false;
+
+            //初始化“源码_修改”文件夹
+            string categoryPath = Config.GetValueByKey(this.choiceOpiton, "categoryPath");
+
+            Common.copyDirectory(AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码", AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码_修改");
+            this.progressBar1.Value++;
+
+            //找到源码文件夹，重新编译，拷贝替换，重新加载
+            bool compileResult = CompileAndReplace("源码");
+            this.progressBar1.Value++;
+
+            if (!compileResult)
             {
-                //恢复默认，代码变为未修改
-                this.codeIsModified = false;
-
-                //初始化“源码_修改”文件夹
-                string categoryPath = Config.GetValueByKey(this.choiceOpiton, "categoryPath");
-
-                Common.copyDirectory(AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码", AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码_修改");
-
-                //找到源码文件夹，重新编译，拷贝替换，重新加载
-                bool compileResult = CompileAndReplace("源码");
-
-                if (!compileResult)
-                {
-                    MessageBox.Show("编译失败,请检查是否改动过源码文件");
-                    return;
-                }
-            }, 20, "处理中，请稍后...", false, true);
-            f.ShowDialog(this);
+                MessageBox.Show("编译失败,请检查是否改动过源码文件");
+                this.progressBar1.Value=0;
+                return;
+            }
 
             //重新加载填充代码演示区域
             InitFunctionalDemonstrationRegion();
+            this.progressBar1.Value++;
 
             //跟踪功能区代码
             TraceOperate();
+            this.progressBar1.Value++;
 
             //弹窗提示恢复成功
             MessageBox.Show("恢复默认成功");
+            this.progressBar1.Value = 0;
+
+            #endregion
         }
 
         /// <summary>
@@ -1098,12 +1185,11 @@ namespace SpeedDevelopTool
         private void button7_Click(object sender, EventArgs e)
         {
             //获取分类
-            string category = Config.GetValueByKey(this.choiceOpiton, "ChineseName");
+            //string category = Config.GetValueByKey(this.choiceOpiton, "ChineseName");
 
-            CommonAnswer answer = new CommonAnswer(category);
-            
+            //CommonAnswer answer = new CommonAnswer(category);
 
-            answer.ShowDialog();
+            cmomonAnswer.ShowDialog();
         }
 
         private void groupBox1_Paint(object sender, PaintEventArgs e)
@@ -1114,6 +1200,32 @@ namespace SpeedDevelopTool
         private void groupBox2_Paint(object sender, PaintEventArgs e)
         {
             e.Graphics.Clear(this.BackColor);
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            WebLogin loginForm = new WebLogin("http://u8dev.yonyou.com");
+            loginForm.ShowDialog();
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            askQuestion = new AskQuestion();
+            askQuestion.ShowDialog();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            //每隔15分钟刷新提问，常见问题，保持session
+            this.cmomonAnswer.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=iszhishi&v=0");
+            this.askQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/add.aspx?v=");
+            this.myQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=my&v=");
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            myQuestion = new MyQuestion();
+            myQuestion.ShowDialog();
         }
     }
 }

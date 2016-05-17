@@ -32,9 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.textEditorControl1 = new ICSharpCode.TextEditor.TextEditorControl();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.parserThreadLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // imageList1
@@ -61,36 +58,15 @@
             this.textEditorControl1.Size = new System.Drawing.Size(922, 545);
             this.textEditorControl1.TabIndex = 1;
             // 
-            // statusStrip1
-            // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.parserThreadLabel});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 523);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(922, 22);
-            this.statusStrip1.TabIndex = 2;
-            this.statusStrip1.Text = "statusStrip1";
-            this.statusStrip1.Visible = false;
-            // 
-            // parserThreadLabel
-            // 
-            this.parserThreadLabel.Name = "parserThreadLabel";
-            this.parserThreadLabel.Size = new System.Drawing.Size(131, 17);
-            this.parserThreadLabel.Text = "toolStripStatusLabel1";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(922, 545);
-            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.textEditorControl1);
             this.Name = "MainForm";
             this.Text = "Form4";
-            this.statusStrip1.ResumeLayout(false);
-            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -98,7 +74,5 @@
 
         internal System.Windows.Forms.ImageList imageList1;
         public ICSharpCode.TextEditor.TextEditorControl textEditorControl1;
-        public System.Windows.Forms.StatusStrip statusStrip1;
-        public System.Windows.Forms.ToolStripStatusLabel parserThreadLabel;
     }
 }

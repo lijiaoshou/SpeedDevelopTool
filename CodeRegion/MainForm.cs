@@ -77,7 +77,7 @@ namespace CodeRegion
 
         void ParserThread()
         {
-            BeginInvoke(new MethodInvoker(delegate { parserThreadLabel.Text = "Loading mscorlib..."; }));
+            //BeginInvoke(new MethodInvoker(delegate { parserThreadLabel.Text = "Loading mscorlib..."; }));
             myProjectContent.AddReferencedContent(pcRegistry.Mscorlib);
 
             // do one initial parser step to enable code-completion while other
@@ -90,7 +90,7 @@ namespace CodeRegion
             foreach (string assemblyName in referencedAssemblies)
             {
                 string assemblyNameCopy = assemblyName; // copy for anonymous method
-                BeginInvoke(new MethodInvoker(delegate { parserThreadLabel.Text = "Loading " + assemblyNameCopy + "..."; }));
+                //BeginInvoke(new MethodInvoker(delegate { parserThreadLabel.Text = "Loading " + assemblyNameCopy + "..."; }));
                 ICSharpCode.SharpDevelop.Dom.IProjectContent referenceProjectContent = pcRegistry.GetProjectContentForReference(assemblyName, assemblyName);
                 myProjectContent.AddReferencedContent(referenceProjectContent);
                 if (referenceProjectContent is ICSharpCode.SharpDevelop.Dom.ReflectionProjectContent)
@@ -105,7 +105,7 @@ namespace CodeRegion
                 myProjectContent.DefaultImports.Usings.Add("System.Text");
                 myProjectContent.DefaultImports.Usings.Add("Microsoft.VisualBasic");
             }
-            BeginInvoke(new MethodInvoker(delegate { parserThreadLabel.Text = "Ready"; }));
+            //BeginInvoke(new MethodInvoker(delegate { parserThreadLabel.Text = "Ready"; }));
 
             // Parse the current file every 2 seconds
             while (!IsDisposed)
