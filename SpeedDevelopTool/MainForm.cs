@@ -30,6 +30,8 @@ namespace SpeedDevelopTool
         CommonAnswer cmomonAnswer;
         AskQuestion askQuestion;
         MyQuestion myQuestion;
+        private int cmomonAnswerX=0;
+
         private bool canUse = true;
         private int iniMainFormWidth = 0;
 
@@ -203,7 +205,8 @@ namespace SpeedDevelopTool
                 Common.copyDirectory(basePath + "源码", basePath + "源码_修改");
 
                 iniMainFormWidth = this.Size.Width;
-            }
+                cmomonAnswerX = cmomonAnswer.Location.X;
+    }
             catch (Exception ex)
             {
                 throw ex;
@@ -1281,16 +1284,16 @@ namespace SpeedDevelopTool
                 ChangeLayout(68);
             }
             //只隐藏左边大框
-            else if (this.Size.Width > (iniMainFormWidth + 100) && this.Size.Width < (iniMainFormWidth + 300))
+            else if (this.Size.Width > (iniMainFormWidth + 100) && this.Size.Width < (iniMainFormWidth + 260))
             {
                 IniBegin();
-                ChangeLayout(238);
+                ChangeLayout(240);
             }
             //两个边框都隐藏
-            else if (this.Size.Width > (iniMainFormWidth + 300))
+            else if (this.Size.Width > (iniMainFormWidth + 260))
             {
                 IniBegin();
-                ChangeLayout(305);
+                ChangeLayout(308);
             }
             //都不隐藏，不需要做什么
             else
@@ -1301,39 +1304,57 @@ namespace SpeedDevelopTool
 
         private void IniBegin()
         {
-            label1.Width = iniMainFormWidth-50;
-            label2.Width = iniMainFormWidth-50;
+            label1.Width = iniMainFormWidth-70;
+            label2.Width = iniMainFormWidth-70;
+
             label5.Left = iniMainFormWidth-215;
             label6.Left = iniMainFormWidth-162;
+            label7.Left = iniMainFormWidth - 100;
             pictureBox1.Left = iniMainFormWidth-183;
             pictureBox2.Left = iniMainFormWidth-132;
-            button10.Left = iniMainFormWidth-99;
-            progressBar1.Width = iniMainFormWidth-52;
+            pictureBox3.Left = iniMainFormWidth - 71;
 
-            groupBox1.Width = iniMainFormWidth - 58;
-            groupBox2.Width = iniMainFormWidth - 58;
+            progressBar1.Width = iniMainFormWidth-70;
 
-            pictureBox4.Left = iniMainFormWidth - 34;
-            pictureBox5.Left = iniMainFormWidth - 34;
+            groupBox1.Width = iniMainFormWidth - 70;
+            groupBox2.Width = iniMainFormWidth - 70;
 
-            txtContentForm.Width = iniMainFormWidth - 58;
+            pictureBox4.Left = iniMainFormWidth - 44;
+            pictureBox5.Left = iniMainFormWidth - 44;
+
+            txtContentForm.Width = iniMainFormWidth - 70;
             ControlCollection controls = groupBox1.Controls;
-            controls[0].Width = iniMainFormWidth - 58;
+            controls[0].Width = iniMainFormWidth - 70;
+
+            askQuestion.Width = iniMainFormWidth - 35;
+            askQuestion.point = new Point(cmomonAnswer.Location.X,askQuestion.Location.Y);
+            askQuestion.Left = 310;
+
+            cmomonAnswer.Width = iniMainFormWidth - 35;
+            cmomonAnswer.point = new Point(cmomonAnswer.Location.X, cmomonAnswer.Location.Y);
+            cmomonAnswer.Left = 310;
+
+            myQuestion.Width = iniMainFormWidth - 35;
+            myQuestion.point = new Point(cmomonAnswer.Location.X, myQuestion.Location.Y);
+            myQuestion.Left = 310;
         }
 
         private void ChangeLayout(int size)
         {
             label1.Width += size;
             label2.Width += size;
+
             label5.Left += size;
             label6.Left += size;
+            label7.Left += size;
             pictureBox1.Left += size;
             pictureBox2.Left += size;
-            button10.Left += size;
+            pictureBox3.Left += size;
+
             progressBar1.Width += size;
 
-            pictureBox4.Left += size+3;
-            pictureBox5.Left += size+3;
+            pictureBox4.Left += size+4;
+            pictureBox5.Left += size+4;
 
             groupBox1.Width += size;
             groupBox2.Width += size;
@@ -1341,6 +1362,18 @@ namespace SpeedDevelopTool
             txtContentForm.Width += size;
             ControlCollection controls = groupBox1.Controls;
             controls[0].Width += size;
+
+            askQuestion.Width += size;
+            askQuestion.point = new Point(askQuestion.Location.X - size, askQuestion.Location.Y);
+            askQuestion.Left -= size;
+
+            cmomonAnswer.Width += size;
+            cmomonAnswer.point = new Point(cmomonAnswer.Location.X - size, cmomonAnswer.Location.Y);
+            cmomonAnswer.Left -= size;
+
+            myQuestion.Width += size;
+            myQuestion.point = new Point(myQuestion.Location.X - size, myQuestion.Location.Y);
+            myQuestion.Left -= size;
         }
 
         private void pictureBox4_Click(object sender, EventArgs e)
@@ -1356,7 +1389,7 @@ namespace SpeedDevelopTool
 
         private void pictureBox3_Click(object sender, EventArgs e)
         {
-            WebLogin loginForm = new WebLogin("http://http://u8dev.yonyou.com/");
+            WebLogin loginForm = new WebLogin("http://u8dev.yonyou.com/");
             loginForm.ShowDialog();
         }
     }

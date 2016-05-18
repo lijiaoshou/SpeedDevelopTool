@@ -12,7 +12,7 @@ namespace SpeedDevelopTool
     public partial class AskQuestion : Form
     {
         private string category;
-        private Point point;
+        public Point point { get; set; }
 
         public AskQuestion()
         {

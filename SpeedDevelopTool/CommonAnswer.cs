@@ -12,7 +12,7 @@ namespace SpeedDevelopTool
     public partial class CommonAnswer : Form
     {
         private string category;
-        private Point point;
+        public Point point { get; set; }
 
         public CommonAnswer()
         {

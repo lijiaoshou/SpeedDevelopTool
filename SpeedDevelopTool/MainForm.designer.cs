@@ -314,7 +314,7 @@
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(29, 12);
             this.label7.TabIndex = 30;
-            this.label7.Text = "消息";
+            this.label7.Text = "登录";
             // 
             // MainForm
             // 
