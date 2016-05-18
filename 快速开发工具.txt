@@ -13,3 +13,11 @@
 1.没有另外用控件，直接给功能代码区域的groupbox里的control加了事件监听，只要有点击事件就更新代码区域。
 2.实时代码无法直接通过dll或者代码代码实现，只能通过代码暂存来实现，现在是通过暂存xml文件来实现实时代码。
 3.新做的一个usercontrol，可以将.cs代码拷贝到xml文件夹下，然后生成对应的xml文件就可以了。
+
+SharpDevelop源码git地址：
+https://github.com/xiaochuwang/SharpDevelop-master
+另，各版本源码地址：
+http://www.icsharpcode.net/OpenSource/SD/Download/
+
+VSTS地址：
+SuperSuperLee.visualstudio.com

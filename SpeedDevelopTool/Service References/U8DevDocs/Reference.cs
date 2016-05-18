@@ -22,7 +22,7 @@ namespace SpeedDevelopTool.U8DevDocs {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/getAskCount", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Data.DataSet getAskCount();
+        System.Data.DataSet getAskCount(string username);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -56,8 +56,8 @@ namespace SpeedDevelopTool.U8DevDocs {
             return base.Channel.getDocument(domcumentName);
         }
         
-        public System.Data.DataSet getAskCount() {
-            return base.Channel.getAskCount();
+        public System.Data.DataSet getAskCount(string username) {
+            return base.Channel.getAskCount(username);
         }
     }
 }

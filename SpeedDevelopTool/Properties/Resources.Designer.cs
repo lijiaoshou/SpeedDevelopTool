@@ -63,36 +63,6 @@ namespace SpeedDevelopTool.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap _001mWx81gy6GMvUj8EAfc_690 {
-            get {
-                object obj = ResourceManager.GetObject("001mWx81gy6GMvUj8EAfc&690", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
-        /// </summary>
-        internal static System.Drawing.Bitmap iuiymAv {
-            get {
-                object obj = ResourceManager.GetObject("iuiymAv", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
-        /// </summary>
-        internal static System.Drawing.Bitmap 侧面按钮 {
-            get {
-                object obj = ResourceManager.GetObject("侧面按钮", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
-        /// </summary>
         internal static System.Drawing.Bitmap 信息 {
             get {
                 object obj = ResourceManager.GetObject("信息", resourceCulture);
@@ -103,9 +73,29 @@ namespace SpeedDevelopTool.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap 加载2 {
+        internal static System.Drawing.Bitmap 信息_未登录 {
             get {
-                object obj = ResourceManager.GetObject("加载2", resourceCulture);
+                object obj = ResourceManager.GetObject("信息_未登录", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap 常见问题 {
+            get {
+                object obj = ResourceManager.GetObject("常见问题", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap 常见问题_未登录 {
+            get {
+                object obj = ResourceManager.GetObject("常见问题_未登录", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -116,6 +106,46 @@ namespace SpeedDevelopTool.Properties {
         internal static System.Drawing.Bitmap 提问图标 {
             get {
                 object obj = ResourceManager.GetObject("提问图标", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap 提问图标_未登录 {
+            get {
+                object obj = ResourceManager.GetObject("提问图标_未登录", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap 未读信息 {
+            get {
+                object obj = ResourceManager.GetObject("未读信息", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap 登录 {
+            get {
+                object obj = ResourceManager.GetObject("登录", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap 相关文档 {
+            get {
+                object obj = ResourceManager.GetObject("相关文档", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

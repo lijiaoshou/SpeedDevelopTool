@@ -172,6 +172,11 @@
     <Compile Include="MyEventArgs.cs" />
     <Compile Include="NetSampleDelegate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="RemoteLoader.cs" />
     <Compile Include="Service References\U8DevDocs\Reference.cs">
       <AutoGen>True</AutoGen>
@@ -211,14 +216,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <EmbeddedResource Include="WebLogin.resx">
       <DependentUpon>WebLogin.cs</DependentUpon>
     </EmbeddedResource>
@@ -237,11 +237,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="dll\ICSharpCode.TextEditor.dll" />
-    <None Include="Resources\001mWx81gy6GMvUj8EAfc&amp;690.gif" />
-    <None Include="Resources\加载2.gif" />
     <None Include="Resources\提问图标.png" />
     <None Include="Resources\信息.png" />
-    <None Include="Resources\侧面按钮.png" />
     <None Include="Service References\U8DevDocs\u8devservice.disco" />
     <None Include="Service References\U8DevDocs\configuration91.svcinfo" />
     <None Include="Service References\U8DevDocs\configuration.svcinfo" />
@@ -249,7 +246,13 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-    <None Include="Resources\iuiymAv.jpg" />
+    <None Include="Resources\提问图标_未登录.png" />
+    <None Include="Resources\未读信息.png" />
+    <None Include="Resources\信息_未登录.png" />
+    <None Include="Resources\登录.png" />
+    <None Include="Resources\常见问题_未登录.png" />
+    <None Include="Resources\常见问题.png" />
+    <None Include="Resources\相关文档.png" />
     <Content Include="SpeedDevelopTool.xml" />
   </ItemGroup>
   <ItemGroup>

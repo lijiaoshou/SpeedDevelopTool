@@ -55,7 +55,7 @@
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.Silver;
-            this.pictureBox1.Image = global::SpeedDevelopTool.Properties.Resources.加载2;
+            //this.pictureBox1.Image = global::SpeedDevelopTool.Properties.Resources.加载2;
             this.pictureBox1.Location = new System.Drawing.Point(7, 7);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(143, 133);

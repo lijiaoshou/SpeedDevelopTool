@@ -32,6 +32,8 @@ namespace SpeedDevelopTool
         MyQuestion myQuestion;
         private int cmomonAnswerX=0;
 
+        public string userEmail { get; set; }
+
         private bool canUse = true;
         private int iniMainFormWidth = 0;
 
@@ -206,7 +208,9 @@ namespace SpeedDevelopTool
 
                 iniMainFormWidth = this.Size.Width;
                 cmomonAnswerX = cmomonAnswer.Location.X;
-    }
+
+                ShowNoLoginImages();
+            }
             catch (Exception ex)
             {
                 throw ex;
@@ -218,6 +222,46 @@ namespace SpeedDevelopTool
             this.cmomonAnswer.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=iszhishi&v=0");
             this.askQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/add.aspx?v=0");
             this.myQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=my&v=0");
+
+            this.pictureBox1.BackgroundImage = Properties.Resources.提问图标;
+            this.pictureBox2.BackgroundImage = Properties.Resources.信息;
+            this.pictureBox5.BackgroundImage = Properties.Resources.常见问题;
+
+            this.userEmail = getstr;
+            ChargeMessageStatus();
+        }
+
+        public void ChargeMessageStatus()
+        {
+            U8DevDocs.u8DevServiceSoapClient client = new U8DevDocs.u8DevServiceSoapClient();
+            DataSet ds = client.getAskCount(userEmail);
+            if (ds != null&&ds.Tables.Count>0)
+            {
+                if (ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+                {
+                    //有消息
+                    this.pictureBox2.BackgroundImage = Properties.Resources.未读信息;
+                }
+                else
+                {
+                    //无消息
+                }
+            }
+            else
+            {
+                //无消息
+               
+            }
+        }
+
+        private void ShowNoLoginImages()
+        {
+            this.pictureBox1.BackgroundImage = Properties.Resources.提问图标_未登录;
+            this.pictureBox1.BackgroundImageLayout = ImageLayout.Stretch;
+            this.pictureBox2.BackgroundImage = Properties.Resources.信息_未登录;
+            this.pictureBox2.BackgroundImageLayout = ImageLayout.Stretch;
+            this.pictureBox5.BackgroundImage = Properties.Resources.常见问题_未登录;
+            this.pictureBox5.BackgroundImageLayout = ImageLayout.Stretch;
         }
 
         /// <summary>
@@ -1256,6 +1300,12 @@ namespace SpeedDevelopTool
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
+            if (this.pictureBox1.BackgroundImage == Properties.Resources.提问图标_未登录)
+            {
+                MessageBox.Show("请先登录");
+                return;
+            }
+
             askQuestion.ShowDialog();
         }
 
@@ -1265,11 +1315,19 @@ namespace SpeedDevelopTool
             this.cmomonAnswer.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=iszhishi&v=0");
             this.askQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/add.aspx?v=0");
             this.myQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=my&v=0");
+
+            ChargeMessageStatus();
         }
 
         private void pictureBox2_Click(object sender, EventArgs e)
         {
+            if (this.pictureBox2.BackgroundImage == Properties.Resources.信息_未登录)
+            {
+                MessageBox.Show("请先登录");
+                return;
+            }
             myQuestion.ShowDialog();
+            pictureBox2.BackgroundImage = Properties.Resources.信息;
         }
 
         private void MainForm_SizeChanged(object sender, EventArgs e)
@@ -1384,6 +1442,11 @@ namespace SpeedDevelopTool
 
         private void pictureBox5_Click(object sender, EventArgs e)
         {
+            if (this.pictureBox5.BackgroundImage == Properties.Resources.常见问题_未登录)
+            {
+                MessageBox.Show("请先登录");
+                return;
+            }
             cmomonAnswer.ShowDialog();
         }
 
