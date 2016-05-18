@@ -29,7 +29,7 @@ namespace SpeedDevelopTool
         {
             point = this.Location;
             this.Move += new EventHandler(CommonAnswer_Move);
-            webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/add.aspx?v=");
+            webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=my&v=0");
         }
 
         public void CommonAnswer_Move(object sender, EventArgs e)

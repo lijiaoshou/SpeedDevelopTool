@@ -19,6 +19,10 @@ namespace SpeedDevelopTool.U8DevDocs {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/getDocument", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Data.DataSet getDocument(string domcumentName);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/getAskCount", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        System.Data.DataSet getAskCount();
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -50,6 +54,10 @@ namespace SpeedDevelopTool.U8DevDocs {
         
         public System.Data.DataSet getDocument(string domcumentName) {
             return base.Channel.getDocument(domcumentName);
+        }
+        
+        public System.Data.DataSet getAskCount() {
+            return base.Channel.getAskCount();
         }
     }
 }

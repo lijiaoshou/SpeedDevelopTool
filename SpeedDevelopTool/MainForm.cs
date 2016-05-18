@@ -19,6 +19,7 @@ using UFIDA.U8.Portal.Framework.Actions;
 using System.Text.RegularExpressions;
 using WinForm_Test;
 using System.Threading;
+using System.Net;
 
 namespace SpeedDevelopTool
 {
@@ -29,6 +30,8 @@ namespace SpeedDevelopTool
         CommonAnswer cmomonAnswer;
         AskQuestion askQuestion;
         MyQuestion myQuestion;
+        private bool canUse = true;
+        private int iniMainFormWidth = 0;
 
         //internal ICSharpCode.SharpDevelop.Dom.ProjectContentRegistry pcRegistry;
         internal ICSharpCode.SharpDevelop.Dom.DefaultProjectContent myProjectContent;
@@ -162,6 +165,8 @@ namespace SpeedDevelopTool
             string category = Config.GetValueByKey(this.choiceOpiton, "ChineseName");
 
             cmomonAnswer = new CommonAnswer(category);
+            askQuestion = new AskQuestion(category);
+            myQuestion = new MyQuestion(category);
 
             //获取相关配置信息
             string categoryPath = Config.GetValueByKey(this.choiceOpiton, "categoryPath");
@@ -196,6 +201,8 @@ namespace SpeedDevelopTool
 
                 //初始化“源码_修改”文件夹
                 Common.copyDirectory(basePath + "源码", basePath + "源码_修改");
+
+                iniMainFormWidth = this.Size.Width;
             }
             catch (Exception ex)
             {
@@ -206,8 +213,8 @@ namespace SpeedDevelopTool
         public void DoMethod(string getstr)
         {
             this.cmomonAnswer.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=iszhishi&v=0");
-            this.askQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/add.aspx?v=");
-            this.myQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=my&v=");
+            this.askQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/add.aspx?v=0");
+            this.myQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=my&v=0");
         }
 
         /// <summary>
@@ -621,14 +628,6 @@ namespace SpeedDevelopTool
         /// <param name="e"></param>
         private void button4_Click_1(object sender, EventArgs e)
         {
-            //代码已修改
-            this.codeIsModified = true;
-
-            //获取用户修改后的代码
-            string codesText = txtContentForm.textEditorControl1.Text;
-
-            ChargeAlteredCodes(codesText);
-
             #region old wait to delete
             ////弹出等待框，进行修改->编译->替换过程
             //frmWaitingBox f = new frmWaitingBox((obj, args) =>
@@ -653,42 +652,65 @@ namespace SpeedDevelopTool
             #endregion
 
             #region ProgressBar
-            this.progressBar1.Value = 0;
-            this.progressBar1.Maximum = 4;
+
+            canUse = true;
+            EditProgressBar();
+            ReplaceSolution();
+
+            #endregion
+        }
+
+        private void ReplaceSolution()
+        {
+            //代码已修改
+            this.codeIsModified = true;
+
+            //获取用户修改后的代码
+            string codesText = txtContentForm.textEditorControl1.Text;
+
+            bool chargeResult=ChargeAlteredCodes(codesText);
+            if (!chargeResult)
+            {
+                canUse = false;
+                this.progressBar1.Value = 0;
+                return;
+            }
 
             //替换原始代码
             ReplaceCodes(codesText);
-            this.progressBar1.Value++;
+            this.progressBar1.Value += 10;
 
             //编译用户修改后的解决方案，复制并替换默认dll或者exe,并重新加载功能演示区
             CompileAfterReplaceCodes();
-            this.progressBar1.Value++;
+            this.progressBar1.Value += 10;
 
             //重新加载填充代码演示区域
             InitFunctionalDemonstrationRegion();
-            this.progressBar1.Value++;
+            this.progressBar1.Value += 10;
 
             //跟踪功能区代码
             TraceOperate();
-            this.progressBar1.Value++;
+            this.progressBar1.Value = 100;
 
             //弹窗提示用户
             MessageBox.Show("用户修改已保存且编译完毕");
             this.progressBar1.Value = 0;
-
-            #endregion
         }
 
         /// <summary>
         /// 判断用户修改后的代码
         /// </summary>
         /// <param name="codesText">用户修改后的代码</param>
-        private void ChargeAlteredCodes(string codesText)
+        private bool ChargeAlteredCodes(string codesText)
         {
             if (string.IsNullOrEmpty(codesText))
             {
                 MessageBox.Show("代码不可为空，请输入正确代码");
-                return;
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
 
@@ -802,9 +824,32 @@ namespace SpeedDevelopTool
 
             #region ProgressBar
 
-            this.progressBar1.Value = 0;
-            this.progressBar1.Maximum = 4;
+            canUse=true;
+            EditProgressBar();
+            RecoverSolution();
 
+            #endregion
+        }
+
+        private void EditProgressBar()
+        {
+            this.progressBar1.Minimum = 0;
+            this.progressBar1.Maximum = 100;
+            Thread thread = new Thread(IncreaseBar);
+            thread.Start();
+        }
+
+        private void IncreaseBar()
+        {
+            while(this.progressBar1.Value<60&&canUse)
+            {
+                this.progressBar1.Value += 10;
+                Thread.Sleep(1000);
+            }
+        }
+
+        private void RecoverSolution()
+        {
             //恢复默认，代码变为未修改
             this.codeIsModified = false;
 
@@ -812,32 +857,30 @@ namespace SpeedDevelopTool
             string categoryPath = Config.GetValueByKey(this.choiceOpiton, "categoryPath");
 
             Common.copyDirectory(AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码", AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码_修改");
-            this.progressBar1.Value++;
+            this.progressBar1.Value += 10;
 
             //找到源码文件夹，重新编译，拷贝替换，重新加载
             bool compileResult = CompileAndReplace("源码");
-            this.progressBar1.Value++;
+            this.progressBar1.Value += 10;
 
             if (!compileResult)
             {
                 MessageBox.Show("编译失败,请检查是否改动过源码文件");
-                this.progressBar1.Value=0;
+                this.progressBar1.Value = 0;
                 return;
             }
 
             //重新加载填充代码演示区域
             InitFunctionalDemonstrationRegion();
-            this.progressBar1.Value++;
+            this.progressBar1.Value += 10;
 
             //跟踪功能区代码
             TraceOperate();
-            this.progressBar1.Value++;
+            this.progressBar1.Value = 100;
 
             //弹窗提示恢复成功
             MessageBox.Show("恢复默认成功");
             this.progressBar1.Value = 0;
-
-            #endregion
         }
 
         /// <summary>
@@ -1210,7 +1253,6 @@ namespace SpeedDevelopTool
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            askQuestion = new AskQuestion();
             askQuestion.ShowDialog();
         }
 
@@ -1218,14 +1260,104 @@ namespace SpeedDevelopTool
         {
             //每隔15分钟刷新提问，常见问题，保持session
             this.cmomonAnswer.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=iszhishi&v=0");
-            this.askQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/add.aspx?v=");
-            this.myQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=my&v=");
+            this.askQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/add.aspx?v=0");
+            this.myQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=my&v=0");
         }
 
         private void pictureBox2_Click(object sender, EventArgs e)
         {
-            myQuestion = new MyQuestion();
             myQuestion.ShowDialog();
+        }
+
+        private void MainForm_SizeChanged(object sender, EventArgs e)
+        {
+            int nowWidth = this.Size.Width;
+            int diffWidth = this.Size.Width - iniMainFormWidth;
+
+            //只隐藏左边小框
+            if (this.Size.Width > (iniMainFormWidth+50) && this.Size.Width < (iniMainFormWidth+100))
+            {
+                IniBegin();
+                ChangeLayout(68);
+            }
+            //只隐藏左边大框
+            else if (this.Size.Width > (iniMainFormWidth + 100) && this.Size.Width < (iniMainFormWidth + 300))
+            {
+                IniBegin();
+                ChangeLayout(238);
+            }
+            //两个边框都隐藏
+            else if (this.Size.Width > (iniMainFormWidth + 300))
+            {
+                IniBegin();
+                ChangeLayout(305);
+            }
+            //都不隐藏，不需要做什么
+            else
+            {
+                IniBegin();
+            }
+        }
+
+        private void IniBegin()
+        {
+            label1.Width = iniMainFormWidth-50;
+            label2.Width = iniMainFormWidth-50;
+            label5.Left = iniMainFormWidth-215;
+            label6.Left = iniMainFormWidth-162;
+            pictureBox1.Left = iniMainFormWidth-183;
+            pictureBox2.Left = iniMainFormWidth-132;
+            button10.Left = iniMainFormWidth-99;
+            progressBar1.Width = iniMainFormWidth-52;
+
+            groupBox1.Width = iniMainFormWidth - 58;
+            groupBox2.Width = iniMainFormWidth - 58;
+
+            pictureBox4.Left = iniMainFormWidth - 34;
+            pictureBox5.Left = iniMainFormWidth - 34;
+
+            txtContentForm.Width = iniMainFormWidth - 58;
+            ControlCollection controls = groupBox1.Controls;
+            controls[0].Width = iniMainFormWidth - 58;
+        }
+
+        private void ChangeLayout(int size)
+        {
+            label1.Width += size;
+            label2.Width += size;
+            label5.Left += size;
+            label6.Left += size;
+            pictureBox1.Left += size;
+            pictureBox2.Left += size;
+            button10.Left += size;
+            progressBar1.Width += size;
+
+            pictureBox4.Left += size+3;
+            pictureBox5.Left += size+3;
+
+            groupBox1.Width += size;
+            groupBox2.Width += size;
+
+            txtContentForm.Width += size;
+            ControlCollection controls = groupBox1.Controls;
+            controls[0].Width += size;
+        }
+
+        private void pictureBox4_Click(object sender, EventArgs e)
+        {
+            CategoryDocs docs = new CategoryDocs(this.choiceOpiton);
+            docs.ShowDialog();
+        }
+
+        private void pictureBox5_Click(object sender, EventArgs e)
+        {
+            cmomonAnswer.ShowDialog();
+        }
+
+        private void pictureBox3_Click(object sender, EventArgs e)
+        {
+            WebLogin loginForm = new WebLogin("http://http://u8dev.yonyou.com/");
+            loginForm.ShowDialog();
         }
     }
 }

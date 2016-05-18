@@ -23,6 +23,23 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="getAskCount">
+        <s:complexType />
+      </s:element>
+      <s:element name="getAskCountResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getAskCountResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
     </s:schema>
   </wsdl:types>
   <wsdl:message name="getDocumentSoapIn">
@@ -31,10 +48,20 @@
   <wsdl:message name="getDocumentSoapOut">
     <wsdl:part name="parameters" element="tns:getDocumentResponse" />
   </wsdl:message>
+  <wsdl:message name="getAskCountSoapIn">
+    <wsdl:part name="parameters" element="tns:getAskCount" />
+  </wsdl:message>
+  <wsdl:message name="getAskCountSoapOut">
+    <wsdl:part name="parameters" element="tns:getAskCountResponse" />
+  </wsdl:message>
   <wsdl:portType name="u8DevServiceSoap">
     <wsdl:operation name="getDocument">
       <wsdl:input message="tns:getDocumentSoapIn" />
       <wsdl:output message="tns:getDocumentSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="getAskCount">
+      <wsdl:input message="tns:getAskCountSoapIn" />
+      <wsdl:output message="tns:getAskCountSoapOut" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="u8DevServiceSoap" type="tns:u8DevServiceSoap">
@@ -48,11 +75,29 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="getAskCount">
+      <soap:operation soapAction="http://tempuri.org/getAskCount" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:binding name="u8DevServiceSoap12" type="tns:u8DevServiceSoap">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="getDocument">
       <soap12:operation soapAction="http://tempuri.org/getDocument" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getAskCount">
+      <soap12:operation soapAction="http://tempuri.org/getAskCount" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

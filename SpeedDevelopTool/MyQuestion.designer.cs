@@ -41,16 +41,16 @@
             this.webBrowser1.TabIndex = 0;
             this.webBrowser1.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser1_DocumentCompleted);
             // 
-            // AskQuestion
+            // MyQuestion
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(921, 855);
             this.Controls.Add(this.webBrowser1);
             this.Location = new System.Drawing.Point(308, 60);
-            this.Name = "AskQuestion";
+            this.Name = "MyQuestion";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "我要提问";
+            this.Text = "我的问题";
             this.Load += new System.EventHandler(this.AskQuestion_Load);
             this.ResumeLayout(false);
 

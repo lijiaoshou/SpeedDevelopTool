@@ -249,6 +249,7 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+    <None Include="Resources\iuiymAv.jpg" />
     <Content Include="SpeedDevelopTool.xml" />
   </ItemGroup>
   <ItemGroup>

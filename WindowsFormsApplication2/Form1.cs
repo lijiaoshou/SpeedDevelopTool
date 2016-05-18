@@ -35,19 +35,7 @@ namespace WindowsFormsApplication2
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            //progressBar1.Value = 50;
-            //label1.Text = 50 + "%";
-            //ServiceReference1.u8DevServiceSoapClient u8devClient = new ServiceReference1.u8DevServiceSoapClient();
-            //DataSet dsDocs = new DataSet();
-            //DataTable dtDocs = new DataTable();
-            //dsDocs = u8devClient.getDocument("栏目");
-            //if (dsDocs != null && dsDocs.Tables.Count > 0)
-            //{
-            //    dtDocs = dsDocs.Tables[0];
-
-            //}
-
-            linkLabel1.Links.Add(0, 100, "u8dev.yonyou.com");
+           
         }
 
         //void timer_Tick(object sender, EventArgs e)
@@ -88,6 +76,11 @@ namespace WindowsFormsApplication2
                 MessageBox.Show("Item clicked: " + target);
             }
             //System.Diagnostics.Process.Start("u8dev.yonyou.com/uploads/document/2014/12/22/201412221000147OdU6.docx");
+        }
+
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            progressBar1.Value += 2;
         }
     }
 }

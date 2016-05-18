@@ -48,6 +48,7 @@
             this.ClientSize = new System.Drawing.Size(572, 394);
             this.Controls.Add(this.webBrowser1);
             this.Name = "WebLogin";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "WebLogin";
             this.Load += new System.EventHandler(this.WebLogin_Load);
             this.ResumeLayout(false);
