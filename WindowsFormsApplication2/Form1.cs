@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Web;
 
 namespace WindowsFormsApplication2
 {
@@ -16,71 +17,28 @@ namespace WindowsFormsApplication2
         private BackgroundWorker worker = new BackgroundWorker();
         private System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
 
+
         public Form1()
         {
-
             InitializeComponent();
-
-            this.progressBar1.Value = 0;
-            this.progressBar1.Maximum = 200;
-            this.progressBar1.Step = 1;
-            timer.Interval = 100;
-            //timer.Tick += new EventHandler(timer_Tick);
-            worker.WorkerReportsProgress = true;
-            worker.DoWork += new DoWorkEventHandler(worker_DoWork);
-            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(worker_RunWorkerCompleted);
-            worker.RunWorkerAsync();
-            timer.Start();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
+            this.webBrowser1.ScriptErrorsSuppressed = true;
            
+            this.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=iszhishi&v=0&key="+HttpUtility.UrlEncode("过滤"));
         }
 
-        //void timer_Tick(object sender, EventArgs e)
-        // {
-        //    if (this.progressBar1.Value< this.progressBar1.Maximum)
-        //   {
-        //        this.progressBar1.PerformStep();
-        //     }
-        // }
-
-         void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-         {
-            timer.Stop();
-             this.progressBar1.Value = this.progressBar1.Maximum;
-            MessageBox.Show("Complete!");
-        }
-
-         void worker_DoWork(object sender, DoWorkEventArgs e)
-         {
-            int count = 100;
-            for (int i = 0; i<count; i++)
-             {
-                 Thread.Sleep(100);
-            }
-        }
-
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            this.linkLabel1.Links[linkLabel1.Links.IndexOf(e.Link)].Visited = true;
-
-            string target = e.Link.LinkData as string;
-            if (null != target)//&& target.StartsWith("www")
-            {
-                System.Diagnostics.Process.Start("IEXPLORE.EXE","http://"+target);
-            }
-            else
-            {
-                MessageBox.Show("Item clicked: " + target);
-            }
-            //System.Diagnostics.Process.Start("u8dev.yonyou.com/uploads/document/2014/12/22/201412221000147OdU6.docx");
+            ((WebBrowser)sender).Document.Window.Error += new HtmlElementErrorEventHandler(Window_Error);
         }
 
-        private void timer2_Tick(object sender, EventArgs e)
+        private void Window_Error(object sender, HtmlElementErrorEventArgs e)
         {
-            progressBar1.Value += 2;
+            // Ignore the error and suppress the error dialog box. 
+            e.Handled = true;
         }
     }
 }

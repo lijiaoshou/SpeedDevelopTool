@@ -179,7 +179,7 @@ namespace SpeedDevelopTool
             string category = Config.GetValueByKey(this.choiceOpiton, "ChineseName");
 
             cmomonAnswer = new CommonAnswer(category);
-            cmomonAnswer.webBrowser1.ScriptErrorsSuppressed = false;
+            cmomonAnswer.webBrowser1.ScriptErrorsSuppressed = true;
             askQuestion = new AskQuestion(category);
             myQuestion = new MyQuestion(category);
             docs = new CategoryDocs(this.choiceOpiton);
@@ -228,12 +228,26 @@ namespace SpeedDevelopTool
 
                 MainForm_SizeChanged(this,null);
                 //进来默认点一次登录
-                pictureBox3_Click(pictureBox3, null);
+                //pictureBox3_Click(pictureBox3, null);
+                MainFormLogin();
             }
             catch (Exception ex)
             {
                 throw ex;
             }
+        }
+
+        private void MainFormLogin()
+        {
+            webLogin.Location =webLogin.point;
+
+            webLogin.webBrowser1.Navigate(webLogin.NavigateUrl);
+            this.Move += new EventHandler(CommonAnswer_Move);
+        }
+
+        public void CommonAnswer_Move(object sender, EventArgs e)
+        {
+            this.Location = webLogin.point;
         }
 
         public void DoMethod(string getstr)
@@ -1418,8 +1432,8 @@ namespace SpeedDevelopTool
             groupBox1.Width = iniMainFormWidth - 70;
             groupBox2.Width = iniMainFormWidth - 70;
 
-            pictureBox4.Left = iniMainFormWidth - 44;
-            pictureBox5.Left = iniMainFormWidth - 44;
+            pictureBox4.Left = iniMainFormWidth - 47;
+            pictureBox5.Left = iniMainFormWidth - 47;
 
             txtContentForm.Width = iniMainFormWidth - 70;
             ControlCollection controls = groupBox1.Controls;
@@ -1460,8 +1474,8 @@ namespace SpeedDevelopTool
 
             progressBar1.Width += size;
 
-            pictureBox4.Left += size+4;
-            pictureBox5.Left += size+4;
+            pictureBox4.Left += size+1;
+            pictureBox5.Left += size+1;
 
             groupBox1.Width += size;
             groupBox2.Width += size;

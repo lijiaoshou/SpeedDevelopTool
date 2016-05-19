@@ -21,7 +21,7 @@ namespace SpeedDevelopTool
 
         //public int MainFormX { get; set; }
 
-        private string NavigateUrl { get; set; }
+        internal string NavigateUrl { get; set; }
 
         public WebLogin()
         {

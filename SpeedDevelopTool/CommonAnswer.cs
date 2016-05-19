@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Web;
 using System.Windows.Forms;
 
 namespace SpeedDevelopTool
@@ -29,7 +30,7 @@ namespace SpeedDevelopTool
         {
             point = this.Location;
             this.Move += new EventHandler(CommonAnswer_Move);
-            string url = "http://u8dev.yonyou.com/home/ask/index.aspx?r=iszhishi&v=0&key=" + this.category;
+            string url = "http://u8dev.yonyou.com/home/ask/index.aspx?r=iszhishi&v=0&key=" + HttpUtility.UrlEncode(this.category);
             webBrowser1.Navigate(url);
         }
 
