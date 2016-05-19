@@ -96,6 +96,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -250,8 +251,8 @@
     <None Include="Resources\未读信息.png" />
     <None Include="Resources\信息_未登录.png" />
     <None Include="Resources\登录.png" />
-    <None Include="Resources\常见问题_未登录.png" />
     <None Include="Resources\常见问题.png" />
+    <None Include="Resources\常见问题_未登录.png" />
     <None Include="Resources\相关文档.png" />
     <Content Include="SpeedDevelopTool.xml" />
   </ItemGroup>

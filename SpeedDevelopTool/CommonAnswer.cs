@@ -29,7 +29,8 @@ namespace SpeedDevelopTool
         {
             point = this.Location;
             this.Move += new EventHandler(CommonAnswer_Move);
-            webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=iszhishi&v=0&key="+this.category);
+            string url = "http://u8dev.yonyou.com/home/ask/index.aspx?r=iszhishi&v=0&key=" + this.category;
+            webBrowser1.Navigate(url);
         }
 
         public void CommonAnswer_Move(object sender, EventArgs e)
@@ -39,34 +40,13 @@ namespace SpeedDevelopTool
 
         private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            //if (webBrowser1.Url.ToString() != "http://u8dev.yonyou.com/" && webBrowser1.Url.ToString() != "http://u8dev.yonyou.com/register.aspx"
-            //    && webBrowser1.Url.ToString() != "http://u8dev.yonyou.com/GetPassword.aspx")
-            //{
-            //    //隐藏搜索框
-            //    webBrowser1.Document.GetElementById("filterIpt").SetAttribute("style", "display:none;");
-
-            //    //隐藏搜索按钮
-            //    HtmlElementCollection collection = webBrowser1.Document.GetElementsByTagName("img");
-            //    foreach (HtmlElement element in collection)
-            //    {
-            //        if (element.GetAttribute("title") == "查询")
-            //        {
-            //            element.SetAttribute("style", "display:none;");
-            //        }
-            //    }
-
-            //    //隐藏返回上一页
-            //    HtmlElementCollection collection1 = webBrowser1.Document.GetElementsByTagName("a");
-            //    foreach (HtmlElement element in collection1)
-            //    {
-            //        if (element.GetAttribute("title") == "返回上一页")
-            //        {
-            //            element.SetAttribute("style", "display:none;");
-            //        }
-            //    }
-
-
-            //}
+            ((WebBrowser)sender).Document.Window.Error+= new HtmlElementErrorEventHandler(Window_Error);
         }
-    }
+
+        private void Window_Error(object sender, HtmlElementErrorEventArgs e)
+        {
+            // Ignore the error and suppress the error dialog box. 
+            e.Handled = true;
+        }
+}
 }

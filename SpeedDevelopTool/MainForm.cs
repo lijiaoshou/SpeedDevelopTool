@@ -20,6 +20,7 @@ using System.Text.RegularExpressions;
 using WinForm_Test;
 using System.Threading;
 using System.Net;
+using System.Web;
 
 namespace SpeedDevelopTool
 {
@@ -27,15 +28,20 @@ namespace SpeedDevelopTool
     {
         //ICSharpCode.TextEditor.TextEditorControl txtContent = new ICSharpCode.TextEditor.TextEditorControl();
         CodeRegion.MainForm txtContentForm = new CodeRegion.MainForm();
-        CommonAnswer cmomonAnswer;
+        public CommonAnswer cmomonAnswer;
         AskQuestion askQuestion;
         MyQuestion myQuestion;
+        WebLogin webLogin;
+        CategoryDocs docs;
         private int cmomonAnswerX=0;
 
-        public string userEmail { get; set; }
+        public string userEmail
+        {
+            get;set;
+        }
 
         private bool canUse = true;
-        private int iniMainFormWidth = 0;
+        public int iniMainFormWidth = 0;
 
         //internal ICSharpCode.SharpDevelop.Dom.ProjectContentRegistry pcRegistry;
         internal ICSharpCode.SharpDevelop.Dom.DefaultProjectContent myProjectContent;
@@ -162,6 +168,10 @@ namespace SpeedDevelopTool
         /// <param name="e"></param>
         private void MainForm1_Load(object sender, EventArgs e)
         {
+            userEmail= Config.GetValueByKey("UserEmail", "Email");
+
+            ShowNoLoginImages();
+
             timer1.Enabled = true;
 
             Middle.sendEvent += new Middle.SendMessage(this.DoMethod);
@@ -169,8 +179,12 @@ namespace SpeedDevelopTool
             string category = Config.GetValueByKey(this.choiceOpiton, "ChineseName");
 
             cmomonAnswer = new CommonAnswer(category);
+            cmomonAnswer.webBrowser1.ScriptErrorsSuppressed = false;
             askQuestion = new AskQuestion(category);
             myQuestion = new MyQuestion(category);
+            docs = new CategoryDocs(this.choiceOpiton);
+            webLogin = new WebLogin(userEmail, this.Size.Width, cmomonAnswer.Location.X, "http://u8dev.yonyou.com/");
+
 
             //获取相关配置信息
             string categoryPath = Config.GetValueByKey(this.choiceOpiton, "categoryPath");
@@ -209,7 +223,12 @@ namespace SpeedDevelopTool
                 iniMainFormWidth = this.Size.Width;
                 cmomonAnswerX = cmomonAnswer.Location.X;
 
-                ShowNoLoginImages();
+                progressBar1.Visible = false;
+                this.BackColor = Color.White;
+
+                MainForm_SizeChanged(this,null);
+                //进来默认点一次登录
+                pictureBox3_Click(pictureBox3, null);
             }
             catch (Exception ex)
             {
@@ -219,15 +238,28 @@ namespace SpeedDevelopTool
 
         public void DoMethod(string getstr)
         {
-            this.cmomonAnswer.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=iszhishi&v=0");
-            this.askQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/add.aspx?v=0");
-            this.myQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=my&v=0");
+            //if (!string.IsNullOrEmpty(getstr))
+            //{
+                this.cmomonAnswer.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=iszhishi&v=0");
+                this.askQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/add.aspx?v=0");
+                this.myQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=my&v=0");
 
-            this.pictureBox1.BackgroundImage = Properties.Resources.提问图标;
-            this.pictureBox2.BackgroundImage = Properties.Resources.信息;
-            this.pictureBox5.BackgroundImage = Properties.Resources.常见问题;
+                this.pictureBox1.BackgroundImage = Properties.Resources.提问图标;
+                this.pictureBox2.BackgroundImage = Properties.Resources.信息;
+                this.pictureBox5.BackgroundImage = Properties.Resources.常见问题;
 
-            this.userEmail = getstr;
+                this.label5.ForeColor = Color.Black;
+                this.label6.ForeColor = Color.Black;
+           // }
+            //else
+            //{
+            //    this.pictureBox1.BackgroundImage = Properties.Resources.提问图标_未登录;
+            //    this.pictureBox2.BackgroundImage = Properties.Resources.信息_未登录;
+            //    this.pictureBox5.BackgroundImage = Properties.Resources.常见问题_未登录;
+
+            //    this.label5.ForeColor = Color.LightGray;
+            //    this.label6.ForeColor = Color.LightGray;
+            //}
             ChargeMessageStatus();
         }
 
@@ -262,6 +294,9 @@ namespace SpeedDevelopTool
             this.pictureBox2.BackgroundImageLayout = ImageLayout.Stretch;
             this.pictureBox5.BackgroundImage = Properties.Resources.常见问题_未登录;
             this.pictureBox5.BackgroundImageLayout = ImageLayout.Stretch;
+
+            this.label5.ForeColor = Color.LightGray;
+            this.label6.ForeColor = Color.LightGray;
         }
 
         /// <summary>
@@ -320,6 +355,7 @@ namespace SpeedDevelopTool
                 //txtContent.Text = "";
                 //txtContentForm.statusStrip1.Width = txtContentForm.Width - 2;
                 txtContentForm.TopLevel = false;
+                txtContentForm.BackColor = Color.White;
                 txtContentForm.Show();
                 groupBox2.Controls.Add(txtContentForm);
 
@@ -700,6 +736,7 @@ namespace SpeedDevelopTool
 
             #region ProgressBar
 
+            progressBar1.Visible = true;
             canUse = true;
             EditProgressBar();
             ReplaceSolution();
@@ -741,6 +778,7 @@ namespace SpeedDevelopTool
 
             //弹窗提示用户
             MessageBox.Show("用户修改已保存且编译完毕");
+            this.progressBar1.Visible = false;
             this.progressBar1.Value = 0;
         }
 
@@ -871,6 +909,7 @@ namespace SpeedDevelopTool
 
             #region ProgressBar
 
+            progressBar1.Visible = true;
             canUse=true;
             EditProgressBar();
             RecoverSolution();
@@ -927,6 +966,7 @@ namespace SpeedDevelopTool
 
             //弹窗提示恢复成功
             MessageBox.Show("恢复默认成功");
+            this.progressBar1.Visible = false;
             this.progressBar1.Value = 0;
         }
 
@@ -1001,7 +1041,7 @@ namespace SpeedDevelopTool
                 AddControlAndChangeSkin(uForm);
                 uForm.Width = groupBox1.Width;
                 uForm.Height = groupBox1.Height;
-
+                uForm.BackColor = Color.White;
                 uForm.Show();
             }
             else //同时支持form和usercontrol
@@ -1013,6 +1053,7 @@ namespace SpeedDevelopTool
 
                     usercontrol.Width = groupBox1.Width;
                     usercontrol.Height = groupBox1.Height;
+                    usercontrol.BackColor = Color.White;
                     //控件用户控件在主界面中的位置
                     usercontrol.Top = 20;
                     usercontrol.Left = 10;
@@ -1292,15 +1333,15 @@ namespace SpeedDevelopTool
             e.Graphics.Clear(this.BackColor);
         }
 
-        private void button10_Click(object sender, EventArgs e)
-        {
-            WebLogin loginForm = new WebLogin("http://u8dev.yonyou.com");
-            loginForm.ShowDialog();
-        }
+        //private void button10_Click(object sender, EventArgs e)
+        //{
+        //    WebLogin loginForm = new WebLogin("http://u8dev.yonyou.com");
+        //    loginForm.ShowDialog();
+        //}
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            if (this.pictureBox1.BackgroundImage == Properties.Resources.提问图标_未登录)
+            if (string.IsNullOrEmpty(userEmail))
             {
                 MessageBox.Show("请先登录");
                 return;
@@ -1321,7 +1362,7 @@ namespace SpeedDevelopTool
 
         private void pictureBox2_Click(object sender, EventArgs e)
         {
-            if (this.pictureBox2.BackgroundImage == Properties.Resources.信息_未登录)
+            if (string.IsNullOrEmpty(userEmail))
             {
                 MessageBox.Show("请先登录");
                 return;
@@ -1362,15 +1403,15 @@ namespace SpeedDevelopTool
 
         private void IniBegin()
         {
-            label1.Width = iniMainFormWidth-70;
-            label2.Width = iniMainFormWidth-70;
+            pictureBox6.Width = iniMainFormWidth - 70;
+            pictureBox7.Width = iniMainFormWidth - 70;
 
             label5.Left = iniMainFormWidth-215;
             label6.Left = iniMainFormWidth-162;
-            label7.Left = iniMainFormWidth - 100;
+            label7.Left = iniMainFormWidth - 105;
             pictureBox1.Left = iniMainFormWidth-183;
             pictureBox2.Left = iniMainFormWidth-132;
-            pictureBox3.Left = iniMainFormWidth - 71;
+            pictureBox3.Left = iniMainFormWidth - 76;
 
             progressBar1.Width = iniMainFormWidth-70;
 
@@ -1395,19 +1436,27 @@ namespace SpeedDevelopTool
             myQuestion.Width = iniMainFormWidth - 35;
             myQuestion.point = new Point(cmomonAnswer.Location.X, myQuestion.Location.Y);
             myQuestion.Left = 310;
+
+            docs.Width = iniMainFormWidth - 35;
+            docs.point = new Point(cmomonAnswer.Location.X, cmomonAnswer.Location.Y);
+            docs.Left = 310;
+
+            webLogin.Width = iniMainFormWidth - 35;
+            webLogin.point = new Point(cmomonAnswer.Location.X, cmomonAnswer.Location.Y);
+            webLogin.Left = 310;
         }
 
         private void ChangeLayout(int size)
         {
-            label1.Width += size;
-            label2.Width += size;
+            pictureBox6.Width += size;
+            pictureBox7.Width += size;
 
             label5.Left += size;
             label6.Left += size;
-            label7.Left += size;
+            label7.Left += size-5;
             pictureBox1.Left += size;
             pictureBox2.Left += size;
-            pictureBox3.Left += size;
+            pictureBox3.Left += size-5;
 
             progressBar1.Width += size;
 
@@ -1432,17 +1481,24 @@ namespace SpeedDevelopTool
             myQuestion.Width += size;
             myQuestion.point = new Point(myQuestion.Location.X - size, myQuestion.Location.Y);
             myQuestion.Left -= size;
+
+            docs.Width += size;
+            docs.point = new Point(cmomonAnswer.Location.X - size, cmomonAnswer.Location.Y);
+            docs.Left -= size;
+
+            webLogin.Width += size;
+            webLogin.point = new Point(cmomonAnswer.Location.X - size, cmomonAnswer.Location.Y);
+            webLogin.Left -= size;
         }
 
         private void pictureBox4_Click(object sender, EventArgs e)
         {
-            CategoryDocs docs = new CategoryDocs(this.choiceOpiton);
             docs.ShowDialog();
         }
 
         private void pictureBox5_Click(object sender, EventArgs e)
         {
-            if (this.pictureBox5.BackgroundImage == Properties.Resources.常见问题_未登录)
+            if (string.IsNullOrEmpty(userEmail))
             {
                 MessageBox.Show("请先登录");
                 return;
@@ -1452,8 +1508,8 @@ namespace SpeedDevelopTool
 
         private void pictureBox3_Click(object sender, EventArgs e)
         {
-            WebLogin loginForm = new WebLogin("http://u8dev.yonyou.com/");
-            loginForm.ShowDialog();
+            //webLogin.Visible = false;
+            webLogin.ShowDialog();
         }
     }
 }

@@ -38,6 +38,7 @@
             // 
             // dataGridView1
             // 
+            this.dataGridView1.BackgroundColor = System.Drawing.Color.White;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.DocumentName,
@@ -48,7 +49,7 @@
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 23;
-            this.dataGridView1.Size = new System.Drawing.Size(538, 384);
+            this.dataGridView1.Size = new System.Drawing.Size(921, 855);
             this.dataGridView1.TabIndex = 0;
             // 
             // DocumentName
@@ -57,7 +58,7 @@
             this.DocumentName.Name = "DocumentName";
             this.DocumentName.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.DocumentName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.DocumentName.Width = 300;
+            this.DocumentName.Width = 500;
             // 
             // FileSize
             // 
@@ -69,7 +70,7 @@
             // 
             this.PostTime.HeaderText = "上传时间";
             this.PostTime.Name = "PostTime";
-            this.PostTime.Width = 200;
+            this.PostTime.Width = 320;
             // 
             // FilePath
             // 
@@ -81,10 +82,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(538, 384);
+            this.ClientSize = new System.Drawing.Size(921, 855);
             this.Controls.Add(this.dataGridView1);
             this.Name = "CategoryDocs";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "相关文档";
             this.Load += new System.EventHandler(this.CategoryDocs_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();

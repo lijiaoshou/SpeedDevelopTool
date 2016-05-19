@@ -16,7 +16,7 @@ namespace SpeedDevelopTool
     {
         private string choiceOpiton;
 
-        private Point point;
+        public Point point { get; set; }
 
         public CategoryDocs()
         {
@@ -31,7 +31,8 @@ namespace SpeedDevelopTool
 
         private void CategoryDocs_Load(object sender, EventArgs e)
         {
-            point = this.Location;
+            this.Location = point;
+            //point = this.Location;
             this.Move += new EventHandler(CategoryDocs_Move);
             dataGridView1.CellClick += new DataGridViewCellEventHandler(DataGridView1_CellClick);
 

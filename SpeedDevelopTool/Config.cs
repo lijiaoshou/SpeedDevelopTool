@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace CommonLib
@@ -99,6 +100,32 @@ namespace CommonLib
             return result;
         }
 
+        public static void AddChildNode(string filePath,string key, string value)
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(filePath);
+            XmlNode category = xmlDoc.SelectSingleNode("root/CategoriesNode");//查找<CategoriesNode> 
+            XmlElement xe1 = xmlDoc.CreateElement("UserEmail");//创建一个<UserEmail>节点 
+            xe1.SetAttribute(key, value);//设置该节点属性 
+
+            category.AppendChild(xe1);
+            xmlDoc.Save(filePath);
+        }
+
+        public static void RemoveChildNode(string filePath, string key)
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(filePath);
+            XmlNode category = xmlDoc.SelectSingleNode("root/CategoriesNode");//查找<CategoriesNode> 
+            XmlNodeList xelist = xmlDoc.GetElementsByTagName(key);
+
+            while (xelist.Count != 0)
+            {
+                category.RemoveChild(xelist[0]);
+            }
+
+            xmlDoc.Save(filePath);
+        }
         #endregion
     }
 }

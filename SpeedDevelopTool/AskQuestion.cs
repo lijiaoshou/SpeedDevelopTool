@@ -39,7 +39,13 @@ namespace SpeedDevelopTool
 
         private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            
+            ((WebBrowser)sender).Document.Window.Error += new HtmlElementErrorEventHandler(Window_Error);
+        }
+
+        private void Window_Error(object sender, HtmlElementErrorEventArgs e)
+        {
+            // Ignore the error and suppress the error dialog box. 
+            e.Handled = true;
         }
     }
 }
