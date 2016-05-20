@@ -14,12 +14,8 @@ namespace SpeedDevelopTool
 {
     public partial class WebLogin : Form
     {
-        private string UserEmail = "";
         public Point point { get; set; }
 
-        //public int MainFormWidth { get; set; }
-
-        //public int MainFormX { get; set; }
 
         internal string NavigateUrl { get; set; }
 
@@ -28,12 +24,9 @@ namespace SpeedDevelopTool
             InitializeComponent();
         }
 
-        public WebLogin(string email,int length,int locationX,string navigateUrl)
+        public WebLogin(int length,int locationX,string navigateUrl)
         {
-            this.UserEmail = email;
             this.NavigateUrl = navigateUrl;
-            //this.MainFormWidth = length;
-            //this.MainFormX = locationX;
             InitializeComponent();
         }
 
@@ -46,12 +39,10 @@ namespace SpeedDevelopTool
 
         private void WebLogin_Load(object sender, EventArgs e)
         {
-            //this.Width = MainFormWidth - 35;
-            //this.point = new Point(MainFormX, this.Location.Y);
-            this.Location = point;
+            //this.Location = point;
 
             webBrowser1.Navigate(NavigateUrl);
-            this.Move += new EventHandler(CommonAnswer_Move);
+            //this.Move += new EventHandler(CommonAnswer_Move);
         }
 
         public void CommonAnswer_Move(object sender, EventArgs e)
@@ -61,7 +52,6 @@ namespace SpeedDevelopTool
 
         private void WebDocumentClick(object sender,HtmlElementEventArgs e) 
         {
-            //HtmlElement loginButton= webBrowser1.Document.All["submit"];
             
         }
 
@@ -73,12 +63,11 @@ namespace SpeedDevelopTool
                 //刷新主窗体中的两个webbrowser控件
                 Middle.DoSendMessage("");
 
-                this.Close();
+                this.Hide();
             }
             else
             {
-                Config.RemoveChildNode(AppDomain.CurrentDomain.BaseDirectory + "SpeedDevelopTool.xml", "UserEmail");
-                Config.AddChildNode(AppDomain.CurrentDomain.BaseDirectory + "SpeedDevelopTool.xml", "Email", UserEmail);
+                
             }
         }
 
@@ -89,13 +78,13 @@ namespace SpeedDevelopTool
             try
             {
                 userEmail = webBrowser1.Document.GetElementById("TxtLogEmail").GetAttribute("value");
+                Config.RemoveChildNode(AppDomain.CurrentDomain.BaseDirectory + "SpeedDevelopTool.xml", "UserEmail");
+                Config.AddChildNode(AppDomain.CurrentDomain.BaseDirectory + "SpeedDevelopTool.xml", "Email", userEmail);
             }
             catch (Exception ex)
             {
                
             }
-
-            UserEmail = userEmail;
         }
     }
 }

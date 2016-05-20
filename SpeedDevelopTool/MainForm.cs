@@ -168,7 +168,7 @@ namespace SpeedDevelopTool
         /// <param name="e"></param>
         private void MainForm1_Load(object sender, EventArgs e)
         {
-            userEmail= Config.GetValueByKey("UserEmail", "Email");
+            //Config.RemoveChildNode(AppDomain.CurrentDomain.BaseDirectory + "SpeedDevelopTool.xml", "UserEmail");
 
             ShowNoLoginImages();
 
@@ -183,7 +183,7 @@ namespace SpeedDevelopTool
             askQuestion = new AskQuestion(category);
             myQuestion = new MyQuestion(category);
             docs = new CategoryDocs(this.choiceOpiton);
-            webLogin = new WebLogin(userEmail, this.Size.Width, cmomonAnswer.Location.X, "http://u8dev.yonyou.com/");
+            webLogin = new WebLogin(this.Size.Width, cmomonAnswer.Location.X, "http://u8dev.yonyou.com/");
 
 
             //获取相关配置信息
@@ -230,6 +230,8 @@ namespace SpeedDevelopTool
                 //进来默认点一次登录
                 //pictureBox3_Click(pictureBox3, null);
                 MainFormLogin();
+
+                //userEmail = Config.GetValueByKey("UserEmail", "Email");
             }
             catch (Exception ex)
             {
@@ -247,7 +249,11 @@ namespace SpeedDevelopTool
 
         public void CommonAnswer_Move(object sender, EventArgs e)
         {
-            this.Location = webLogin.point;
+            Control ctrl = sender as Control;
+            if (ctrl != null)
+            {
+                ctrl.Location = webLogin.point;
+            }
         }
 
         public void DoMethod(string getstr)
@@ -280,7 +286,7 @@ namespace SpeedDevelopTool
         public void ChargeMessageStatus()
         {
             U8DevDocs.u8DevServiceSoapClient client = new U8DevDocs.u8DevServiceSoapClient();
-            DataSet ds = client.getAskCount(userEmail);
+            DataSet ds = client.getAskCount(Config.GetValueByKey("UserEmail", "Email"));
             if (ds != null&&ds.Tables.Count>0)
             {
                 if (ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
@@ -1355,7 +1361,7 @@ namespace SpeedDevelopTool
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(userEmail))
+            if (string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
             {
                 MessageBox.Show("请先登录");
                 return;
@@ -1376,7 +1382,7 @@ namespace SpeedDevelopTool
 
         private void pictureBox2_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(userEmail))
+            if (string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
             {
                 MessageBox.Show("请先登录");
                 return;
@@ -1387,23 +1393,48 @@ namespace SpeedDevelopTool
 
         private void MainForm_SizeChanged(object sender, EventArgs e)
         {
-            int nowWidth = this.Size.Width;
+            //int nowWidth = this.Size.Width;
             int diffWidth = this.Size.Width - iniMainFormWidth;
+            //iniMainFormWidth = this.Size.Width;
+
+            ////只隐藏左边小框
+            //if (this.Size.Width > (iniMainFormWidth+50) && this.Size.Width < (iniMainFormWidth+100))
+            //{
+            //    IniBegin();
+            //    ChangeLayout(68);
+            //}
+            ////只隐藏左边大框
+            //else if (this.Size.Width > (iniMainFormWidth + 100) && this.Size.Width < (iniMainFormWidth + 260))
+            //{
+            //    IniBegin();
+            //    ChangeLayout(240);
+            //}
+            ////两个边框都隐藏
+            //else if (this.Size.Width > (iniMainFormWidth + 260))
+            //{
+            //    IniBegin();
+            //    ChangeLayout(308);
+            //}
+            ////都不隐藏，不需要做什么
+            //else
+            //{
+            //    IniBegin();
+            //}
 
             //只隐藏左边小框
-            if (this.Size.Width > (iniMainFormWidth+50) && this.Size.Width < (iniMainFormWidth+100))
+            if (diffWidth > 50 && diffWidth < 100)
             {
                 IniBegin();
                 ChangeLayout(68);
             }
             //只隐藏左边大框
-            else if (this.Size.Width > (iniMainFormWidth + 100) && this.Size.Width < (iniMainFormWidth + 260))
+            else if (diffWidth >  100 && diffWidth < 260)
             {
                 IniBegin();
                 ChangeLayout(240);
             }
             //两个边框都隐藏
-            else if (this.Size.Width > (iniMainFormWidth + 260))
+            else if (diffWidth > 260)
             {
                 IniBegin();
                 ChangeLayout(308);
@@ -1417,17 +1448,67 @@ namespace SpeedDevelopTool
 
         private void IniBegin()
         {
+            #region old wait delete
+            //pictureBox6.Width = iniMainFormWidth - 70;
+            //pictureBox7.Width = iniMainFormWidth - 70;
+
+            //label5.Left = iniMainFormWidth-215;
+            //label6.Left = iniMainFormWidth-162;
+            //label7.Left = iniMainFormWidth - 105;
+            //pictureBox1.Left = iniMainFormWidth-183;
+            //pictureBox2.Left = iniMainFormWidth-132;
+            //pictureBox3.Left = iniMainFormWidth - 76;
+
+            //progressBar1.Width = iniMainFormWidth-70;
+
+            //groupBox1.Width = iniMainFormWidth - 70;
+            //groupBox2.Width = iniMainFormWidth - 70;
+
+            //pictureBox4.Left = iniMainFormWidth - 47;
+            //pictureBox5.Left = iniMainFormWidth - 47;
+
+            //txtContentForm.Width = iniMainFormWidth - 70;
+            //ControlCollection controls = groupBox1.Controls;
+            //controls[0].Width = iniMainFormWidth - 70;
+
+            //askQuestion.Width = iniMainFormWidth - 35;
+            //askQuestion.point = new Point(cmomonAnswer.Location.X,askQuestion.Location.Y);
+            //askQuestion.Left = 310;
+
+            //cmomonAnswer.Width = iniMainFormWidth - 35;
+            //cmomonAnswer.point = new Point(cmomonAnswer.Location.X, cmomonAnswer.Location.Y);
+            //cmomonAnswer.Left = 310;
+
+            //myQuestion.Width = iniMainFormWidth - 35;
+            //myQuestion.point = new Point(cmomonAnswer.Location.X, myQuestion.Location.Y);
+            //myQuestion.Left = 310;
+
+            //docs.Width = iniMainFormWidth - 35;
+            //docs.point = new Point(cmomonAnswer.Location.X, cmomonAnswer.Location.Y);
+            //docs.Left = 310;
+
+            //webLogin.Width = iniMainFormWidth - 35;
+            //webLogin.point = new Point(cmomonAnswer.Location.X, cmomonAnswer.Location.Y);
+            //webLogin.Left = 310;
+            #endregion
+
+            CancleBindNotMove();
+
+            int mainFormX = this.Location.X;
+            int mainFormY = this.Location.Y;
+            //int mainFormLeft = this.Left;
+
             pictureBox6.Width = iniMainFormWidth - 70;
             pictureBox7.Width = iniMainFormWidth - 70;
 
-            label5.Left = iniMainFormWidth-215;
-            label6.Left = iniMainFormWidth-162;
+            label5.Left = iniMainFormWidth - 215;
+            label6.Left = iniMainFormWidth - 162;
             label7.Left = iniMainFormWidth - 105;
-            pictureBox1.Left = iniMainFormWidth-183;
-            pictureBox2.Left = iniMainFormWidth-132;
+            pictureBox1.Left = iniMainFormWidth - 183;
+            pictureBox2.Left = iniMainFormWidth - 132;
             pictureBox3.Left = iniMainFormWidth - 76;
 
-            progressBar1.Width = iniMainFormWidth-70;
+            progressBar1.Width = iniMainFormWidth - 70;
 
             groupBox1.Width = iniMainFormWidth - 70;
             groupBox2.Width = iniMainFormWidth - 70;
@@ -1440,69 +1521,148 @@ namespace SpeedDevelopTool
             controls[0].Width = iniMainFormWidth - 70;
 
             askQuestion.Width = iniMainFormWidth - 35;
-            askQuestion.point = new Point(cmomonAnswer.Location.X,askQuestion.Location.Y);
             askQuestion.Left = 310;
+            askQuestion.Top = 57;
+            askQuestion.point = new Point(askQuestion.Location.X, askQuestion.Location.Y);
 
             cmomonAnswer.Width = iniMainFormWidth - 35;
-            cmomonAnswer.point = new Point(cmomonAnswer.Location.X, cmomonAnswer.Location.Y);
             cmomonAnswer.Left = 310;
+            cmomonAnswer.Top = 57;
+            cmomonAnswer.point = new Point(cmomonAnswer.Location.X, cmomonAnswer.Location.Y);
 
             myQuestion.Width = iniMainFormWidth - 35;
-            myQuestion.point = new Point(cmomonAnswer.Location.X, myQuestion.Location.Y);
             myQuestion.Left = 310;
+            myQuestion.Top = 57;
+            myQuestion.point = new Point(myQuestion.Location.X, myQuestion.Location.Y);
 
             docs.Width = iniMainFormWidth - 35;
-            docs.point = new Point(cmomonAnswer.Location.X, cmomonAnswer.Location.Y);
             docs.Left = 310;
+            docs.Top = 57;
+            docs.point = new Point(docs.Location.X, docs.Location.Y);
 
             webLogin.Width = iniMainFormWidth - 35;
-            webLogin.point = new Point(cmomonAnswer.Location.X, cmomonAnswer.Location.Y);
             webLogin.Left = 310;
+            webLogin.Top = 57;
+            webLogin.point = new Point(webLogin.Location.X, webLogin.Location.Y);
+
+            BindNotMove();
+        }
+
+        private void BindNotMove()
+        {
+            askQuestion.Move += new EventHandler(CommonAnswer_Move);
+            cmomonAnswer.Move += new EventHandler(CommonAnswer_Move);
+            myQuestion.Move += new EventHandler(CommonAnswer_Move);
+            docs.Move += new EventHandler(CommonAnswer_Move);
+            webLogin.Move += new EventHandler(CommonAnswer_Move);
+        }
+
+        private void CancleBindNotMove()
+        {
+            askQuestion.Move -= new EventHandler(CommonAnswer_Move);
+            cmomonAnswer.Move -= new EventHandler(CommonAnswer_Move);
+            myQuestion.Move -= new EventHandler(CommonAnswer_Move);
+            docs.Move -= new EventHandler(CommonAnswer_Move);
+            webLogin.Move -= new EventHandler(CommonAnswer_Move);
         }
 
         private void ChangeLayout(int size)
         {
-            pictureBox6.Width += size;
-            pictureBox7.Width += size;
+            //pictureBox6.Width += size;
+            //pictureBox7.Width += size;
 
-            label5.Left += size;
-            label6.Left += size;
-            label7.Left += size-5;
-            pictureBox1.Left += size;
-            pictureBox2.Left += size;
-            pictureBox3.Left += size-5;
+            //label5.Left += size;
+            //label6.Left += size;
+            //label7.Left += size-5;
+            //pictureBox1.Left += size;
+            //pictureBox2.Left += size;
+            //pictureBox3.Left += size-5;
 
-            progressBar1.Width += size;
+            //progressBar1.Width += size;
 
-            pictureBox4.Left += size+1;
-            pictureBox5.Left += size+1;
+            //pictureBox4.Left += size+1;
+            //pictureBox5.Left += size+1;
 
-            groupBox1.Width += size;
-            groupBox2.Width += size;
+            //groupBox1.Width += size;
+            //groupBox2.Width += size;
 
-            txtContentForm.Width += size;
+            //txtContentForm.Width += size;
+            //ControlCollection controls = groupBox1.Controls;
+            //controls[0].Width += size;
+
+            //askQuestion.Width += size;
+            //askQuestion.point = new Point(askQuestion.Location.X - size, askQuestion.Location.Y);
+            //askQuestion.Left -= size;
+
+            //cmomonAnswer.Width += size;
+            //cmomonAnswer.point = new Point(cmomonAnswer.Location.X - size, cmomonAnswer.Location.Y);
+            //cmomonAnswer.Left -= size;
+
+            //myQuestion.Width += size;
+            //myQuestion.point = new Point(myQuestion.Location.X - size, myQuestion.Location.Y);
+            //myQuestion.Left -= size;
+
+            //docs.Width += size;
+            //docs.point = new Point(cmomonAnswer.Location.X - size, cmomonAnswer.Location.Y);
+            //docs.Left -= size;
+
+            //webLogin.Width += size;
+            //webLogin.point = new Point(cmomonAnswer.Location.X - size, cmomonAnswer.Location.Y);
+            //webLogin.Left -= size;
+            CancleBindNotMove();
+
+            int nowWidth = this.Size.Width;
+            int diffWidth = nowWidth - iniMainFormWidth+15;
+            int mainFormX = this.Location.X;
+            int mainFormY = this.Location.Y;
+            //int mainFormLeft = this.Left;
+
+            pictureBox6.Width = nowWidth - 70;
+            pictureBox7.Width = nowWidth - 70;
+            progressBar1.Width = pictureBox6.Width;
+            groupBox1.Width = pictureBox6.Width;
+            groupBox2.Width = pictureBox6.Width;
+
+            label5.Left = nowWidth-190;
+            label6.Left = nowWidth-140;
+            label7.Left = nowWidth - 85;
+            pictureBox1.Left = nowWidth-165;
+            pictureBox2.Left = nowWidth-115 ;
+            pictureBox3.Left = nowWidth-61;
+
+            pictureBox4.Left = nowWidth-35;
+            pictureBox5.Left = nowWidth - 35;
+
+            txtContentForm.Width = pictureBox6.Width-10;
             ControlCollection controls = groupBox1.Controls;
-            controls[0].Width += size;
+            controls[0].Width = pictureBox6.Width-10;
 
-            askQuestion.Width += size;
-            askQuestion.point = new Point(askQuestion.Location.X - size, askQuestion.Location.Y);
-            askQuestion.Left -= size;
+            askQuestion.Width = nowWidth-30;
+            askQuestion.Left -= diffWidth;
+            askQuestion.Top = 57;
+            askQuestion.point = new Point(askQuestion.Location.X, askQuestion.Location.Y);
 
-            cmomonAnswer.Width += size;
-            cmomonAnswer.point = new Point(cmomonAnswer.Location.X - size, cmomonAnswer.Location.Y);
-            cmomonAnswer.Left -= size;
+            cmomonAnswer.Width = nowWidth - 30;
+            cmomonAnswer.Left -= diffWidth;
+            cmomonAnswer.Top = 57;
+            cmomonAnswer.point = new Point(cmomonAnswer.Location.X, cmomonAnswer.Location.Y);
 
-            myQuestion.Width += size;
-            myQuestion.point = new Point(myQuestion.Location.X - size, myQuestion.Location.Y);
-            myQuestion.Left -= size;
+            myQuestion.Width = nowWidth - 30;
+            myQuestion.Left -= diffWidth;
+            myQuestion.Top = 57;
+            myQuestion.point = new Point(myQuestion.Location.X, myQuestion.Location.Y);
 
-            docs.Width += size;
-            docs.point = new Point(cmomonAnswer.Location.X - size, cmomonAnswer.Location.Y);
-            docs.Left -= size;
+            docs.Width = nowWidth - 30;
+            docs.Left -= diffWidth;
+            docs.Top = 57;
+            docs.point = new Point(docs.Location.X, docs.Location.Y);
 
-            webLogin.Width += size;
-            webLogin.point = new Point(cmomonAnswer.Location.X - size, cmomonAnswer.Location.Y);
-            webLogin.Left -= size;
+            webLogin.Width = nowWidth - 30;
+            webLogin.Left -= diffWidth;
+            webLogin.Top = 57;
+            webLogin.point = new Point(webLogin.Location.X, webLogin.Location.Y);
+
+            BindNotMove();
         }
 
         private void pictureBox4_Click(object sender, EventArgs e)
@@ -1512,7 +1672,7 @@ namespace SpeedDevelopTool
 
         private void pictureBox5_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(userEmail))
+            if (string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
             {
                 MessageBox.Show("请先登录");
                 return;
@@ -1522,8 +1682,45 @@ namespace SpeedDevelopTool
 
         private void pictureBox3_Click(object sender, EventArgs e)
         {
-            //webLogin.Visible = false;
             webLogin.ShowDialog();
+        }
+
+
+        private void pictureBox4_MouseLeave(object sender, EventArgs e)
+        {
+            pictureBox4.BackgroundImage = Properties.Resources.相关文档;
+            Cursor.Current = Cursors.Arrow;
+        }
+
+        private void pictureBox5_MouseLeave(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
+            {
+                pictureBox5.BackgroundImage = Properties.Resources.常见问题;
+            }
+            else
+            {
+                pictureBox5.BackgroundImage = Properties.Resources.常见问题_未登录;
+            }
+            Cursor.Current = Cursors.Arrow;
+        }
+
+        private void pictureBox4_MouseEnter(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
+            {
+                pictureBox4.BackgroundImage = Properties.Resources.相关文档_鼠标上来;
+                Cursor.Current = Cursors.Hand;
+            }
+        }
+
+        private void pictureBox5_MouseEnter(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
+            {
+                pictureBox5.BackgroundImage = Properties.Resources.常见问题_鼠标上来;
+                Cursor.Current = Cursors.Hand;
+            }
         }
     }
 }

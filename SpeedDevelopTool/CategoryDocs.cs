@@ -31,9 +31,9 @@ namespace SpeedDevelopTool
 
         private void CategoryDocs_Load(object sender, EventArgs e)
         {
-            this.Location = point;
+            //this.Location = point;
             //point = this.Location;
-            this.Move += new EventHandler(CategoryDocs_Move);
+            //this.Move += new EventHandler(CategoryDocs_Move);
             dataGridView1.CellClick += new DataGridViewCellEventHandler(DataGridView1_CellClick);
 
             string category = Config.GetValueByKey(this.choiceOpiton, "ChineseName");

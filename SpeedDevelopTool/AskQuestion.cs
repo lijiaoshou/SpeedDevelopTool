@@ -27,8 +27,8 @@ namespace SpeedDevelopTool
 
         private void AskQuestion_Load(object sender, EventArgs e)
         {
-            point = this.Location;
-            this.Move += new EventHandler(CommonAnswer_Move);
+            //point = this.Location;
+            //this.Move += new EventHandler(CommonAnswer_Move);
             webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/add.aspx?v=0");
         }
 

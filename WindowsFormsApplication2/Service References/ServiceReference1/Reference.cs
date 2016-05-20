@@ -22,6 +22,13 @@ namespace WindowsFormsApplication2.ServiceReference1 {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/getDocument", ReplyAction="*")]
         System.Threading.Tasks.Task<System.Data.DataSet> getDocumentAsync(string domcumentName);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/getAskCount", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        System.Data.DataSet getAskCount(string username);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/getAskCount", ReplyAction="*")]
+        System.Threading.Tasks.Task<System.Data.DataSet> getAskCountAsync(string username);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -57,6 +64,14 @@ namespace WindowsFormsApplication2.ServiceReference1 {
         
         public System.Threading.Tasks.Task<System.Data.DataSet> getDocumentAsync(string domcumentName) {
             return base.Channel.getDocumentAsync(domcumentName);
+        }
+        
+        public System.Data.DataSet getAskCount(string username) {
+            return base.Channel.getAskCount(username);
+        }
+        
+        public System.Threading.Tasks.Task<System.Data.DataSet> getAskCountAsync(string username) {
+            return base.Channel.getAskCountAsync(username);
         }
     }
 }
