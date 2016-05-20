@@ -83,6 +83,16 @@ namespace SpeedDevelopTool.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap 信息_鼠标上来 {
+            get {
+                object obj = ResourceManager.GetObject("信息_鼠标上来", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap 常见问题 {
             get {
                 object obj = ResourceManager.GetObject("常见问题", resourceCulture);
@@ -133,6 +143,16 @@ namespace SpeedDevelopTool.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap 提问图标_鼠标上来 {
+            get {
+                object obj = ResourceManager.GetObject("提问图标_鼠标上来", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap 未读信息 {
             get {
                 object obj = ResourceManager.GetObject("未读信息", resourceCulture);
@@ -146,6 +166,16 @@ namespace SpeedDevelopTool.Properties {
         internal static System.Drawing.Bitmap 登录 {
             get {
                 object obj = ResourceManager.GetObject("登录", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap 登录_鼠标上来 {
+            get {
+                object obj = ResourceManager.GetObject("登录_鼠标上来", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

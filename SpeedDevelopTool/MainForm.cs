@@ -1722,5 +1722,97 @@ namespace SpeedDevelopTool
                 Cursor.Current = Cursors.Hand;
             }
         }
+
+        private void pictureBox3_MouseEnter(object sender, EventArgs e)
+        {
+            pictureBox3.BackgroundImage = Properties.Resources.登录_鼠标上来;
+            Cursor.Current = Cursors.Hand;
+        }
+
+        private void pictureBox3_MouseLeave(object sender, EventArgs e)
+        {
+            pictureBox3.BackgroundImage = Properties.Resources.登录;
+            Cursor.Current = Cursors.Arrow;
+        }
+
+        private void pictureBox1_MouseEnter(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
+            {
+                pictureBox1.BackgroundImage = Properties.Resources.提问图标_鼠标上来;
+                Cursor.Current = Cursors.Hand;
+            }
+        }
+
+        private void pictureBox1_MouseLeave(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
+            {
+                pictureBox1.BackgroundImage = Properties.Resources.提问图标;
+            }
+            else
+            {
+                pictureBox1.BackgroundImage = Properties.Resources.提问图标_未登录;
+            }
+            Cursor.Current = Cursors.Arrow;
+        }
+
+        private void pictureBox2_MouseEnter(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
+            {
+                pictureBox2.BackgroundImage = Properties.Resources.信息_鼠标上来;
+                Cursor.Current = Cursors.Hand;
+            }
+        }
+
+        private void pictureBox2_MouseLeave(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
+            {
+                pictureBox2.BackgroundImage = Properties.Resources.信息;
+            }
+            else
+            {
+                pictureBox2.BackgroundImage = Properties.Resources.信息_未登录;
+            }
+            Cursor.Current = Cursors.Arrow;
+        }
+
+        private void label5_MouseEnter(object sender, EventArgs e)
+        {
+            label5.Height += 2;
+            label5.Width += 2;
+        }
+
+        private void label5_MouseLeave(object sender, EventArgs e)
+        {
+            label5.Height -= 2;
+            label5.Width -= 2;
+        }
+
+        private void label6_MouseEnter(object sender, EventArgs e)
+        {
+            label6.Height += 2;
+            label6.Width += 2;
+        }
+
+        private void label6_MouseLeave(object sender, EventArgs e)
+        {
+            label6.Height -= 2;
+            label6.Width -= 2;
+        }
+
+        private void label7_MouseEnter(object sender, EventArgs e)
+        {
+            label7.Height += 2;
+            label7.Width += 2;
+        }
+
+        private void label7_MouseLeave(object sender, EventArgs e)
+        {
+            label7.Height -= 2;
+            label7.Width -= 2;
+        }
     }
 }

@@ -256,6 +256,9 @@
     <None Include="Resources\相关文档.png" />
     <None Include="Resources\常见问题_鼠标上来.png" />
     <None Include="Resources\相关文档_鼠标上来.png" />
+    <None Include="Resources\登录_鼠标上来.png" />
+    <None Include="Resources\提问图标_鼠标上来.png" />
+    <None Include="Resources\信息_鼠标上来.png" />
     <Content Include="SpeedDevelopTool.xml" />
   </ItemGroup>
   <ItemGroup>
