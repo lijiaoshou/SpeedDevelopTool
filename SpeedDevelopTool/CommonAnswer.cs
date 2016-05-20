@@ -28,8 +28,6 @@ namespace SpeedDevelopTool
 
         private void CommonAnswer_Load(object sender, EventArgs e)
         {
-            //point = this.Location;
-            //this.Move += new EventHandler(CommonAnswer_Move);
             string url = "http://u8dev.yonyou.com/home/ask/index.aspx?r=iszhishi&v=0&key=" + HttpUtility.UrlEncode(this.category);
             webBrowser1.Navigate(url);
         }

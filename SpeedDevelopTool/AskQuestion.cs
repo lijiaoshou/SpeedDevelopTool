@@ -27,8 +27,6 @@ namespace SpeedDevelopTool
 
         private void AskQuestion_Load(object sender, EventArgs e)
         {
-            //point = this.Location;
-            //this.Move += new EventHandler(CommonAnswer_Move);
             webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/add.aspx?v=0");
         }
 
@@ -44,7 +42,6 @@ namespace SpeedDevelopTool
 
         private void Window_Error(object sender, HtmlElementErrorEventArgs e)
         {
-            // Ignore the error and suppress the error dialog box. 
             e.Handled = true;
         }
     }

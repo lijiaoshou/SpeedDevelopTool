@@ -26,7 +26,6 @@ namespace SpeedDevelopTool
 {
     public partial class MainForm : UserControl, INetUserControl
     {
-        //ICSharpCode.TextEditor.TextEditorControl txtContent = new ICSharpCode.TextEditor.TextEditorControl();
         CodeRegion.MainForm txtContentForm = new CodeRegion.MainForm();
         public CommonAnswer cmomonAnswer;
         AskQuestion askQuestion;
@@ -35,27 +34,13 @@ namespace SpeedDevelopTool
         CategoryDocs docs;
         private int cmomonAnswerX=0;
 
-        public string userEmail
-        {
-            get;set;
-        }
+        public string userEmail{ get;set;}
 
         private bool canUse = true;
         public int iniMainFormWidth = 0;
 
-        //internal ICSharpCode.SharpDevelop.Dom.ProjectContentRegistry pcRegistry;
         internal ICSharpCode.SharpDevelop.Dom.DefaultProjectContent myProjectContent;
         internal ICSharpCode.SharpDevelop.Dom.ParseInformation parseInformation = new ICSharpCode.SharpDevelop.Dom.ParseInformation();
-        //ICSharpCode.SharpDevelop.Dom.ICompilationUnit lastCompilationUnit;
-        //Thread parserThread;
-
-        //public static bool IsVisualBasic = false;
-
-        //public const string DummyFileName = "edited.cs";
-
-        //static readonly ICSharpCode.SharpDevelop.Dom.LanguageProperties CurrentLanguageProperties = IsVisualBasic ? ICSharpCode.SharpDevelop.Dom.LanguageProperties.VBNet : ICSharpCode.SharpDevelop.Dom.LanguageProperties.CSharp;
-
-        AppDomain ad;
 
         public string choiceOpiton { get; set; }
 
@@ -229,7 +214,7 @@ namespace SpeedDevelopTool
                 MainForm_SizeChanged(this,null);
                 //进来默认点一次登录
                 //pictureBox3_Click(pictureBox3, null);
-                MainFormLogin();
+                MainFormLoginNopopup();
 
                 //userEmail = Config.GetValueByKey("UserEmail", "Email");
             }
@@ -239,7 +224,10 @@ namespace SpeedDevelopTool
             }
         }
 
-        private void MainFormLogin()
+        /// <summary>
+        /// 加载主界面时不弹窗登录
+        /// </summary>
+        private void MainFormLoginNopopup()
         {
             webLogin.Location =webLogin.point;
 
@@ -247,6 +235,11 @@ namespace SpeedDevelopTool
             this.Move += new EventHandler(CommonAnswer_Move);
         }
 
+        /// <summary>
+        /// 提问，消息，登录，相关文档，常见问题等窗口移动时绑定的公共方法
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void CommonAnswer_Move(object sender, EventArgs e)
         {
             Control ctrl = sender as Control;
@@ -256,33 +249,33 @@ namespace SpeedDevelopTool
             }
         }
 
+        /// <summary>
+        /// 登录窗口关闭后的回调函数
+        /// </summary>
+        /// <param name="getstr"></param>
         public void DoMethod(string getstr)
         {
-            //if (!string.IsNullOrEmpty(getstr))
-            //{
-                this.cmomonAnswer.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=iszhishi&v=0");
-                this.askQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/add.aspx?v=0");
-                this.myQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=my&v=0");
+            //刷新各webbrowser窗口
+            this.cmomonAnswer.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=iszhishi&v=0");
+            this.askQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/add.aspx?v=0");
+            this.myQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=my&v=0");
 
-                this.pictureBox1.BackgroundImage = Properties.Resources.提问图标;
-                this.pictureBox2.BackgroundImage = Properties.Resources.信息;
-                this.pictureBox5.BackgroundImage = Properties.Resources.常见问题;
+            //刷新各图标（登录状态）
+            this.pictureBox1.BackgroundImage = Properties.Resources.提问图标;
+            this.pictureBox2.BackgroundImage = Properties.Resources.信息;
+            this.pictureBox5.BackgroundImage = Properties.Resources.常见问题;
 
-                this.label5.ForeColor = Color.Black;
-                this.label6.ForeColor = Color.Black;
-           // }
-            //else
-            //{
-            //    this.pictureBox1.BackgroundImage = Properties.Resources.提问图标_未登录;
-            //    this.pictureBox2.BackgroundImage = Properties.Resources.信息_未登录;
-            //    this.pictureBox5.BackgroundImage = Properties.Resources.常见问题_未登录;
+            //刷新文字，由未登录的灰色变为正常文字颜色
+            this.label5.ForeColor = Color.Black;
+            this.label6.ForeColor = Color.Black;
 
-            //    this.label5.ForeColor = Color.LightGray;
-            //    this.label6.ForeColor = Color.LightGray;
-            //}
+            //根据消息状态（是否有人回复）来更新消息图标
             ChargeMessageStatus();
         }
 
+        /// <summary>
+        /// 判断信息状态（是否有未读信息）
+        /// </summary>
         public void ChargeMessageStatus()
         {
             U8DevDocs.u8DevServiceSoapClient client = new U8DevDocs.u8DevServiceSoapClient();
@@ -306,6 +299,9 @@ namespace SpeedDevelopTool
             }
         }
 
+        /// <summary>
+        /// 展示各图标/文字的未登录状态
+        /// </summary>
         private void ShowNoLoginImages()
         {
             this.pictureBox1.BackgroundImage = Properties.Resources.提问图标_未登录;
@@ -368,12 +364,8 @@ namespace SpeedDevelopTool
                 txtContentForm.textEditorControl1.Document.HighlightingStrategy = HighlightingStrategyFactory.CreateHighlightingStrategy("C#");
                 txtContentForm.textEditorControl1.Encoding = Encoding.Default;
                 txtContentForm.Location = new Point(5, 45);
-                //txtContent.AutoScroll = false;
                 txtContentForm.FormBorderStyle = FormBorderStyle.None;
                 txtContentForm.textEditorControl1.Dock = DockStyle.Fill;
-                //txtContent.AutoScrollMargin = new Size(1, 1);
-                //txtContent.Text = "";
-                //txtContentForm.statusStrip1.Width = txtContentForm.Width - 2;
                 txtContentForm.TopLevel = false;
                 txtContentForm.BackColor = Color.White;
                 txtContentForm.Show();
@@ -577,7 +569,6 @@ namespace SpeedDevelopTool
             }
         }
 
-
         /// <summary>
         /// 监控执行方法
         /// </summary>
@@ -650,18 +641,6 @@ namespace SpeedDevelopTool
 
         public NetAction[] CreateToolbar(clsLogin login)
         {
-            //IActionDelegate nsd = new NetSampleDelegate();
-
-            /////给按钮绑定相关操作
-            //NetAction ac = new NetAction("sss", nsd);
-            //NetAction[] aclist;
-            //aclist = new NetAction[1];
-
-            ////按钮显示文字
-            //ac.Text = "Button";
-            //ac.Tag = this;
-            //aclist[0] = ac;
-            //return aclist;
             return null;
         }
 
@@ -731,29 +710,6 @@ namespace SpeedDevelopTool
         /// <param name="e"></param>
         private void button4_Click_1(object sender, EventArgs e)
         {
-            #region old wait to delete
-            ////弹出等待框，进行修改->编译->替换过程
-            //frmWaitingBox f = new frmWaitingBox((obj, args) =>
-            //{
-            //    //替换原始代码
-            //    ReplaceCodes(codesText);
-
-            //    //编译用户修改后的解决方案，复制并替换默认dll或者exe,并重新加载功能演示区
-            //    CompileAfterReplaceCodes();
-
-            //}, 20, "处理中，请稍后...", false, true);
-            //f.ShowDialog(this);
-
-            ////重新加载填充代码演示区域
-            //InitFunctionalDemonstrationRegion();
-
-            ////跟踪功能区代码
-            //TraceOperate();
-
-            ////弹窗提示用户
-            //MessageBox.Show("用户修改已保存且编译完毕");
-            #endregion
-
             #region ProgressBar
 
             progressBar1.Visible = true;
@@ -892,41 +848,6 @@ namespace SpeedDevelopTool
         /// <param name="e"></param>
         private void button6_Click(object sender, EventArgs e)
         {
-            #region old wait to delete
-            ////打开处理中窗口，友好等待界面
-            //frmWaitingBox f = new frmWaitingBox((obj, args) =>
-            //{
-            //    //恢复默认，代码变为未修改
-            //    this.codeIsModified = false;
-
-            //    //初始化“源码_修改”文件夹
-            //    string categoryPath = Config.GetValueByKey(this.choiceOpiton, "categoryPath");
-
-            //    Common.copyDirectory(AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码", AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码_修改");
-
-            //    //找到源码文件夹，重新编译，拷贝替换，重新加载
-            //    bool compileResult = CompileAndReplace("源码");
-
-            //    if (!compileResult)
-            //    {
-            //        MessageBox.Show("编译失败,请检查是否改动过源码文件");
-            //        return;
-            //    }
-            //}, 20, "处理中，请稍后...", false, true);
-            //f.ShowDialog(this);
-
-
-            ////重新加载填充代码演示区域
-            //InitFunctionalDemonstrationRegion();
-
-            ////跟踪功能区代码
-            //TraceOperate();
-
-
-            ////弹窗提示恢复成功
-            //MessageBox.Show("恢复默认成功");
-            #endregion
-
             #region ProgressBar
 
             progressBar1.Visible = true;
@@ -1335,11 +1256,6 @@ namespace SpeedDevelopTool
 
         private void button7_Click(object sender, EventArgs e)
         {
-            //获取分类
-            //string category = Config.GetValueByKey(this.choiceOpiton, "ChineseName");
-
-            //CommonAnswer answer = new CommonAnswer(category);
-
             cmomonAnswer.ShowDialog();
         }
 
@@ -1352,12 +1268,6 @@ namespace SpeedDevelopTool
         {
             e.Graphics.Clear(this.BackColor);
         }
-
-        //private void button10_Click(object sender, EventArgs e)
-        //{
-        //    WebLogin loginForm = new WebLogin("http://u8dev.yonyou.com");
-        //    loginForm.ShowDialog();
-        //}
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
@@ -1393,51 +1303,25 @@ namespace SpeedDevelopTool
 
         private void MainForm_SizeChanged(object sender, EventArgs e)
         {
-            //int nowWidth = this.Size.Width;
             int diffWidth = this.Size.Width - iniMainFormWidth;
-            //iniMainFormWidth = this.Size.Width;
-
-            ////只隐藏左边小框
-            //if (this.Size.Width > (iniMainFormWidth+50) && this.Size.Width < (iniMainFormWidth+100))
-            //{
-            //    IniBegin();
-            //    ChangeLayout(68);
-            //}
-            ////只隐藏左边大框
-            //else if (this.Size.Width > (iniMainFormWidth + 100) && this.Size.Width < (iniMainFormWidth + 260))
-            //{
-            //    IniBegin();
-            //    ChangeLayout(240);
-            //}
-            ////两个边框都隐藏
-            //else if (this.Size.Width > (iniMainFormWidth + 260))
-            //{
-            //    IniBegin();
-            //    ChangeLayout(308);
-            //}
-            ////都不隐藏，不需要做什么
-            //else
-            //{
-            //    IniBegin();
-            //}
 
             //只隐藏左边小框
             if (diffWidth > 50 && diffWidth < 100)
             {
                 IniBegin();
-                ChangeLayout(68);
+                ChangeLayout();
             }
             //只隐藏左边大框
             else if (diffWidth >  100 && diffWidth < 260)
             {
                 IniBegin();
-                ChangeLayout(240);
+                ChangeLayout();
             }
             //两个边框都隐藏
             else if (diffWidth > 260)
             {
                 IniBegin();
-                ChangeLayout(308);
+                ChangeLayout();
             }
             //都不隐藏，不需要做什么
             else
@@ -1446,52 +1330,11 @@ namespace SpeedDevelopTool
             }
         }
 
+        /// <summary>
+        /// 初始化各窗口到初始状态（即左边两个框都不关闭的状态）
+        /// </summary>
         private void IniBegin()
         {
-            #region old wait delete
-            //pictureBox6.Width = iniMainFormWidth - 70;
-            //pictureBox7.Width = iniMainFormWidth - 70;
-
-            //label5.Left = iniMainFormWidth-215;
-            //label6.Left = iniMainFormWidth-162;
-            //label7.Left = iniMainFormWidth - 105;
-            //pictureBox1.Left = iniMainFormWidth-183;
-            //pictureBox2.Left = iniMainFormWidth-132;
-            //pictureBox3.Left = iniMainFormWidth - 76;
-
-            //progressBar1.Width = iniMainFormWidth-70;
-
-            //groupBox1.Width = iniMainFormWidth - 70;
-            //groupBox2.Width = iniMainFormWidth - 70;
-
-            //pictureBox4.Left = iniMainFormWidth - 47;
-            //pictureBox5.Left = iniMainFormWidth - 47;
-
-            //txtContentForm.Width = iniMainFormWidth - 70;
-            //ControlCollection controls = groupBox1.Controls;
-            //controls[0].Width = iniMainFormWidth - 70;
-
-            //askQuestion.Width = iniMainFormWidth - 35;
-            //askQuestion.point = new Point(cmomonAnswer.Location.X,askQuestion.Location.Y);
-            //askQuestion.Left = 310;
-
-            //cmomonAnswer.Width = iniMainFormWidth - 35;
-            //cmomonAnswer.point = new Point(cmomonAnswer.Location.X, cmomonAnswer.Location.Y);
-            //cmomonAnswer.Left = 310;
-
-            //myQuestion.Width = iniMainFormWidth - 35;
-            //myQuestion.point = new Point(cmomonAnswer.Location.X, myQuestion.Location.Y);
-            //myQuestion.Left = 310;
-
-            //docs.Width = iniMainFormWidth - 35;
-            //docs.point = new Point(cmomonAnswer.Location.X, cmomonAnswer.Location.Y);
-            //docs.Left = 310;
-
-            //webLogin.Width = iniMainFormWidth - 35;
-            //webLogin.point = new Point(cmomonAnswer.Location.X, cmomonAnswer.Location.Y);
-            //webLogin.Left = 310;
-            #endregion
-
             CancleBindNotMove();
 
             int mainFormX = this.Location.X;
@@ -1548,6 +1391,9 @@ namespace SpeedDevelopTool
             BindNotMove();
         }
 
+        /// <summary>
+        /// 绑定各窗口，不允许移动
+        /// </summary>
         private void BindNotMove()
         {
             askQuestion.Move += new EventHandler(CommonAnswer_Move);
@@ -1557,6 +1403,9 @@ namespace SpeedDevelopTool
             webLogin.Move += new EventHandler(CommonAnswer_Move);
         }
 
+        /// <summary>
+        /// 取消各窗口绑定的不允许移动
+        /// </summary>
         private void CancleBindNotMove()
         {
             askQuestion.Move -= new EventHandler(CommonAnswer_Move);
@@ -1566,56 +1415,17 @@ namespace SpeedDevelopTool
             webLogin.Move -= new EventHandler(CommonAnswer_Move);
         }
 
-        private void ChangeLayout(int size)
+        /// <summary>
+        /// 根据左栏的打开关闭状态，自动调整排版
+        /// </summary>
+        private void ChangeLayout()
         {
-            //pictureBox6.Width += size;
-            //pictureBox7.Width += size;
-
-            //label5.Left += size;
-            //label6.Left += size;
-            //label7.Left += size-5;
-            //pictureBox1.Left += size;
-            //pictureBox2.Left += size;
-            //pictureBox3.Left += size-5;
-
-            //progressBar1.Width += size;
-
-            //pictureBox4.Left += size+1;
-            //pictureBox5.Left += size+1;
-
-            //groupBox1.Width += size;
-            //groupBox2.Width += size;
-
-            //txtContentForm.Width += size;
-            //ControlCollection controls = groupBox1.Controls;
-            //controls[0].Width += size;
-
-            //askQuestion.Width += size;
-            //askQuestion.point = new Point(askQuestion.Location.X - size, askQuestion.Location.Y);
-            //askQuestion.Left -= size;
-
-            //cmomonAnswer.Width += size;
-            //cmomonAnswer.point = new Point(cmomonAnswer.Location.X - size, cmomonAnswer.Location.Y);
-            //cmomonAnswer.Left -= size;
-
-            //myQuestion.Width += size;
-            //myQuestion.point = new Point(myQuestion.Location.X - size, myQuestion.Location.Y);
-            //myQuestion.Left -= size;
-
-            //docs.Width += size;
-            //docs.point = new Point(cmomonAnswer.Location.X - size, cmomonAnswer.Location.Y);
-            //docs.Left -= size;
-
-            //webLogin.Width += size;
-            //webLogin.point = new Point(cmomonAnswer.Location.X - size, cmomonAnswer.Location.Y);
-            //webLogin.Left -= size;
             CancleBindNotMove();
 
             int nowWidth = this.Size.Width;
             int diffWidth = nowWidth - iniMainFormWidth+15;
             int mainFormX = this.Location.X;
             int mainFormY = this.Location.Y;
-            //int mainFormLeft = this.Left;
 
             pictureBox6.Width = nowWidth - 70;
             pictureBox7.Width = nowWidth - 70;

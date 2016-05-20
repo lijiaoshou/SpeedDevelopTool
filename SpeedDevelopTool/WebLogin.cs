@@ -39,10 +39,7 @@ namespace SpeedDevelopTool
 
         private void WebLogin_Load(object sender, EventArgs e)
         {
-            //this.Location = point;
-
             webBrowser1.Navigate(NavigateUrl);
-            //this.Move += new EventHandler(CommonAnswer_Move);
         }
 
         public void CommonAnswer_Move(object sender, EventArgs e)

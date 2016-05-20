@@ -100,6 +100,12 @@ namespace CommonLib
             return result;
         }
 
+        /// <summary>
+        /// 增加一个节点到xml文件中
+        /// </summary>
+        /// <param name="filePath">xml文件路径</param>
+        /// <param name="key">键</param>
+        /// <param name="value">值</param>
         public static void AddChildNode(string filePath,string key, string value)
         {
             XmlDocument xmlDoc = new XmlDocument();
@@ -112,6 +118,11 @@ namespace CommonLib
             xmlDoc.Save(filePath);
         }
 
+        /// <summary>
+        /// 移除某个子节点
+        /// </summary>
+        /// <param name="filePath">xml文件路径</param>
+        /// <param name="key">节点名</param>
         public static void RemoveChildNode(string filePath, string key)
         {
             XmlDocument xmlDoc = new XmlDocument();
