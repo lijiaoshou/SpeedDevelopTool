@@ -154,7 +154,6 @@ namespace SpeedDevelopTool
         private void MainForm1_Load(object sender, EventArgs e)
         {
             //Config.RemoveChildNode(AppDomain.CurrentDomain.BaseDirectory + "SpeedDevelopTool.xml", "UserEmail");
-
             ShowNoLoginImages();
 
             timer1.Enabled = true;
@@ -208,7 +207,7 @@ namespace SpeedDevelopTool
                 iniMainFormWidth = this.Size.Width;
                 cmomonAnswerX = cmomonAnswer.Location.X;
 
-                progressBar1.Visible = false;
+                progressBar2.Visible = false;
                 this.BackColor = Color.White;
 
                 MainForm_SizeChanged(this,null);
@@ -262,8 +261,11 @@ namespace SpeedDevelopTool
 
             //刷新各图标（登录状态）
             this.pictureBox1.BackgroundImage = Properties.Resources.提问图标;
+            this.pictureBox1.Tag = "提问图标";
             this.pictureBox2.BackgroundImage = Properties.Resources.信息;
+            this.pictureBox2.Tag = "信息";
             this.pictureBox5.BackgroundImage = Properties.Resources.常见问题;
+            this.pictureBox5.Tag = "常见问题";
 
             //刷新文字，由未登录的灰色变为正常文字颜色
             this.label5.ForeColor = Color.Black;
@@ -305,10 +307,13 @@ namespace SpeedDevelopTool
         private void ShowNoLoginImages()
         {
             this.pictureBox1.BackgroundImage = Properties.Resources.提问图标_未登录;
+            this.pictureBox1.Tag = "提问图标_未登录";
             this.pictureBox1.BackgroundImageLayout = ImageLayout.Stretch;
             this.pictureBox2.BackgroundImage = Properties.Resources.信息_未登录;
+            this.pictureBox2.Tag = "信息_未登录";
             this.pictureBox2.BackgroundImageLayout = ImageLayout.Stretch;
             this.pictureBox5.BackgroundImage = Properties.Resources.常见问题_未登录;
+            this.pictureBox5.Tag = "常见问题_未登录";
             this.pictureBox5.BackgroundImageLayout = ImageLayout.Stretch;
 
             this.label5.ForeColor = Color.LightGray;
@@ -712,7 +717,7 @@ namespace SpeedDevelopTool
         {
             #region ProgressBar
 
-            progressBar1.Visible = true;
+            progressBar2.Visible = true;
             canUse = true;
             EditProgressBar();
             ReplaceSolution();
@@ -732,30 +737,30 @@ namespace SpeedDevelopTool
             if (!chargeResult)
             {
                 canUse = false;
-                this.progressBar1.Value = 0;
+                this.progressBar2.Value = 0;
                 return;
             }
 
             //替换原始代码
             ReplaceCodes(codesText);
-            this.progressBar1.Value += 10;
+            this.progressBar2.Value += 10;
 
             //编译用户修改后的解决方案，复制并替换默认dll或者exe,并重新加载功能演示区
             CompileAfterReplaceCodes();
-            this.progressBar1.Value += 10;
+            this.progressBar2.Value += 10;
 
             //重新加载填充代码演示区域
             InitFunctionalDemonstrationRegion();
-            this.progressBar1.Value += 10;
+            this.progressBar2.Value += 10;
 
             //跟踪功能区代码
             TraceOperate();
-            this.progressBar1.Value = 100;
+            this.progressBar2.Value = 100;
 
             //弹窗提示用户
             MessageBox.Show("用户修改已保存且编译完毕");
-            this.progressBar1.Visible = false;
-            this.progressBar1.Value = 0;
+            this.progressBar2.Visible = false;
+            this.progressBar2.Value = 0;
         }
 
         /// <summary>
@@ -850,7 +855,7 @@ namespace SpeedDevelopTool
         {
             #region ProgressBar
 
-            progressBar1.Visible = true;
+            progressBar2.Visible = true;
             canUse=true;
             EditProgressBar();
             RecoverSolution();
@@ -860,17 +865,17 @@ namespace SpeedDevelopTool
 
         private void EditProgressBar()
         {
-            this.progressBar1.Minimum = 0;
-            this.progressBar1.Maximum = 100;
+            this.progressBar2.Minimum = 0;
+            this.progressBar2.Maximum = 100;
             Thread thread = new Thread(IncreaseBar);
             thread.Start();
         }
 
         private void IncreaseBar()
         {
-            while(this.progressBar1.Value<60&&canUse)
+            while(this.progressBar2.Value<60&&canUse)
             {
-                this.progressBar1.Value += 10;
+                this.progressBar2.Value += 10;
                 Thread.Sleep(1000);
             }
         }
@@ -884,31 +889,31 @@ namespace SpeedDevelopTool
             string categoryPath = Config.GetValueByKey(this.choiceOpiton, "categoryPath");
 
             Common.copyDirectory(AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码", AppDomain.CurrentDomain.BaseDirectory + categoryPath + "源码_修改");
-            this.progressBar1.Value += 10;
+            this.progressBar2.Value += 10;
 
             //找到源码文件夹，重新编译，拷贝替换，重新加载
             bool compileResult = CompileAndReplace("源码");
-            this.progressBar1.Value += 10;
+            this.progressBar2.Value += 10;
 
             if (!compileResult)
             {
                 MessageBox.Show("编译失败,请检查是否改动过源码文件");
-                this.progressBar1.Value = 0;
+                this.progressBar2.Value = 0;
                 return;
             }
 
             //重新加载填充代码演示区域
             InitFunctionalDemonstrationRegion();
-            this.progressBar1.Value += 10;
+            this.progressBar2.Value += 10;
 
             //跟踪功能区代码
             TraceOperate();
-            this.progressBar1.Value = 100;
+            this.progressBar2.Value = 100;
 
             //弹窗提示恢复成功
             MessageBox.Show("恢复默认成功");
-            this.progressBar1.Visible = false;
-            this.progressBar1.Value = 0;
+            this.progressBar2.Visible = false;
+            this.progressBar2.Value = 0;
         }
 
         /// <summary>
@@ -1271,7 +1276,7 @@ namespace SpeedDevelopTool
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
+            if (pictureBox1.Tag.ToString() == "提问图标_未登录")
             {
                 MessageBox.Show("请先登录");
                 return;
@@ -1282,7 +1287,7 @@ namespace SpeedDevelopTool
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            //每隔15分钟刷新提问，常见问题，保持session
+            //每隔10分钟刷新提问，常见问题，保持session
             this.cmomonAnswer.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=iszhishi&v=0");
             this.askQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/add.aspx?v=0");
             this.myQuestion.webBrowser1.Navigate("http://u8dev.yonyou.com/home/ask/index.aspx?r=my&v=0");
@@ -1292,7 +1297,7 @@ namespace SpeedDevelopTool
 
         private void pictureBox2_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
+            if (pictureBox2.Tag.ToString() == "信息_未登录")
             {
                 MessageBox.Show("请先登录");
                 return;
@@ -1341,27 +1346,27 @@ namespace SpeedDevelopTool
             int mainFormY = this.Location.Y;
             //int mainFormLeft = this.Left;
 
-            pictureBox6.Width = iniMainFormWidth - 70;
-            pictureBox7.Width = iniMainFormWidth - 70;
+            pictureBox6.Width = iniMainFormWidth - 80;
+            pictureBox7.Width = iniMainFormWidth - 80;
 
-            label5.Left = iniMainFormWidth - 215;
-            label6.Left = iniMainFormWidth - 162;
-            label7.Left = iniMainFormWidth - 105;
-            pictureBox1.Left = iniMainFormWidth - 183;
-            pictureBox2.Left = iniMainFormWidth - 132;
-            pictureBox3.Left = iniMainFormWidth - 76;
+            label5.Left = iniMainFormWidth - 220;
+            label6.Left = iniMainFormWidth - 167;
+            label7.Left = iniMainFormWidth - 110;
+            pictureBox1.Left = iniMainFormWidth - 188;
+            pictureBox2.Left = iniMainFormWidth - 137;
+            pictureBox3.Left = iniMainFormWidth - 81;
 
-            progressBar1.Width = iniMainFormWidth - 70;
+            progressBar2.Width = iniMainFormWidth - 80;
 
-            groupBox1.Width = iniMainFormWidth - 70;
-            groupBox2.Width = iniMainFormWidth - 70;
+            groupBox1.Width = iniMainFormWidth - 80;
+            groupBox2.Width = iniMainFormWidth - 80;
 
             pictureBox4.Left = iniMainFormWidth - 47;
             pictureBox5.Left = iniMainFormWidth - 47;
 
-            txtContentForm.Width = iniMainFormWidth - 70;
+            txtContentForm.Width = iniMainFormWidth - 80;
             ControlCollection controls = groupBox1.Controls;
-            controls[0].Width = iniMainFormWidth - 70;
+            controls[0].Width = iniMainFormWidth - 80;
 
             askQuestion.Width = iniMainFormWidth - 35;
             askQuestion.Left = 310;
@@ -1429,16 +1434,16 @@ namespace SpeedDevelopTool
 
             pictureBox6.Width = nowWidth - 70;
             pictureBox7.Width = nowWidth - 70;
-            progressBar1.Width = pictureBox6.Width;
+            progressBar2.Width = pictureBox6.Width;
             groupBox1.Width = pictureBox6.Width;
             groupBox2.Width = pictureBox6.Width;
 
-            label5.Left = nowWidth-190;
-            label6.Left = nowWidth-140;
-            label7.Left = nowWidth - 85;
-            pictureBox1.Left = nowWidth-165;
-            pictureBox2.Left = nowWidth-115 ;
-            pictureBox3.Left = nowWidth-61;
+            label5.Left = nowWidth-205;
+            label6.Left = nowWidth-155;
+            label7.Left = nowWidth - 100;
+            pictureBox1.Left = nowWidth-175;
+            pictureBox2.Left = nowWidth-125 ;
+            pictureBox3.Left = nowWidth-71;
 
             pictureBox4.Left = nowWidth-35;
             pictureBox5.Left = nowWidth - 35;
@@ -1482,11 +1487,12 @@ namespace SpeedDevelopTool
 
         private void pictureBox5_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
+            if (pictureBox5.Tag.ToString() == "常见问题_未登录")
             {
                 MessageBox.Show("请先登录");
                 return;
             }
+
             cmomonAnswer.ShowDialog();
         }
 
@@ -1504,32 +1510,41 @@ namespace SpeedDevelopTool
 
         private void pictureBox5_MouseLeave(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
+            if (pictureBox5.Tag.ToString() == "常见问题_鼠标上来")
             {
                 pictureBox5.BackgroundImage = Properties.Resources.常见问题;
+                pictureBox5.Tag = "常见问题";
             }
             else
             {
                 pictureBox5.BackgroundImage = Properties.Resources.常见问题_未登录;
+                pictureBox5.Tag = "常见问题_未登录";
             }
             Cursor.Current = Cursors.Arrow;
         }
 
         private void pictureBox4_MouseEnter(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
-            {
-                pictureBox4.BackgroundImage = Properties.Resources.相关文档_鼠标上来;
-                Cursor.Current = Cursors.Hand;
-            }
+            //if (!string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
+            //{
+            //    pictureBox4.BackgroundImage = Properties.Resources.相关文档_鼠标上来;
+            //    Cursor.Current = Cursors.Hand;
+            //}
+            pictureBox4.BackgroundImage = Properties.Resources.相关文档_鼠标上来;
+            Cursor.Current = Cursors.Hand;
         }
 
         private void pictureBox5_MouseEnter(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
+            //if (!string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
+            //{
+            //    pictureBox5.BackgroundImage = Properties.Resources.常见问题_鼠标上来;
+            //    Cursor.Current = Cursors.Hand;
+            //}
+            if (pictureBox5.Tag.ToString() == "常见问题")
             {
                 pictureBox5.BackgroundImage = Properties.Resources.常见问题_鼠标上来;
-                Cursor.Current = Cursors.Hand;
+                pictureBox5.Tag = "常见问题_鼠标上来";
             }
         }
 
@@ -1547,18 +1562,25 @@ namespace SpeedDevelopTool
 
         private void pictureBox1_MouseEnter(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
+            //if (!string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
+            //{
+                
+            //    Cursor.Current = Cursors.Hand;
+            //}
+
+            if (pictureBox1.Tag.ToString() == "提问图标")
             {
                 pictureBox1.BackgroundImage = Properties.Resources.提问图标_鼠标上来;
-                Cursor.Current = Cursors.Hand;
+                pictureBox1.Tag = "提问图标_鼠标上来";
             }
         }
 
         private void pictureBox1_MouseLeave(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
+            if (pictureBox1.Tag.ToString() == "提问图标_鼠标上来")
             {
                 pictureBox1.BackgroundImage = Properties.Resources.提问图标;
+                pictureBox1.Tag = "提问图标";
             }
             else
             {
@@ -1569,22 +1591,29 @@ namespace SpeedDevelopTool
 
         private void pictureBox2_MouseEnter(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
+            //if (!string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
+            //{
+            //    pictureBox2.BackgroundImage = Properties.Resources.信息_鼠标上来;
+            //    Cursor.Current = Cursors.Hand;
+            //}
+            if (pictureBox2.Tag.ToString() == "信息")
             {
                 pictureBox2.BackgroundImage = Properties.Resources.信息_鼠标上来;
-                Cursor.Current = Cursors.Hand;
+                pictureBox2.Tag = "信息_鼠标上来";
             }
         }
 
         private void pictureBox2_MouseLeave(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(Config.GetValueByKey("UserEmail", "Email")))
+            if (pictureBox2.Tag.ToString() == "信息_鼠标上来")
             {
                 pictureBox2.BackgroundImage = Properties.Resources.信息;
+                pictureBox2.Tag = "信息";
             }
             else
             {
                 pictureBox2.BackgroundImage = Properties.Resources.信息_未登录;
+                pictureBox2.Tag = "信息_未登录";
             }
             Cursor.Current = Cursors.Arrow;
         }

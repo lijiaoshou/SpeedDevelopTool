@@ -62,5 +62,18 @@ namespace WindowsFormsApplication2
             // Ignore the error and suppress the error dialog box. 
             e.Handled = true;
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            NewProgressBar bar = new NewProgressBar();
+            bar.Dock = DockStyle.Bottom;
+            bar.Maximum = 50;
+            bar.Value = 20;
+            this.Controls.Add(bar);
+
+
+            progressBar1.Maximum = 60;
+            progressBar1.Value=20;
+        }
     }
 }

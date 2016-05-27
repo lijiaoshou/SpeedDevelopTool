@@ -39,7 +39,7 @@
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.progressBar2 = new System.Windows.Forms.ProgressBar();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
@@ -161,20 +161,21 @@
             this.label4.TabIndex = 21;
             this.label4.Text = "实时代码区";
             // 
-            // progressBar1
+            // progressBar2
             // 
-            this.progressBar1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.progressBar1.ForeColor = System.Drawing.Color.Green;
-            this.progressBar1.Location = new System.Drawing.Point(19, 867);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(900, 18);
-            this.progressBar1.TabIndex = 5;
+            this.progressBar2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.progressBar2.ForeColor = System.Drawing.Color.Green;
+            this.progressBar2.Location = new System.Drawing.Point(19, 866);
+            this.progressBar2.Name = "progressBar2";
+            this.progressBar2.Size = new System.Drawing.Size(900, 18);
+            this.progressBar2.TabIndex = 5;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
+            this.label5.Cursor = System.Windows.Forms.Cursors.Hand;
             this.label5.ForeColor = System.Drawing.Color.Black;
-            this.label5.Location = new System.Drawing.Point(737, 12);
+            this.label5.Location = new System.Drawing.Point(742, 12);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(29, 12);
             this.label5.TabIndex = 25;
@@ -186,7 +187,8 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(789, 12);
+            this.label6.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.label6.Location = new System.Drawing.Point(802, 12);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(29, 12);
             this.label6.TabIndex = 27;
@@ -197,13 +199,14 @@
             // 
             // timer1
             // 
-            this.timer1.Interval = 900000;
+            this.timer1.Interval = 600000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(843, 12);
+            this.label7.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.label7.Location = new System.Drawing.Point(863, 12);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(29, 12);
             this.label7.TabIndex = 30;
@@ -226,7 +229,8 @@
             // 
             this.pictureBox3.BackgroundImage = global::SpeedDevelopTool.Properties.Resources.登录;
             this.pictureBox3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox3.Location = new System.Drawing.Point(872, 9);
+            this.pictureBox3.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pictureBox3.Location = new System.Drawing.Point(898, 9);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(18, 18);
             this.pictureBox3.TabIndex = 29;
@@ -237,8 +241,10 @@
             // 
             // pictureBox5
             // 
+            this.pictureBox5.BackColor = System.Drawing.SystemColors.Control;
             this.pictureBox5.BackgroundImage = global::SpeedDevelopTool.Properties.Resources.常见问题;
             this.pictureBox5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBox5.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox5.Location = new System.Drawing.Point(928, 138);
             this.pictureBox5.Name = "pictureBox5";
             this.pictureBox5.Size = new System.Drawing.Size(33, 83);
@@ -253,6 +259,7 @@
             // 
             this.pictureBox4.BackgroundImage = global::SpeedDevelopTool.Properties.Resources.相关文档;
             this.pictureBox4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBox4.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox4.Location = new System.Drawing.Point(927, 33);
             this.pictureBox4.Name = "pictureBox4";
             this.pictureBox4.Size = new System.Drawing.Size(33, 83);
@@ -266,7 +273,8 @@
             // 
             this.pictureBox2.BackgroundImage = global::SpeedDevelopTool.Properties.Resources.信息;
             this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox2.Location = new System.Drawing.Point(820, 9);
+            this.pictureBox2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pictureBox2.Location = new System.Drawing.Point(837, 9);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(18, 18);
             this.pictureBox2.TabIndex = 27;
@@ -279,7 +287,8 @@
             // 
             this.pictureBox1.BackgroundImage = global::SpeedDevelopTool.Properties.Resources.提问图标;
             this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox1.Location = new System.Drawing.Point(770, 9);
+            this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pictureBox1.Location = new System.Drawing.Point(777, 9);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(18, 18);
             this.pictureBox1.TabIndex = 26;
@@ -312,7 +321,7 @@
             this.Controls.Add(this.label6);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.progressBar2);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.groupBox2);
@@ -345,7 +354,7 @@
         internal System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.ProgressBar progressBar2;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label6;

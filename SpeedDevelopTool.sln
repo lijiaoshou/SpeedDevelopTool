@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeRegion", "CodeRegion\Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApplication2", "WindowsFormsApplication2\WindowsFormsApplication2.csproj", "{48485CD7-2886-4041-8E40-4A7CD61876B7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary1", "ClassLibrary1\ClassLibrary1.csproj", "{34319F26-1AFD-41E4-A9D3-77B8D3CB9566}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,6 +109,14 @@ Global
 		{48485CD7-2886-4041-8E40-4A7CD61876B7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{48485CD7-2886-4041-8E40-4A7CD61876B7}.Release|x86.ActiveCfg = Release|Any CPU
 		{48485CD7-2886-4041-8E40-4A7CD61876B7}.Release|x86.Build.0 = Release|Any CPU
+		{34319F26-1AFD-41E4-A9D3-77B8D3CB9566}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34319F26-1AFD-41E4-A9D3-77B8D3CB9566}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34319F26-1AFD-41E4-A9D3-77B8D3CB9566}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{34319F26-1AFD-41E4-A9D3-77B8D3CB9566}.Debug|x86.Build.0 = Debug|Any CPU
+		{34319F26-1AFD-41E4-A9D3-77B8D3CB9566}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34319F26-1AFD-41E4-A9D3-77B8D3CB9566}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34319F26-1AFD-41E4-A9D3-77B8D3CB9566}.Release|x86.ActiveCfg = Release|Any CPU
+		{34319F26-1AFD-41E4-A9D3-77B8D3CB9566}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

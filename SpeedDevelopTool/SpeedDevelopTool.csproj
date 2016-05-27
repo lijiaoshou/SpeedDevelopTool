@@ -246,7 +246,6 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-    <None Include="Resources\提问图标_未登录.png" />
     <None Include="Resources\未读信息.png" />
     <None Include="Resources\信息_未登录.png" />
     <None Include="Resources\登录.png" />
@@ -256,8 +255,10 @@
     <None Include="Resources\常见问题_鼠标上来.png" />
     <None Include="Resources\相关文档_鼠标上来.png" />
     <None Include="Resources\登录_鼠标上来.png" />
-    <None Include="Resources\提问图标_鼠标上来.png" />
     <None Include="Resources\信息_鼠标上来.png" />
+    <Content Include="Resources\提问图标_未登录.png" />
+    <Content Include="Resources\提问图标_鼠标上来.png" />
+    <Content Include="Resources\登录置灰.png" />
     <Content Include="SpeedDevelopTool.xml" />
   </ItemGroup>
   <ItemGroup>
