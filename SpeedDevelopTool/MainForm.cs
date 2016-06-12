@@ -420,10 +420,17 @@ namespace SpeedDevelopTool
         {
             try
             {
-                //循环对用户控件上的每一个控件进行操作
-                foreach (Control ctrl1 in ctrl.Controls)
+                if (ctrl.Controls.Count != 0)
                 {
-                    OperateForEachControl(ctrl1);
+                    //循环对用户控件上的每一个控件进行操作
+                    foreach (Control ctrl1 in ctrl.Controls)
+                    {
+                        OperateForEachControl(ctrl1);
+                    }
+                }
+                else
+                {
+                    OperateForEachControl(ctrl);
                 }
             }
             catch (Exception ex)
