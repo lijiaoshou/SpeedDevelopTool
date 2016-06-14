@@ -58,70 +58,72 @@ namespace SpeedDevelopTool
         }
 
 
-        /// <summary>
-        /// 搜索相关文档委托绑定的方法
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void StartProcessDoc(object sender, EventArgs e)
-        {
-            ProcessStart(sender);
-        }
+        #region old wait to delete
+        ///// <summary>
+        ///// 搜索相关文档委托绑定的方法
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //private void StartProcessDoc(object sender, EventArgs e)
+        //{
+        //    ProcessStart(sender);
+        //}
 
-        /// <summary>
-        /// 搜索常见问题委托绑定的方法
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void StartProcessPro(object sender, EventArgs e)
-        {
-            ProcessStart(sender);
-        }
-
+        ///// <summary>
+        ///// 搜索常见问题委托绑定的方法
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //private void StartProcessPro(object sender, EventArgs e)
+        //{
+        //    ProcessStart(sender);
+        //}
         /// <summary>
         /// 处理用户查看文档的事件
         /// </summary>
         /// <param name="sender">点击控件</param>
-        private void ProcessStart(object sender)
-        {
-            try
-            {
-                //得到界面显示的名称（包括后缀名）
-                Label lab = sender as Label;
 
-                //是label控件则查找和label控件文字相同的文档
-                if (lab != null)
-                {
-                    Process.Start(System.Environment.CurrentDirectory + @"\" + choiceOpiton + @"\相关文档\" + lab.Text);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
+        /// //private void ProcessStart(object sender)
+        //{
+        //    try
+        //    {
+        //        //得到界面显示的名称（包括后缀名）
+        //        Label lab = sender as Label;
 
-        /// <summary>
-        /// 开发模式下用.cs文件生成xml文件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button4_Click(object sender, EventArgs e)
-        {
-            Common.GenerateXmlDocument(AppDomain.CurrentDomain.BaseDirectory + @"xml\" + choiceOpiton + ".xml");
-        }
+        //        //是label控件则查找和label控件文字相同的文档
+        //        if (lab != null)
+        //        {
+        //            Process.Start(System.Environment.CurrentDirectory + @"\" + choiceOpiton + @"\相关文档\" + lab.Text);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
 
+        ///// <summary>
+        ///// 开发模式下用.cs文件生成xml文件
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //private void button4_Click(object sender, EventArgs e)
+        //{
+        //    Common.GenerateXmlDocument(AppDomain.CurrentDomain.BaseDirectory + @"xml\" + choiceOpiton + ".xml");
+        //}
 
-        /// <summary>
-        /// 实时求助按钮
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button1_Click(object sender, EventArgs e)
-        {
-            MailInfo mainForm = new MailInfo();
-            mainForm.ShowDialog();
-        }
+        ///// <summary>
+        ///// 实时求助按钮
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //private void button1_Click(object sender, EventArgs e)
+        //{
+        //    MailInfo mainForm = new MailInfo();
+        //    mainForm.ShowDialog();
+        //}
+
+        #endregion
 
         /// <summary>
         /// 复制选中代码到黏贴板
@@ -153,9 +155,10 @@ namespace SpeedDevelopTool
         /// <param name="e"></param>
         private void MainForm1_Load(object sender, EventArgs e)
         {
-            //Config.RemoveChildNode(AppDomain.CurrentDomain.BaseDirectory + "SpeedDevelopTool.xml", "UserEmail");
+            //展示未登录状态的图标和文字
             ShowNoLoginImages();
 
+            //每十分钟更新一次session保持登录状态，并且判断是否有新的未读消息
             timer1.Enabled = true;
 
             Middle.sendEvent += new Middle.SendMessage(this.DoMethod);
@@ -187,14 +190,6 @@ namespace SpeedDevelopTool
                 //初始化功能演示区
                 InitFunctionalDemonstrationRegion();
 
-                #region old wait to delete
-                //初始化相关文档
-                //IniDocAndQuestionRegion(basePath, "相关文档", groupBox3);
-
-                //初始化常见问题
-                //IniDocAndQuestionRegion(basePath, "常见问题", groupBox4);
-                #endregion
-
                 //初始化代码控件
                 IniCodeRegion();
 
@@ -212,10 +207,7 @@ namespace SpeedDevelopTool
 
                 MainForm_SizeChanged(this,null);
                 //进来默认点一次登录
-                //pictureBox3_Click(pictureBox3, null);
                 MainFormLoginNopopup();
-
-                //userEmail = Config.GetValueByKey("UserEmail", "Email");
             }
             catch (Exception ex)
             {
@@ -318,42 +310,6 @@ namespace SpeedDevelopTool
 
             this.label5.ForeColor = Color.LightGray;
             this.label6.ForeColor = Color.LightGray;
-        }
-
-        /// <summary>
-        /// 初始化相关文档和常见问题区域
-        /// </summary>
-        /// <param name="basePath">类别路径</param>
-        /// <param name="DirectoryName">文件夹名称</param>
-        /// <param name="groupBox">目标groupBox</param>
-        private void IniDocAndQuestionRegion(string basePath,string DirectoryName, GroupBox groupBox)
-        {
-            try
-            {
-                //得到对应公共空间类别下的常见问题文件夹下的（包括子文件夹）的文件
-                List<FileInfo> fileInfoP = Common.GetAllFilesInDirectory(basePath + DirectoryName);
-                for (int i = 0; i < fileInfoP.Count; i++)
-                {
-                    LinkLabel lab = new LinkLabel();
-
-                    //展示样式设置
-                    lab.Width = groupBox.Width;
-                    lab.Text = fileInfoP[i].Name;
-                    lab.ForeColor = Color.Blue;
-                    lab.Left = 15;
-                    lab.Top = lab.Height * i + 40;
-
-                    //给文字绑定点击时触发的委托方法
-                    lab.Click += new EventHandler(StartProcessPro);
-
-                    //将文档生成的可操作内容加载到父控件中
-                    groupBox.Controls.Add(lab);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
         }
 
         /// <summary>
@@ -745,6 +701,7 @@ namespace SpeedDevelopTool
             {
                 canUse = false;
                 this.progressBar2.Value = 0;
+                this.progressBar2.Visible = false;
                 return;
             }
 
@@ -753,7 +710,11 @@ namespace SpeedDevelopTool
             this.progressBar2.Value += 10;
 
             //编译用户修改后的解决方案，复制并替换默认dll或者exe,并重新加载功能演示区
-            CompileAfterReplaceCodes();
+            bool compileResult=CompileAfterReplaceCodes();
+            if (!compileResult)
+            {
+                return;
+            }
             this.progressBar2.Value += 10;
 
             //重新加载填充代码演示区域
@@ -800,6 +761,7 @@ namespace SpeedDevelopTool
             //没有找到对应的方法，直接返回空
             if (contensArray.Length < 2)
             {
+                DisableTheProgressBar();
                 MessageBox.Show("请输入正确代码格式，并且不要去掉原有注释符号");
             }
 
@@ -809,6 +771,11 @@ namespace SpeedDevelopTool
             for (int i = 1; i < codes.Length; i++)
             {
                 string[] resultInfo=SplitContentArray(codes[i]);
+                if (resultInfo.Length < 3)
+                {
+                    DisableTheProgressBar();
+                    MessageBox.Show("请不要删除[访问修饰符/返回类型/函数名]中任意一项！");
+                }
 
                 bool result = Common.ReplaceSourceDoucmentCodes(resultInfo[2], choiceOpiton, codes[i], resultInfo[0], resultInfo[1]);
                 if (!result)
@@ -820,6 +787,13 @@ namespace SpeedDevelopTool
                 //只有奇数为索引代码，所以再次++
                 i++;
             }
+        }
+
+        //将进度条的进度设为0，并且不可见
+        private void DisableTheProgressBar()
+        {
+            progressBar2.Value = 0;
+            progressBar2.Visible = false;
         }
 
         /// <summary>
@@ -843,14 +817,16 @@ namespace SpeedDevelopTool
         /// <summary>
         /// 编译修改后的解决方案
         /// </summary>
-        private void CompileAfterReplaceCodes()
+        private bool CompileAfterReplaceCodes()
         {
             bool compileResult = CompileAndReplace("源码_修改");
             if (!compileResult)
             {
+                DisableTheProgressBar();
                 MessageBox.Show("编译失败，请检查是否有语法错误");
-                return;
+                return false;
             }
+            return true;
         }
 
         /// <summary>
@@ -874,6 +850,7 @@ namespace SpeedDevelopTool
         {
             this.progressBar2.Minimum = 0;
             this.progressBar2.Maximum = 100;
+            this.progressBar2.Value = 0;
             Thread thread = new Thread(IncreaseBar);
             thread.Start();
         }
@@ -904,8 +881,8 @@ namespace SpeedDevelopTool
 
             if (!compileResult)
             {
+                DisableTheProgressBar();
                 MessageBox.Show("编译失败,请检查是否改动过源码文件");
-                this.progressBar2.Value = 0;
                 return;
             }
 
@@ -930,15 +907,6 @@ namespace SpeedDevelopTool
         {
             try
             {
-                #region backgroundWorker方法（线程间访问控件）
-                //using (BackgroundWorker bw = new BackgroundWorker())
-                //{
-                //    bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
-                //    bw.DoWork += new DoWorkEventHandler(bw_DoWork);
-                //    bw.RunWorkerAsync("Tank");
-                //}
-                #endregion
-
                 string fullName = Config.GetValueByKey(this.choiceOpiton, "fullClassName");
 
                 //获取dll所在路径
@@ -947,15 +915,9 @@ namespace SpeedDevelopTool
                 //获取dll名称/exe名称
                 string dllName = Config.GetValueByKey(this.choiceOpiton, "dllName");
 
-                #region 不占用dll解决方法（子应用程序域方法）
-                //CVST.AppFramework.AssemblyLoader.Loader loader = new CVST.AppFramework.AssemblyLoader.Loader();
-                //Assembly assembly = loader.LoadAssembly(AppDomain.CurrentDomain.BaseDirectory + dllPath+dllName);
-                #endregion
-
                 #region 不占用dll解决方案（Load(byte[] buffer)方法）
                 byte[] buffer = Common.GetByteArrayFromFile(AppDomain.CurrentDomain.BaseDirectory + dllPath + dllName);
                 Assembly assembly = Assembly.Load(buffer);
-                //Assembly assembly = Assembly.ReflectionOnlyLoad(buffer);
                 #endregion
 
                 //创建该对象的实例，object类型，参数（名称空间+类）   
@@ -964,10 +926,6 @@ namespace SpeedDevelopTool
                 //将反射出的对象实例添加到groupBox1中（Form/userControl）
                 ControlWaitToAdd(instance);
 
-                #region 委托方法（线程间访问控件）
-                //Thread groupbox1Thread = new Thread(new ParameterizedThreadStart(UpdateGroupBox1));
-                //groupbox1Thread.Start(instance);
-                #endregion
             }
             catch (Exception ex)
             {
@@ -1010,6 +968,10 @@ namespace SpeedDevelopTool
                     //控件用户控件在主界面中的位置
                     usercontrol.Top = 20;
                     usercontrol.Left = 10;
+                }
+                else
+                {
+                    MessageBox.Show("功能演示区只可加载Form或者UserControl!");
                 }
             }
         }
@@ -1181,7 +1143,7 @@ namespace SpeedDevelopTool
 
                         if (!compileresult)
                         {
-                            MessageBox.Show("编译失败，请检查是否有语法错误");
+                            //MessageBox.Show("编译失败，请检查是否有语法错误");
                             return false;
                         }
                     }

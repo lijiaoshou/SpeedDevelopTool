@@ -593,21 +593,28 @@ namespace SpeedDevelopTool
 
                 ProcessStartInfo startInfo = new ProcessStartInfo(devenvPath);
                 startInfo.Arguments = "/rebuild \"debug|x86\" " + solutionPath;
+                //startInfo.UseShellExecute = false;
 
                 //执行编译过程
                 Process process = new Process();
                 process.StartInfo = startInfo;
-
+                //process.StartInfo.RedirectStandardError = true;
+           
                 process.Start();
+                //string error = process.StandardError.ReadToEnd();
                 process.WaitForExit();
-
-                return true;
+                bool isCompilationSuccesful = (process.ExitCode == 0);
+                if (!isCompilationSuccesful)
+                {
+                    return false;
+                }
             }
             catch (Exception ex)
             {
                 return false;
             }
-            
+
+            return true;
         }
 
         /// <summary>
